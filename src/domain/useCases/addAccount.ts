@@ -1,5 +1,5 @@
 import { AddAccountModel } from '../models/addAccountModel';
 
-export interface AddAccount {
+export default interface AddAccount {
   add(accountModel: AddAccountModel): Promise<RemoteResult>;
 }
