@@ -24,6 +24,19 @@ describe('Data: RemoteAddAccount', () => {
     }
   });
 
+  test('should add with httpPostClient returning validation exception', async () => {
+    const httpPostClient = new HttPostClientSpy();
+    const sut = new RemoteAddAccount('any_url', httpPostClient);
+    httpPostClient.completeWithForbiddenError();
+
+    try {
+      await sut.add({} as AddAccountModel);
+      throw new Error('something unexpected occurred in your test');
+    } catch (error) {
+      expect(error).toEqual(new ValidationError());
+    }
+  });
+
   test('should add with httpPostClient returning response with success', async () => {
     const httpPostClient = new HttPostClientSpy();
     const sut = new RemoteAddAccount('any_url', httpPostClient);
@@ -33,7 +46,7 @@ describe('Data: RemoteAddAccount', () => {
     httpPostClient.completeWithSuccess();
 
     const response = await sut.add(accountModel);
-    expect(response).toEqual('Account created with success');
+    expect(response).toEqual(DataStatus.created);
   });
 
   test('should add with httpPostClient passing the correct param', async () => {
@@ -61,7 +74,6 @@ describe('Data: RemoteAddAccount', () => {
 class RemoteAddAccount implements AddAccount {
   constructor(readonly url: string, readonly httpPostClient: HttpPostClient) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async add(accountModel: AddAccountModel) {
     const { statusCode } = await this.httpPostClient.post({
       url: this.url,
@@ -70,7 +82,9 @@ class RemoteAddAccount implements AddAccount {
 
     switch (statusCode) {
       case HttpStatusCode.created:
-        return 'Account created with success';
+        return DataStatus.created;
+      case HttpStatusCode.forbidden:
+        throw new ValidationError();
       default:
         throw new UnexpectedError();
     }
@@ -89,6 +103,10 @@ class HttPostClientSpy implements HttpPostClient {
 
   completeWithUnexpectedError() {
     this.response.statusCode = HttpStatusCode.internalServerError;
+  }
+
+  completeWithForbiddenError() {
+    this.response.statusCode = HttpStatusCode.forbidden;
   }
 
   completeWithSuccess() {
@@ -122,11 +140,23 @@ enum HttpStatusCode {
   internalServerError = 500,
 }
 
+enum DataStatus {
+  created = 'Created with success',
+}
+
 class UnexpectedError extends Error {
   constructor() {
     super();
     this.message =
       'Unexpected error. Please check your internet and try again.';
     this.name = 'UnexpectedError';
+  }
+}
+
+class ValidationError extends Error {
+  constructor() {
+    super();
+    this.message = 'Validation error. Check that the fields are correct.';
+    this.name = 'ValidationError';
   }
 }
