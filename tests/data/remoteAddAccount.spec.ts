@@ -35,6 +35,27 @@ describe('Data: RemoteAddAccount', () => {
     const response = await sut.add(accountModel);
     expect(response).toEqual('Account created with success');
   });
+
+  test('should add with httpPostClient passing the correct param', async () => {
+    const httpPostClient = new HttPostClientSpy();
+    const sut = new RemoteAddAccount('any_url', httpPostClient);
+
+    const accountModel: AddAccountModel = {
+      name: 'any_name',
+      lastName: 'any_lastName',
+      email: 'any_email@gmail.com',
+      contactNumber: '+5595991738017',
+      birthDate: new Date(),
+      currentState: 'any_currentState',
+      cpf: '037.495.802-51',
+    };
+
+    httpPostClient.completeWithSuccess();
+
+    await sut.add(accountModel);
+
+    expect(httpPostClient.body).toEqual(accountModel);
+  });
 });
 
 class RemoteAddAccount implements AddAccount {
@@ -42,7 +63,10 @@ class RemoteAddAccount implements AddAccount {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async add(accountModel: AddAccountModel) {
-    const { statusCode } = await this.httpPostClient.post({ url: this.url });
+    const { statusCode } = await this.httpPostClient.post({
+      url: this.url,
+      body: accountModel,
+    });
 
     switch (statusCode) {
       case HttpStatusCode.created:
@@ -55,9 +79,11 @@ class RemoteAddAccount implements AddAccount {
 
 class HttPostClientSpy implements HttpPostClient {
   url = '';
+  body: any;
   response: HttpResponse<any> = { statusCode: HttpStatusCode.ok, body: {} };
   async post(data: HttpRequest): Promise<HttpResponse<any>> {
     this.url = data.url;
+    this.body = data.body;
     return this.response;
   }
 
