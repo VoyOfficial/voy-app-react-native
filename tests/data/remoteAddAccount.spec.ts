@@ -3,12 +3,25 @@ import { AddAccount } from '~/domain';
 
 describe('Data: RemoteAddAccount', () => {
   test('should add with httpPostClient call correct url', () => {
-    const httPostClient = new HttPostClientSpy();
-    const sut = new RemoteAddAccount('any_url', httPostClient);
+    const httpPostClient = new HttPostClientSpy();
+    const sut = new RemoteAddAccount('any_url', httpPostClient);
 
     sut.add({} as AddAccountModel);
 
-    expect(sut.url).toEqual(httPostClient.url);
+    expect(sut.url).toEqual(httpPostClient.url);
+  });
+
+  test('should add with httpPostClient returning unexpected exception', async () => {
+    const httpPostClient = new HttPostClientSpy();
+    const sut = new RemoteAddAccount('any_url', httpPostClient);
+    httpPostClient.completeWithUnexpectedError();
+
+    try {
+      await sut.add({} as AddAccountModel);
+      throw new Error('something unexpected occurred in your test');
+    } catch (error) {
+      expect(error).toEqual(new UnexpectedError());
+    }
   });
 });
 
@@ -16,17 +29,28 @@ class RemoteAddAccount implements AddAccount {
   constructor(readonly url: string, readonly httpPostClient: HttpPostClient) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  add(accountModel: AddAccountModel): Promise<RemoteResult> {
-    this.httpPostClient.post({ url: this.url });
+  async add(accountModel: AddAccountModel): Promise<RemoteResult> {
+    const { statusCode } = await this.httpPostClient.post({ url: this.url });
+
+    switch (statusCode) {
+      case HttpStatusCode.internalServerError:
+        throw new UnexpectedError();
+    }
+
     return {} as Promise<RemoteResult>;
   }
 }
 
 class HttPostClientSpy implements HttpPostClient {
   url = '';
-  post(data: HttpRequest): Promise<HttpResponse<any>> {
+  response: HttpResponse<any> = { statusCode: HttpStatusCode.ok, body: {} };
+  async post(data: HttpRequest): Promise<HttpResponse<any>> {
     this.url = data.url;
-    return {} as Promise<HttpResponse<any>>;
+    return this.response;
+  }
+
+  completeWithUnexpectedError() {
+    this.response.statusCode = HttpStatusCode.internalServerError;
   }
 }
 
@@ -54,4 +78,13 @@ enum HttpStatusCode {
   forbidden = 403,
   notFound = 404,
   internalServerError = 500,
+}
+
+class UnexpectedError extends Error {
+  constructor() {
+    super();
+    this.message =
+      'Unexpected error. Please check your internet and try again.';
+    this.name = 'UnexpectedError';
+  }
 }
