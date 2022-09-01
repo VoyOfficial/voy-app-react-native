@@ -23,21 +23,33 @@ describe('Data: RemoteAddAccount', () => {
       expect(error).toEqual(new UnexpectedError());
     }
   });
+
+  test('should add with httpPostClient returning response with success', async () => {
+    const httpPostClient = new HttPostClientSpy();
+    const sut = new RemoteAddAccount('any_url', httpPostClient);
+
+    const accountModel: AddAccountModel = {} as AddAccountModel;
+
+    httpPostClient.completeWithSuccess();
+
+    const response = await sut.add(accountModel);
+    expect(response).toEqual('Account created with success');
+  });
 });
 
 class RemoteAddAccount implements AddAccount {
   constructor(readonly url: string, readonly httpPostClient: HttpPostClient) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async add(accountModel: AddAccountModel): Promise<RemoteResult> {
+  async add(accountModel: AddAccountModel) {
     const { statusCode } = await this.httpPostClient.post({ url: this.url });
 
     switch (statusCode) {
-      case HttpStatusCode.internalServerError:
+      case HttpStatusCode.created:
+        return 'Account created with success';
+      default:
         throw new UnexpectedError();
     }
-
-    return {} as Promise<RemoteResult>;
   }
 }
 
@@ -51,6 +63,10 @@ class HttPostClientSpy implements HttpPostClient {
 
   completeWithUnexpectedError() {
     this.response.statusCode = HttpStatusCode.internalServerError;
+  }
+
+  completeWithSuccess() {
+    this.response = { statusCode: HttpStatusCode.created, body: {} };
   }
 }
 
