@@ -16,9 +16,24 @@
       "~/main": [
         "src/main"
       ],
-      "~/domain": [
+      "~/domain/useCases": [
         "src/domain/useCases"
-      ]
+      ],
+      "~/domain/models": [
+        "src/domain/models"
+      ],
+      "~/data": [
+        "src/data"
+      ],
+      "~/data/useCases": [
+        "src/data/useCases"
+      ],
+      "~/data/errors": [
+        "src/data/errors"
+      ],
+      "~/data/http": [
+        "src/data/http"
+      ],
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

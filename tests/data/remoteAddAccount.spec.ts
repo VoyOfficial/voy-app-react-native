@@ -1,9 +1,12 @@
-import { AddAccountModel } from 'src/domain/models/addAccountModel';
-import { AddAccount } from '~/domain';
+import { DataStatus } from '~/data';
+import { UnexpectedError, ValidationError } from '~/data/errors';
+import { RemoteAddAccount } from '~/data/useCases';
+import { AddAccountModel } from '~/domain/models';
+import { HttpClientSpy } from './http/httpClientSpy';
 
 describe('Data: RemoteAddAccount', () => {
   test('should add with httpPostClient call correct url', () => {
-    const httpPostClient = new HttPostClientSpy();
+    const httpPostClient = new HttpClientSpy();
     const sut = new RemoteAddAccount('any_url', httpPostClient);
 
     sut.add({} as AddAccountModel);
@@ -12,7 +15,7 @@ describe('Data: RemoteAddAccount', () => {
   });
 
   test('should add with httpPostClient returning unexpected exception', async () => {
-    const httpPostClient = new HttPostClientSpy();
+    const httpPostClient = new HttpClientSpy();
     const sut = new RemoteAddAccount('any_url', httpPostClient);
     httpPostClient.completeWithUnexpectedError();
 
@@ -25,7 +28,7 @@ describe('Data: RemoteAddAccount', () => {
   });
 
   test('should add with httpPostClient returning validation exception', async () => {
-    const httpPostClient = new HttPostClientSpy();
+    const httpPostClient = new HttpClientSpy();
     const sut = new RemoteAddAccount('any_url', httpPostClient);
     httpPostClient.completeWithForbiddenError();
 
@@ -38,7 +41,7 @@ describe('Data: RemoteAddAccount', () => {
   });
 
   test('should add with httpPostClient returning response with success', async () => {
-    const httpPostClient = new HttPostClientSpy();
+    const httpPostClient = new HttpClientSpy();
     const sut = new RemoteAddAccount('any_url', httpPostClient);
 
     const accountModel: AddAccountModel = {} as AddAccountModel;
@@ -50,7 +53,7 @@ describe('Data: RemoteAddAccount', () => {
   });
 
   test('should add with httpPostClient passing the correct param', async () => {
-    const httpPostClient = new HttPostClientSpy();
+    const httpPostClient = new HttpClientSpy();
     const sut = new RemoteAddAccount('any_url', httpPostClient);
 
     const accountModel: AddAccountModel = {
@@ -70,93 +73,3 @@ describe('Data: RemoteAddAccount', () => {
     expect(httpPostClient.body).toEqual(accountModel);
   });
 });
-
-class RemoteAddAccount implements AddAccount {
-  constructor(readonly url: string, readonly httpPostClient: HttpPostClient) {}
-
-  async add(accountModel: AddAccountModel) {
-    const { statusCode } = await this.httpPostClient.post({
-      url: this.url,
-      body: accountModel,
-    });
-
-    switch (statusCode) {
-      case HttpStatusCode.created:
-        return DataStatus.created;
-      case HttpStatusCode.forbidden:
-        throw new ValidationError();
-      default:
-        throw new UnexpectedError();
-    }
-  }
-}
-
-class HttPostClientSpy implements HttpPostClient {
-  url = '';
-  body: any;
-  response: HttpResponse<any> = { statusCode: HttpStatusCode.ok, body: {} };
-  async post(data: HttpRequest): Promise<HttpResponse<any>> {
-    this.url = data.url;
-    this.body = data.body;
-    return this.response;
-  }
-
-  completeWithUnexpectedError() {
-    this.response.statusCode = HttpStatusCode.internalServerError;
-  }
-
-  completeWithForbiddenError() {
-    this.response.statusCode = HttpStatusCode.forbidden;
-  }
-
-  completeWithSuccess() {
-    this.response = { statusCode: HttpStatusCode.created, body: {} };
-  }
-}
-
-interface HttpPostClient<R = any> {
-  post(data: HttpRequest): Promise<HttpResponse<R>>;
-}
-
-type HttpRequest = {
-  url: string;
-  body?: any;
-  headers?: any;
-};
-
-type HttpResponse<T = any> = {
-  statusCode: HttpStatusCode;
-  body?: T;
-};
-
-enum HttpStatusCode {
-  ok = 200,
-  created = 201,
-  noContent = 204,
-  badRequest = 400,
-  unauthorized = 401,
-  forbidden = 403,
-  notFound = 404,
-  internalServerError = 500,
-}
-
-enum DataStatus {
-  created = 'Created with success',
-}
-
-class UnexpectedError extends Error {
-  constructor() {
-    super();
-    this.message =
-      'Unexpected error. Please check your internet and try again.';
-    this.name = 'UnexpectedError';
-  }
-}
-
-class ValidationError extends Error {
-  constructor() {
-    super();
-    this.message = 'Validation error. Check that the fields are correct.';
-    this.name = 'ValidationError';
-  }
-}
