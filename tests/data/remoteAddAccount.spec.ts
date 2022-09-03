@@ -2,21 +2,20 @@ import { DataStatus } from '~/data';
 import { UnexpectedError, ValidationError } from '~/data/errors';
 import { RemoteAddAccount } from '~/data/useCases';
 import { AddAccountModel } from '~/domain/models';
+import accountModelFactory from './helpers/accountModelFactory';
+import { makeUrl } from './helpers/testFactories';
 import { HttpClientSpy } from './http/httpClientSpy';
 
 describe('Data: RemoteAddAccount', () => {
   test('should add with httpPostClient call correct url', () => {
-    const httpPostClient = new HttpClientSpy();
-    const sut = new RemoteAddAccount('any_url', httpPostClient);
-
+    const { sut, httpPostClient } = makeSut();
     sut.add({} as AddAccountModel);
 
     expect(sut.url).toEqual(httpPostClient.url);
   });
 
   test('should add with httpPostClient returning unexpected exception', async () => {
-    const httpPostClient = new HttpClientSpy();
-    const sut = new RemoteAddAccount('any_url', httpPostClient);
+    const { sut, httpPostClient } = makeSut();
     httpPostClient.completeWithUnexpectedError();
 
     try {
@@ -28,8 +27,7 @@ describe('Data: RemoteAddAccount', () => {
   });
 
   test('should add with httpPostClient returning validation exception', async () => {
-    const httpPostClient = new HttpClientSpy();
-    const sut = new RemoteAddAccount('any_url', httpPostClient);
+    const { sut, httpPostClient } = makeSut();
     httpPostClient.completeWithForbiddenError();
 
     try {
@@ -41,11 +39,8 @@ describe('Data: RemoteAddAccount', () => {
   });
 
   test('should add with httpPostClient returning response with success', async () => {
-    const httpPostClient = new HttpClientSpy();
-    const sut = new RemoteAddAccount('any_url', httpPostClient);
-
-    const accountModel: AddAccountModel = {} as AddAccountModel;
-
+    const accountModel = accountModelFactory();
+    const { sut, httpPostClient } = makeSut();
     httpPostClient.completeWithSuccess();
 
     const response = await sut.add(accountModel);
@@ -53,23 +48,18 @@ describe('Data: RemoteAddAccount', () => {
   });
 
   test('should add with httpPostClient passing the correct param', async () => {
-    const httpPostClient = new HttpClientSpy();
-    const sut = new RemoteAddAccount('any_url', httpPostClient);
-
-    const accountModel: AddAccountModel = {
-      name: 'any_name',
-      lastName: 'any_lastName',
-      email: 'any_email@gmail.com',
-      contactNumber: '+5595991738017',
-      birthDate: new Date(),
-      currentState: 'any_currentState',
-      cpf: '037.495.802-51',
-    };
-
+    const accountModel = accountModelFactory();
+    const { sut, httpPostClient } = makeSut();
     httpPostClient.completeWithSuccess();
 
     await sut.add(accountModel);
-
     expect(httpPostClient.body).toEqual(accountModel);
   });
 });
+
+const makeSut = () => {
+  const httpPostClient = new HttpClientSpy();
+  const sut = new RemoteAddAccount(makeUrl(), httpPostClient);
+
+  return { sut, httpPostClient };
+};
