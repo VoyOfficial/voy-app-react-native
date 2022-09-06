@@ -1,4 +1,4 @@
-export type AddAccountModel = {
+type AddAccountModel = {
   name: string;
   lastName: string;
   email: string;
@@ -11,3 +11,5 @@ export type AddAccountModel = {
   cpf: string;
   profession?: string;
 };
+
+export default AddAccountModel;
