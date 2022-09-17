@@ -24,6 +24,25 @@ describe('Infra: AxiosAdapter', () => {
       method: HttpMethods.post,
     });
   });
+
+  test('should request through the axiosAdapter returning the correct response', async () => {
+    const sut = new AxiosAdapter();
+
+    const data = {
+      url: faker.internet.url(),
+      body: faker.datatype.json(),
+      headers: faker.datatype.json(),
+    };
+
+    const axiosMocked = mockAxios();
+
+    const httpResponse = await sut.post(data);
+    const axiosResponse = await axiosMocked.request.mock.results[0].value;
+    expect(httpResponse).toEqual({
+      statusCode: axiosResponse.status,
+      body: axiosResponse.data,
+    });
+  });
 });
 
 enum HttpMethods {
@@ -39,22 +58,24 @@ class AxiosAdapter implements HttpPostClient {
   private async request(
     data: HttpRequestMethod<HttpRequest>,
   ): Promise<HttpResponse<any>> {
-    await axios.request({
+    const response = await axios.request({
       url: data.url,
       headers: data.headers,
       data: data.body,
       method: data.method,
     });
 
-    return { statusCode: 200, body: '' };
+    return { statusCode: response.status, body: response.data };
   }
   async post(data: HttpRequest): Promise<HttpResponse<any>> {
-    return await this.request({
+    const response = await this.request({
       method: HttpMethods.post,
       body: data.body,
       headers: data.headers,
       url: data.url,
     });
+
+    return { statusCode: response.statusCode, body: response.body };
   }
 }
 
