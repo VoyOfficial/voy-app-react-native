@@ -11,17 +11,11 @@ jest.mock('axios');
 
 describe('Infra: AxiosAdapter', () => {
   test('should request through the axiosAdapter the correct information', async () => {
-    const sut = new AxiosAdapter();
-
-    const data = {
-      url: faker.internet.url(),
-      body: faker.datatype.json(),
-      headers: faker.datatype.json(),
-    };
-
-    const axiosMocked = mockAxios();
+    const data = httpRequestFake();
+    const { sut, axiosMocked } = makeSut();
 
     await sut.post(data);
+
     expect(axiosMocked.request).toHaveBeenCalledWith({
       url: data.url,
       data: data.body,
@@ -31,18 +25,12 @@ describe('Infra: AxiosAdapter', () => {
   });
 
   test('should request through the axiosAdapter returning the correct response', async () => {
-    const sut = new AxiosAdapter();
-
-    const data = {
-      url: faker.internet.url(),
-      body: faker.datatype.json(),
-      headers: faker.datatype.json(),
-    };
-
-    const axiosMocked = mockAxios();
+    const data = httpRequestFake();
+    const { sut, axiosMocked } = makeSut();
 
     const httpResponse = await sut.post(data);
     const axiosResponse = await axiosMocked.request.mock.results[0].value;
+
     expect(httpResponse).toEqual({
       statusCode: axiosResponse.status,
       body: axiosResponse.data,
@@ -50,18 +38,11 @@ describe('Infra: AxiosAdapter', () => {
   });
 
   test('should request through the axiosAdapter returning an error response', async () => {
-    const sut = new AxiosAdapter();
-
-    const data = {
-      url: faker.internet.url(),
-      body: faker.datatype.json(),
-      headers: faker.datatype.json(),
-    };
-
-    const axiosMocked = mockAxios();
+    const data = httpRequestFake();
+    const { sut, axiosMocked } = makeSut();
     axiosMocked.request
       .mockClear()
-      .mockRejectedValueOnce({ response: mockHttpResponse() });
+      .mockRejectedValueOnce({ response: httpResponseFake() });
 
     let httpResponse;
     try {
@@ -79,15 +60,9 @@ describe('Infra: AxiosAdapter', () => {
   });
 
   test('should request through the axiosAdapter returning an unexpected error response', async () => {
-    const sut = new AxiosAdapter();
+    const data = httpRequestFake();
+    const { sut, axiosMocked } = makeSut();
 
-    const data = {
-      url: faker.internet.url(),
-      body: faker.datatype.json(),
-      headers: faker.datatype.json(),
-    };
-
-    const axiosMocked = mockAxios();
     axiosMocked.request
       .mockClear()
       .mockRejectedValueOnce(unexpectedErrorResponse);
@@ -110,14 +85,28 @@ describe('Infra: AxiosAdapter', () => {
 
 const mockAxios = (): jest.Mocked<typeof axios> => {
   const mockedAxios = axios as jest.Mocked<typeof axios>;
-  mockedAxios.request.mockClear().mockResolvedValue(mockHttpResponse());
+  mockedAxios.request.mockClear().mockResolvedValue(httpResponseFake());
   return mockedAxios;
 };
 
-const mockHttpResponse = (): AxiosResponse => ({
+const httpResponseFake = (): AxiosResponse => ({
   data: faker.datatype.json(),
   status: faker.datatype.number(),
   statusText: faker.datatype.string(),
   headers: {},
   config: {},
 });
+
+const httpRequestFake = () => {
+  return {
+    url: faker.internet.url(),
+    body: faker.datatype.json(),
+    headers: faker.datatype.json(),
+  };
+};
+
+const makeSut = () => {
+  const axiosMocked = mockAxios();
+  const sut = new AxiosAdapter();
+  return { sut, axiosMocked };
+};
