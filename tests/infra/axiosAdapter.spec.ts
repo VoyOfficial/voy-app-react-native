@@ -1,6 +1,11 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { faker } from '@faker-js/faker';
-import { HttpPostClient, HttpRequest, HttpResponse } from '~/data/http';
+import {
+  HttpPostClient,
+  HttpRequest,
+  HttpResponse,
+  HttpStatusCode,
+} from '~/data/http';
 
 jest.mock('axios');
 
@@ -72,6 +77,35 @@ describe('Infra: AxiosAdapter', () => {
       expect(httpResponse).toEqual(httpErrorResponse);
     }
   });
+
+  test('should request through the axiosAdapter returning an unexpected error response', async () => {
+    const sut = new AxiosAdapter();
+
+    const data = {
+      url: faker.internet.url(),
+      body: faker.datatype.json(),
+      headers: faker.datatype.json(),
+    };
+
+    const axiosMocked = mockAxios();
+    axiosMocked.request
+      .mockClear()
+      .mockRejectedValueOnce(unexpectedErrorResponse);
+
+    let httpResponse;
+    try {
+      httpResponse = await sut.post(data);
+      await axiosMocked.request.mock.results[0].value;
+      throw new Error('something unexpected occurred in your test');
+    } catch (error) {
+      const errorResponse = error as typeof unexpectedErrorResponse;
+      const httpErrorResponse = {
+        statusCode: errorResponse?.status,
+        body: errorResponse?.data,
+      } as HttpResponse;
+      expect(httpResponse).toEqual(httpErrorResponse);
+    }
+  });
 });
 
 enum HttpMethods {
@@ -80,6 +114,14 @@ enum HttpMethods {
   delete = 'DELETE',
   put = 'PUT',
 }
+
+const unexpectedErrorResponse = {
+  data: null,
+  status: HttpStatusCode.unauthorized,
+  statusText: 'Unexpected error',
+  headers: {},
+  config: {},
+};
 
 type HttpRequestMethod<T> = Partial<T> & { method: HttpMethods };
 
@@ -99,6 +141,8 @@ class AxiosAdapter implements HttpPostClient {
       const axiosError = error as AxiosError;
       if (axiosError.response) {
         axiosResponse = axiosError.response;
+      } else {
+        axiosResponse = unexpectedErrorResponse;
       }
     } finally {
       return { statusCode: axiosResponse.status, body: axiosResponse.data };
