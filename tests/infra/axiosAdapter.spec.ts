@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { faker } from '@faker-js/faker';
 import { HttpPostClient, HttpRequest, HttpResponse } from '~/data/http';
 
@@ -43,6 +43,35 @@ describe('Infra: AxiosAdapter', () => {
       body: axiosResponse.data,
     });
   });
+
+  test('should request through the axiosAdapter returning an error response', async () => {
+    const sut = new AxiosAdapter();
+
+    const data = {
+      url: faker.internet.url(),
+      body: faker.datatype.json(),
+      headers: faker.datatype.json(),
+    };
+
+    const axiosMocked = mockAxios();
+    axiosMocked.request
+      .mockClear()
+      .mockRejectedValueOnce({ response: mockHttpResponse() });
+
+    let httpResponse;
+    try {
+      httpResponse = await sut.post(data);
+      await axiosMocked.request.mock.results[0].value;
+      throw new Error('something unexpected occurred in your test');
+    } catch (error) {
+      const errorResponse = (error as AxiosError).response;
+      const httpErrorResponse = {
+        statusCode: errorResponse?.status,
+        body: errorResponse?.data,
+      } as HttpResponse;
+      expect(httpResponse).toEqual(httpErrorResponse);
+    }
+  });
 });
 
 enum HttpMethods {
@@ -58,14 +87,22 @@ class AxiosAdapter implements HttpPostClient {
   private async request(
     data: HttpRequestMethod<HttpRequest>,
   ): Promise<HttpResponse<any>> {
-    const response = await axios.request({
-      url: data.url,
-      headers: data.headers,
-      data: data.body,
-      method: data.method,
-    });
-
-    return { statusCode: response.status, body: response.data };
+    let axiosResponse = {} as AxiosResponse;
+    try {
+      axiosResponse = await axios.request({
+        url: data.url,
+        headers: data.headers,
+        data: data.body,
+        method: data.method,
+      });
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        axiosResponse = axiosError.response;
+      }
+    } finally {
+      return { statusCode: axiosResponse.status, body: axiosResponse.data };
+    }
   }
   async post(data: HttpRequest): Promise<HttpResponse<any>> {
     const response = await this.request({
