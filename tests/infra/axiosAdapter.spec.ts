@@ -1,11 +1,13 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
-import { faker } from '@faker-js/faker';
+import { AxiosError } from 'axios';
 import {
   AxiosAdapter,
   HttpMethods,
   unexpectedErrorResponse,
 } from '~/infra/http';
 import { HttpResponse } from '~/data/http';
+import { httpRequestFake, httpResponseFake } from './fakes/testFakes';
+import axiosMock from './mocks/axiosMock';
+import { toHttpResponse } from './helpers/extensionFactories';
 
 jest.mock('axios');
 
@@ -14,7 +16,7 @@ describe('Infra: AxiosAdapter', () => {
     const data = httpRequestFake();
     const { sut, axiosMocked } = makeSut();
 
-    await sut.post(data);
+    await request(sut, data);
 
     expect(axiosMocked.request).toHaveBeenCalledWith({
       url: data.url,
@@ -25,10 +27,9 @@ describe('Infra: AxiosAdapter', () => {
   });
 
   test('should request through the axiosAdapter returning the correct response', async () => {
-    const data = httpRequestFake();
     const { sut, axiosMocked } = makeSut();
 
-    const httpResponse = await sut.post(data);
+    const httpResponse = await request(sut);
     const axiosResponse = await axiosMocked.request.mock.results[0].value;
 
     expect(httpResponse).toEqual({
@@ -38,75 +39,48 @@ describe('Infra: AxiosAdapter', () => {
   });
 
   test('should request through the axiosAdapter returning an error response', async () => {
-    const data = httpRequestFake();
     const { sut, axiosMocked } = makeSut();
     axiosMocked.request
       .mockClear()
       .mockRejectedValueOnce({ response: httpResponseFake() });
 
-    let httpResponse;
+    let httpResponse = {} as HttpResponse;
     try {
-      httpResponse = await sut.post(data);
+      httpResponse = await request(sut);
       await axiosMocked.request.mock.results[0].value;
       throw new Error('something unexpected occurred in your test');
     } catch (error) {
-      const errorResponse = (error as AxiosError).response;
-      const httpErrorResponse = {
-        statusCode: errorResponse?.status,
-        body: errorResponse?.data,
-      } as HttpResponse;
+      const errorResponse = (error as AxiosError).response!;
+      const httpErrorResponse = toHttpResponse(errorResponse);
       expect(httpResponse).toEqual(httpErrorResponse);
     }
   });
 
   test('should request through the axiosAdapter returning an unexpected error response', async () => {
-    const data = httpRequestFake();
     const { sut, axiosMocked } = makeSut();
-
     axiosMocked.request
       .mockClear()
       .mockRejectedValueOnce(unexpectedErrorResponse);
 
-    let httpResponse;
+    let httpResponse = {} as HttpResponse;
     try {
-      httpResponse = await sut.post(data);
+      httpResponse = await request(sut);
       await axiosMocked.request.mock.results[0].value;
       throw new Error('something unexpected occurred in your test');
     } catch (error) {
       const errorResponse = error as typeof unexpectedErrorResponse;
-      const httpErrorResponse = {
-        statusCode: errorResponse?.status,
-        body: errorResponse?.data,
-      } as HttpResponse;
+      const httpErrorResponse = toHttpResponse(errorResponse);
       expect(httpResponse).toEqual(httpErrorResponse);
     }
   });
 });
 
-const mockAxios = (): jest.Mocked<typeof axios> => {
-  const mockedAxios = axios as jest.Mocked<typeof axios>;
-  mockedAxios.request.mockClear().mockResolvedValue(httpResponseFake());
-  return mockedAxios;
-};
-
-const httpResponseFake = (): AxiosResponse => ({
-  data: faker.datatype.json(),
-  status: faker.datatype.number(),
-  statusText: faker.datatype.string(),
-  headers: {},
-  config: {},
-});
-
-const httpRequestFake = () => {
-  return {
-    url: faker.internet.url(),
-    body: faker.datatype.json(),
-    headers: faker.datatype.json(),
-  };
+const request = async (sut: AxiosAdapter, data = httpRequestFake()) => {
+  return await sut.post(data);
 };
 
 const makeSut = () => {
-  const axiosMocked = mockAxios();
+  const axiosMocked = axiosMock();
   const sut = new AxiosAdapter();
   return { sut, axiosMocked };
 };
