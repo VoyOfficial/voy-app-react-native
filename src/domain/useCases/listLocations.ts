@@ -1,5 +1,5 @@
-import { LocationsModel } from '../models';
+import { LocationModel } from '../models';
 
 export interface ListLocations {
-  list(): Promise<LocationsModel[]>;
+  list(): Promise<LocationModel[]>;
 }

@@ -1,4 +1,4 @@
-type ListLocationsModel = {
+type LocationModel = {
   name: string;
   about: string;
   address: string;
@@ -10,4 +10,4 @@ type ListLocationsModel = {
   images: string[];
 };
 
-export default ListLocationsModel;
+export default LocationModel;
