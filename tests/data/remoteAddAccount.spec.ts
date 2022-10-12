@@ -4,7 +4,7 @@ import { RemoteAddAccount } from '~/data/useCases';
 import { AddAccountModel } from '~/domain/models';
 import accountModelFactory from './helpers/accountModelFactory';
 import { makeUrl } from './helpers/testFactories';
-import { HttpClientSpy } from './http/httpClientSpy';
+import { HttpPostClientSpy } from './http/httpClientSpy';
 
 describe('Data: RemoteAddAccount', () => {
   test('should add with httpPostClient call correct url', () => {
@@ -58,7 +58,7 @@ describe('Data: RemoteAddAccount', () => {
 });
 
 const makeSut = () => {
-  const httpPostClient = new HttpClientSpy();
+  const httpPostClient = new HttpPostClientSpy();
   const sut = new RemoteAddAccount(makeUrl(), httpPostClient);
 
   return { sut, httpPostClient };
