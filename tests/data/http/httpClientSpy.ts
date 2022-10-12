@@ -1,11 +1,12 @@
 import {
+  HttpGetClient,
   HttpPostClient,
   HttpRequest,
   HttpResponse,
   HttpStatusCode,
 } from '~/data/http';
 
-export class HttpClientSpy implements HttpPostClient {
+export class HttpPostClientSpy implements HttpPostClient {
   url = '';
   body: any;
   response: HttpResponse<any> = { statusCode: HttpStatusCode.ok, body: {} };
@@ -25,5 +26,13 @@ export class HttpClientSpy implements HttpPostClient {
 
   completeWithSuccess() {
     this.response = { statusCode: HttpStatusCode.created, body: {} };
+  }
+}
+
+export class HttpGetClientSpy implements HttpGetClient {
+  url?: string;
+  async get(url: string): Promise<void> {
+    this.url = url;
+    return Promise.resolve();
   }
 }
