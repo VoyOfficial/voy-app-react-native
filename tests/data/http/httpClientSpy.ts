@@ -6,7 +6,7 @@ import {
   HttpStatusCode,
 } from '~/data/http';
 
-export class HttpPostClientSpy implements HttpPostClient {
+export class HttpClientSpy implements HttpPostClient, HttpGetClient {
   url = '';
   body: any;
   response: HttpResponse<any> = { statusCode: HttpStatusCode.ok, body: {} };
@@ -14,6 +14,11 @@ export class HttpPostClientSpy implements HttpPostClient {
     this.url = data.url;
     this.body = data.body;
     return this.response;
+  }
+
+  async get(url: string): Promise<void> {
+    this.url = url;
+    return Promise.resolve();
   }
 
   completeWithUnexpectedError() {
@@ -26,13 +31,5 @@ export class HttpPostClientSpy implements HttpPostClient {
 
   completeWithSuccess() {
     this.response = { statusCode: HttpStatusCode.created, body: {} };
-  }
-}
-
-export class HttpGetClientSpy implements HttpGetClient {
-  url?: string;
-  async get(url: string): Promise<void> {
-    this.url = url;
-    return Promise.resolve();
   }
 }
