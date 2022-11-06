@@ -12,11 +12,11 @@ import { toHttpResponse } from './helpers/extensionFactories';
 jest.mock('axios');
 
 describe('Infra: AxiosAdapter', () => {
-  test('should request through the axiosAdapter the correct information', async () => {
+  test('should post through the axiosAdapter the correct information', async () => {
     const data = httpRequestFake();
     const { sut, axiosMocked } = makeSut();
 
-    await request(sut, data);
+    await post(sut, data);
 
     expect(axiosMocked.request).toHaveBeenCalledWith({
       url: data.url,
@@ -26,10 +26,10 @@ describe('Infra: AxiosAdapter', () => {
     });
   });
 
-  test('should request through the axiosAdapter returning the correct response', async () => {
+  test('should post through the axiosAdapter returning the correct response', async () => {
     const { sut, axiosMocked } = makeSut();
 
-    const httpResponse = await request(sut);
+    const httpResponse = await post(sut);
     const axiosResponse = await axiosMocked.request.mock.results[0].value;
 
     expect(httpResponse).toEqual({
@@ -38,7 +38,7 @@ describe('Infra: AxiosAdapter', () => {
     });
   });
 
-  test('should request through the axiosAdapter returning an error response', async () => {
+  test('should post through the axiosAdapter returning an error response', async () => {
     const { sut, axiosMocked } = makeSut();
     axiosMocked.request
       .mockClear()
@@ -46,7 +46,7 @@ describe('Infra: AxiosAdapter', () => {
 
     let httpResponse = {} as HttpResponse;
     try {
-      httpResponse = await request(sut);
+      httpResponse = await post(sut);
       await axiosMocked.request.mock.results[0].value;
       throw new Error('something unexpected occurred in your test');
     } catch (error) {
@@ -56,7 +56,7 @@ describe('Infra: AxiosAdapter', () => {
     }
   });
 
-  test('should request through the axiosAdapter returning an unexpected error response', async () => {
+  test('should post through the axiosAdapter returning an unexpected error response', async () => {
     const { sut, axiosMocked } = makeSut();
     axiosMocked.request
       .mockClear()
@@ -64,7 +64,7 @@ describe('Infra: AxiosAdapter', () => {
 
     let httpResponse = {} as HttpResponse;
     try {
-      httpResponse = await request(sut);
+      httpResponse = await post(sut);
       await axiosMocked.request.mock.results[0].value;
       throw new Error('something unexpected occurred in your test');
     } catch (error) {
@@ -73,10 +73,28 @@ describe('Infra: AxiosAdapter', () => {
       expect(httpResponse).toEqual(httpErrorResponse);
     }
   });
+
+  test('should get through the axiosAdapter the correct information', async () => {
+    const data = httpRequestFake();
+    const { sut, axiosMocked } = makeSut();
+
+    await get(sut, data);
+
+    expect(axiosMocked.request).toHaveBeenCalledWith({
+      url: data.url,
+      data: data.body,
+      headers: data.headers,
+      method: HttpMethods.get,
+    });
+  });
 });
 
-const request = async (sut: AxiosAdapter, data = httpRequestFake()) => {
+const post = async (sut: AxiosAdapter, data = httpRequestFake()) => {
   return await sut.post(data);
+};
+
+const get = async (sut: AxiosAdapter, data = httpRequestFake()) => {
+  return await sut.get(data);
 };
 
 const makeSut = () => {

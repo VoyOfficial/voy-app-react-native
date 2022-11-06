@@ -46,6 +46,7 @@ export class AxiosAdapter implements HttpPostClient {
       return { statusCode: axiosResponse.status, body: axiosResponse.data };
     }
   }
+
   async post(data: HttpRequest): Promise<HttpResponse<any>> {
     const response = await this.request({
       method: HttpMethods.post,
@@ -55,5 +56,16 @@ export class AxiosAdapter implements HttpPostClient {
     });
 
     return { statusCode: response.statusCode, body: response.body };
+  }
+
+  async get(data: HttpRequest): Promise<HttpResponse<any>> {
+    this.request({
+      method: HttpMethods.get,
+      body: data.body,
+      headers: data.headers,
+      url: data.url,
+    });
+
+    return {} as Promise<HttpResponse<any>>;
   }
 }
