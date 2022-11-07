@@ -117,6 +117,24 @@ describe('Infra: AxiosAdapter', () => {
       expect(httpResponse).toEqual(httpErrorResponse);
     }
   });
+
+  test('should get through the axiosAdapter returning an unexpected error response', async () => {
+    const { sut, axiosMocked } = makeSut();
+    axiosMocked.request
+      .mockClear()
+      .mockRejectedValueOnce(unexpectedErrorResponse);
+
+    let httpResponse = {} as HttpResponse;
+    try {
+      httpResponse = await get(sut);
+      await axiosMocked.request.mock.results[0].value;
+      throw new Error('something unexpected occurred in your test');
+    } catch (error) {
+      const errorResponse = error as typeof unexpectedErrorResponse;
+      const httpErrorResponse = toHttpResponse(errorResponse);
+      expect(httpResponse).toEqual(httpErrorResponse);
+    }
+  });
 });
 
 const post = async (sut: AxiosAdapter, data = httpRequestFake()) => {
