@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosStatic } from 'axios';
 import {
   AxiosAdapter,
   HttpMethods,
@@ -30,7 +30,7 @@ describe('Infra: AxiosAdapter', () => {
     const { sut, axiosMocked } = makeSut();
 
     const httpResponse = await post(sut);
-    const axiosResponse = await axiosMocked.request.mock.results[0].value;
+    const axiosResponse = await requestAxiosMocked(axiosMocked);
 
     expect(httpResponse).toEqual({
       statusCode: axiosResponse.status,
@@ -40,14 +40,12 @@ describe('Infra: AxiosAdapter', () => {
 
   test('should post through the axiosAdapter returning an error response', async () => {
     const { sut, axiosMocked } = makeSut();
-    axiosMocked.request
-      .mockClear()
-      .mockRejectedValueOnce({ response: httpResponseFake() });
+    axiosMockRejectWith(axiosMocked, { response: httpResponseFake() });
 
     let httpResponse = {} as HttpResponse;
     try {
       httpResponse = await post(sut);
-      await axiosMocked.request.mock.results[0].value;
+      await requestAxiosMocked(axiosMocked);
       throw new Error('something unexpected occurred in your test');
     } catch (error) {
       const errorResponse = (error as AxiosError).response!;
@@ -58,14 +56,12 @@ describe('Infra: AxiosAdapter', () => {
 
   test('should post through the axiosAdapter returning an unexpected error response', async () => {
     const { sut, axiosMocked } = makeSut();
-    axiosMocked.request
-      .mockClear()
-      .mockRejectedValueOnce(unexpectedErrorResponse);
+    axiosMockRejectWith(axiosMocked, unexpectedErrorResponse);
 
     let httpResponse = {} as HttpResponse;
     try {
       httpResponse = await post(sut);
-      await axiosMocked.request.mock.results[0].value;
+      await requestAxiosMocked(axiosMocked);
       throw new Error('something unexpected occurred in your test');
     } catch (error) {
       const errorResponse = error as typeof unexpectedErrorResponse;
@@ -92,7 +88,7 @@ describe('Infra: AxiosAdapter', () => {
     const { sut, axiosMocked } = makeSut();
 
     const httpResponse = await get(sut);
-    const axiosResponse = await axiosMocked.request.mock.results[0].value;
+    const axiosResponse = await requestAxiosMocked(axiosMocked);
 
     expect(httpResponse).toEqual({
       statusCode: axiosResponse.status,
@@ -102,14 +98,12 @@ describe('Infra: AxiosAdapter', () => {
 
   test('should get through the axiosAdapter returning an error response', async () => {
     const { sut, axiosMocked } = makeSut();
-    axiosMocked.request
-      .mockClear()
-      .mockRejectedValueOnce({ response: httpResponseFake() });
+    axiosMockRejectWith(axiosMocked, { response: httpResponseFake() });
 
     let httpResponse = {} as HttpResponse;
     try {
       httpResponse = await get(sut);
-      await axiosMocked.request.mock.results[0].value;
+      await requestAxiosMocked(axiosMocked);
       throw new Error('something unexpected occurred in your test');
     } catch (error) {
       const errorResponse = (error as AxiosError).response!;
@@ -120,14 +114,12 @@ describe('Infra: AxiosAdapter', () => {
 
   test('should get through the axiosAdapter returning an unexpected error response', async () => {
     const { sut, axiosMocked } = makeSut();
-    axiosMocked.request
-      .mockClear()
-      .mockRejectedValueOnce(unexpectedErrorResponse);
+    axiosMockRejectWith(axiosMocked, unexpectedErrorResponse);
 
     let httpResponse = {} as HttpResponse;
     try {
       httpResponse = await get(sut);
-      await axiosMocked.request.mock.results[0].value;
+      await requestAxiosMocked(axiosMocked);
       throw new Error('something unexpected occurred in your test');
     } catch (error) {
       const errorResponse = error as typeof unexpectedErrorResponse;
@@ -149,4 +141,15 @@ const makeSut = () => {
   const axiosMocked = axiosMock();
   const sut = new AxiosAdapter();
   return { sut, axiosMocked };
+};
+
+const axiosMockRejectWith = (
+  axiosMocked: jest.Mocked<AxiosStatic>,
+  responseReject: any,
+) => {
+  axiosMocked.request.mockClear().mockRejectedValueOnce(responseReject);
+};
+
+const requestAxiosMocked = async (axiosMocked: jest.Mocked<AxiosStatic>) => {
+  return await axiosMocked.request.mock.results[0].value;
 };
