@@ -99,6 +99,24 @@ describe('Infra: AxiosAdapter', () => {
       body: axiosResponse.data,
     });
   });
+
+  test('should get through the axiosAdapter returning an error response', async () => {
+    const { sut, axiosMocked } = makeSut();
+    axiosMocked.request
+      .mockClear()
+      .mockRejectedValueOnce({ response: httpResponseFake() });
+
+    let httpResponse = {} as HttpResponse;
+    try {
+      httpResponse = await get(sut);
+      await axiosMocked.request.mock.results[0].value;
+      throw new Error('something unexpected occurred in your test');
+    } catch (error) {
+      const errorResponse = (error as AxiosError).response!;
+      const httpErrorResponse = toHttpResponse(errorResponse);
+      expect(httpResponse).toEqual(httpErrorResponse);
+    }
+  });
 });
 
 const post = async (sut: AxiosAdapter, data = httpRequestFake()) => {
