@@ -87,6 +87,18 @@ describe('Infra: AxiosAdapter', () => {
       method: HttpMethods.get,
     });
   });
+
+  test('should get through the axiosAdapter returning the correct response', async () => {
+    const { sut, axiosMocked } = makeSut();
+
+    const httpResponse = await get(sut);
+    const axiosResponse = await axiosMocked.request.mock.results[0].value;
+
+    expect(httpResponse).toEqual({
+      statusCode: axiosResponse.status,
+      body: axiosResponse.data,
+    });
+  });
 });
 
 const post = async (sut: AxiosAdapter, data = httpRequestFake()) => {
