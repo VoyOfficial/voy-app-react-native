@@ -11,6 +11,15 @@ describe('Data: RemoteGetUser', () => {
 
     expect(httpGetClientSpy.userId).toEqual('any_user_id');
   });
+
+  test('should get with httpGetClient call correct url with user id', async () => {
+    const httpGetClientSpy = new HttpGetClientSpy();
+    const sut = new RemoteGetUser('http://any_url', httpGetClientSpy);
+
+    await sut.get('any_user_id');
+
+    expect(httpGetClientSpy.url).toEqual('http://any_url/any_user_id');
+  });
 });
 
 class RemoteGetUser implements GetUser {
@@ -29,9 +38,11 @@ class RemoteGetUser implements GetUser {
 
 class HttpGetClientSpy implements HttpGetClient {
   userId = '';
+  url = '';
   get(data: HttpRequest): Promise<HttpResponse<UserModel>> {
     const urlArray = data.url.split('/');
     this.userId = urlArray[urlArray.length - 1];
+    this.url = data.url;
     return {} as Promise<HttpResponse<UserModel>>;
   }
 }
