@@ -1,4 +1,12 @@
-// eslint-disable-next-line @typescript-eslint/ban-types
-type UserModel = {};
+type UserModel = {
+  name: string;
+  lastName: string;
+  email: string;
+  contactNumber: string;
+  birthDate: Date;
+  genre?: string;
+  currentState: string;
+  city?: string;
+};
 
 export default UserModel;
