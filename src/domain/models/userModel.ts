@@ -1,4 +1,4 @@
-type User = {
+type UserModel = {
   name: string;
   lastName: string;
   email: string;
@@ -9,4 +9,4 @@ type User = {
   city?: string;
 };
 
-export default User;
+export default UserModel;
