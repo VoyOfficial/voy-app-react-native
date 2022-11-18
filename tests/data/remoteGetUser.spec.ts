@@ -2,6 +2,7 @@ import UserModel from 'src/domain/models/userModel';
 import GetUser from 'src/domain/useCases/getUser';
 import { faker } from '@faker-js/faker';
 import { HttpRequest, HttpResponse, HttpStatusCode } from '~/data/http';
+import { UnexpectedError } from '~/data/errors';
 
 describe('Data: RemoteGetUser', () => {
   test('should get with httpGetClient call correct user id', async () => {
@@ -32,6 +33,19 @@ describe('Data: RemoteGetUser', () => {
 
     expect(response).toEqual(userResponse);
   });
+
+  test('should get with httpGetClient returning exception unexpected', async () => {
+    const httpGetClientSpy = new HttpGetClientSpy();
+    const sut = new RemoteGetUser('http://any_url', httpGetClientSpy);
+
+    try {
+      httpGetClientSpy.completeWithUnexpectedError();
+      await sut.get('any_user_id');
+      throw new Error('something unexpected occurred in your test');
+    } catch (error) {
+      expect(error).toEqual(new UnexpectedError());
+    }
+  });
 });
 
 class RemoteGetUser implements GetUser {
@@ -41,11 +55,19 @@ class RemoteGetUser implements GetUser {
   ) {}
 
   async get(userId: string): Promise<UserModel> {
-    const response = await this.httpGetClient.get({
+    const { statusCode, body } = await this.httpGetClient.get({
       url: this.url + `/${userId}`,
     });
 
-    return response.body!;
+    switch (statusCode) {
+      case HttpStatusCode.ok:
+      case HttpStatusCode.created:
+        return body!;
+      case HttpStatusCode.internalServerError:
+        throw new UnexpectedError();
+      default:
+        throw new UnexpectedError();
+    }
   }
 }
 
@@ -53,7 +75,7 @@ class HttpGetClientSpy implements HttpGetClient {
   userId = '';
   url = '';
   response: HttpResponse<any> = {
-    statusCode: HttpStatusCode.internalServerError,
+    statusCode: HttpStatusCode.created,
     body: {},
   };
   async get(data: HttpRequest): Promise<HttpResponse<UserModel>> {
@@ -67,6 +89,12 @@ class HttpGetClientSpy implements HttpGetClient {
     this.response = {
       statusCode: HttpStatusCode.ok,
       body: body,
+    };
+  }
+
+  completeWithUnexpectedError() {
+    this.response = {
+      statusCode: HttpStatusCode.internalServerError,
     };
   }
 }
