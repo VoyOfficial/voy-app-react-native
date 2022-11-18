@@ -10,8 +10,7 @@ import { HttpClientSpy } from './http/httpClientSpy';
 
 describe('Data: RemoteGetUser', () => {
   test('should get with httpGetClient call correct user id', async () => {
-    const httpClientSpy = new HttpClientSpy();
-    const sut = new RemoteGetUser('http://any_url', httpClientSpy);
+    const { sut, httpClientSpy } = makeSut();
 
     httpClientSpy.completeWithSuccess(HttpStatusCode.ok, userModelFactory());
     await sut.get('any_user_id');
@@ -20,8 +19,7 @@ describe('Data: RemoteGetUser', () => {
   });
 
   test('should get with httpGetClient call correct url with user id', async () => {
-    const httpClientSpy = new HttpClientSpy();
-    const sut = new RemoteGetUser('http://any_url', httpClientSpy);
+    const { sut, httpClientSpy } = makeSut();
 
     httpClientSpy.completeWithSuccess(HttpStatusCode.ok, userModelFactory());
     await sut.get('any_user_id');
@@ -31,8 +29,7 @@ describe('Data: RemoteGetUser', () => {
 
   test('should get with httpGetClient returning the user with success', async () => {
     const userResponse = userModelFactory();
-    const httpClientSpy = new HttpClientSpy();
-    const sut = new RemoteGetUser('http://any_url', httpClientSpy);
+    const { sut, httpClientSpy } = makeSut();
 
     httpClientSpy.completeWithSuccess(HttpStatusCode.ok, userResponse);
     const response = await sut.get('any_user_id');
@@ -41,8 +38,7 @@ describe('Data: RemoteGetUser', () => {
   });
 
   test('should get with httpGetClient returning exception unexpected', async () => {
-    const httpClientSpy = new HttpClientSpy();
-    const sut = new RemoteGetUser('http://any_url', httpClientSpy);
+    const { sut, httpClientSpy } = makeSut();
 
     try {
       httpClientSpy.completeWithUnexpectedError();
@@ -54,8 +50,7 @@ describe('Data: RemoteGetUser', () => {
   });
 
   test('should get with httpGetClient returning user not found exception', async () => {
-    const httpClientSpy = new HttpClientSpy();
-    const sut = new RemoteGetUser('http://any_url', httpClientSpy);
+    const { sut, httpClientSpy } = makeSut();
 
     try {
       httpClientSpy.completeWithUserNotFound();
@@ -67,8 +62,7 @@ describe('Data: RemoteGetUser', () => {
   });
 
   test('should get with httpGetClient returning ok, but with user not found exception', async () => {
-    const httpClientSpy = new HttpClientSpy();
-    const sut = new RemoteGetUser('http://any_url', httpClientSpy);
+    const { sut, httpClientSpy } = makeSut();
 
     try {
       httpClientSpy.completeWithSuccess(HttpStatusCode.ok, {});
@@ -80,8 +74,7 @@ describe('Data: RemoteGetUser', () => {
   });
 
   test('should get with httpGetClient returning user not have access exception', async () => {
-    const httpClientSpy = new HttpClientSpy();
-    const sut = new RemoteGetUser('http://any_url', httpClientSpy);
+    const { sut, httpClientSpy } = makeSut();
 
     try {
       httpClientSpy.completeWithForbiddenError();
@@ -92,3 +85,10 @@ describe('Data: RemoteGetUser', () => {
     }
   });
 });
+
+const makeSut = () => {
+  const httpClientSpy = new HttpClientSpy();
+  const sut = new RemoteGetUser('http://any_url', httpClientSpy);
+
+  return { sut, httpClientSpy };
+};
