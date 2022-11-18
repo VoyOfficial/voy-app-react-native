@@ -1,6 +1,10 @@
 import { UserModel } from '~/domain/models';
 import { GetUser } from '~/domain/useCases';
-import { UnexpectedError, UserNotFoundError } from '../errors';
+import {
+  UnexpectedError,
+  UserNotFoundError,
+  UserNotHaveAccessError,
+} from '../errors';
 import { HttpGetClient, HttpStatusCode } from '../http';
 
 export default class RemoteGetUser implements GetUser {
@@ -20,10 +24,11 @@ export default class RemoteGetUser implements GetUser {
         if (body && bodyIsNotEmpty) {
           return body;
         }
-
         throw new UserNotFoundError();
       case HttpStatusCode.notFound:
         throw new UserNotFoundError();
+      case HttpStatusCode.forbidden:
+        throw new UserNotHaveAccessError();
       default:
         throw new UnexpectedError();
     }

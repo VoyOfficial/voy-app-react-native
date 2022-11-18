@@ -1,4 +1,8 @@
-import { UnexpectedError, UserNotFoundError } from '~/data/errors';
+import {
+  UnexpectedError,
+  UserNotFoundError,
+  UserNotHaveAccessError,
+} from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
 import { RemoteGetUser } from '~/data/useCases';
 import userModelFactory from './helpers/userModelFactory';
@@ -72,6 +76,19 @@ describe('Data: RemoteGetUser', () => {
       throw new Error('something unexpected occurred in your test');
     } catch (error) {
       expect(error).toEqual(new UserNotFoundError());
+    }
+  });
+
+  test('should get with httpGetClient returning user not have access exception', async () => {
+    const httpClientSpy = new HttpClientSpy();
+    const sut = new RemoteGetUser('http://any_url', httpClientSpy);
+
+    try {
+      httpClientSpy.completeWithForbiddenError();
+      await sut.get('any_user_id');
+      throw new Error('something unexpected occurred in your test');
+    } catch (error) {
+      expect(error).toEqual(new UserNotHaveAccessError());
     }
   });
 });
