@@ -1,5 +1,5 @@
-import User from '../models/userModel';
+import { UserModel } from '../models';
 
 export default interface GetUser {
-  get(userId: string): Promise<User>;
+  get(userId: string): Promise<UserModel>;
 }
