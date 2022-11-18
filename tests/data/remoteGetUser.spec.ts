@@ -46,6 +46,15 @@ describe('Data: RemoteGetUser', () => {
       expect(error).toEqual(new UnexpectedError());
     }
   });
+
+  test('should get with httpGetClient returning user empty', async () => {
+    const httpGetClientSpy = new HttpGetClientSpy();
+    const sut = new RemoteGetUser('http://any_url', httpGetClientSpy);
+
+    httpGetClientSpy.completeWithUserNotFound();
+    const response = await sut.get('any_user_id');
+    expect(response).toEqual({});
+  });
 });
 
 class RemoteGetUser implements GetUser {
@@ -63,6 +72,8 @@ class RemoteGetUser implements GetUser {
       case HttpStatusCode.ok:
       case HttpStatusCode.created:
         return body!;
+      case HttpStatusCode.notFound:
+        return {} as UserModel;
       case HttpStatusCode.internalServerError:
         throw new UnexpectedError();
       default:
@@ -76,7 +87,7 @@ class HttpGetClientSpy implements HttpGetClient {
   url = '';
   response: HttpResponse<any> = {
     statusCode: HttpStatusCode.created,
-    body: {},
+    body: null,
   };
   async get(data: HttpRequest): Promise<HttpResponse<UserModel>> {
     const urlArray = data.url.split('/');
@@ -95,6 +106,13 @@ class HttpGetClientSpy implements HttpGetClient {
   completeWithUnexpectedError() {
     this.response = {
       statusCode: HttpStatusCode.internalServerError,
+    };
+  }
+
+  completeWithUserNotFound() {
+    this.response = {
+      statusCode: HttpStatusCode.notFound,
+      body: null,
     };
   }
 }
