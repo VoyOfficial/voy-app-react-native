@@ -1,4 +1,4 @@
-import UserModel from 'src/domain/models/userModel';
+import { UserModel } from 'src/domain/models';
 import GetUser from 'src/domain/useCases/getUser';
 import { faker } from '@faker-js/faker';
 import { HttpRequest, HttpResponse, HttpStatusCode } from '~/data/http';
@@ -47,13 +47,17 @@ describe('Data: RemoteGetUser', () => {
     }
   });
 
-  test('should get with httpGetClient returning user empty', async () => {
+  test('should get with httpGetClient returning exception user not found', async () => {
     const httpGetClientSpy = new HttpGetClientSpy();
     const sut = new RemoteGetUser('http://any_url', httpGetClientSpy);
 
-    httpGetClientSpy.completeWithUserNotFound();
-    const response = await sut.get('any_user_id');
-    expect(response).toEqual({});
+    try {
+      httpGetClientSpy.completeWithUserNotFound();
+      await sut.get('any_user_id');
+      throw new Error('something unexpected occurred in your test');
+    } catch (error) {
+      expect(error).toEqual(new UserNotFound());
+    }
   });
 });
 
@@ -71,9 +75,9 @@ class RemoteGetUser implements GetUser {
     switch (statusCode) {
       case HttpStatusCode.ok:
       case HttpStatusCode.created:
-        return body!;
+        return body ? body : ({} as UserModel);
       case HttpStatusCode.notFound:
-        return {} as UserModel;
+        throw new UserNotFound();
       case HttpStatusCode.internalServerError:
         throw new UnexpectedError();
       default:
@@ -133,3 +137,11 @@ const userModelFactory = (): UserModel => {
     genre: faker.name.sex(),
   };
 };
+
+export default class UserNotFound extends Error {
+  constructor() {
+    super();
+    this.message = 'User not found. please make sure you have a user.';
+    this.name = 'UserNotFound';
+  }
+}
