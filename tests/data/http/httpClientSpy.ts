@@ -33,8 +33,13 @@ export class HttpClientSpy implements HttpPostClient, HttpGetClient {
     this.response.statusCode = HttpStatusCode.forbidden;
   }
 
-  completeWithSuccess(body?: any) {
-    this.response = { statusCode: HttpStatusCode.created, body };
+  completeWithSuccess(
+    statusCode:
+      | HttpStatusCode.ok
+      | HttpStatusCode.created = HttpStatusCode.created,
+    body?: any,
+  ) {
+    this.response = { statusCode: statusCode, body };
   }
 
   completeWithUserNotFound() {

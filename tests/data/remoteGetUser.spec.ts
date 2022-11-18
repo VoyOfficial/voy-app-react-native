@@ -1,4 +1,5 @@
 import { UnexpectedError, UserNotFoundError } from '~/data/errors';
+import { HttpStatusCode } from '~/data/http';
 import { RemoteGetUser } from '~/data/useCases';
 import userModelFactory from './helpers/userModelFactory';
 import { HttpClientSpy } from './http/httpClientSpy';
@@ -8,6 +9,7 @@ describe('Data: RemoteGetUser', () => {
     const httpClientSpy = new HttpClientSpy();
     const sut = new RemoteGetUser('http://any_url', httpClientSpy);
 
+    httpClientSpy.completeWithSuccess(HttpStatusCode.ok, userModelFactory());
     await sut.get('any_user_id');
 
     expect(httpClientSpy.userId).toEqual('any_user_id');
@@ -17,6 +19,7 @@ describe('Data: RemoteGetUser', () => {
     const httpClientSpy = new HttpClientSpy();
     const sut = new RemoteGetUser('http://any_url', httpClientSpy);
 
+    httpClientSpy.completeWithSuccess(HttpStatusCode.ok, userModelFactory());
     await sut.get('any_user_id');
 
     expect(httpClientSpy.url).toEqual('http://any_url/any_user_id');
@@ -27,7 +30,7 @@ describe('Data: RemoteGetUser', () => {
     const httpClientSpy = new HttpClientSpy();
     const sut = new RemoteGetUser('http://any_url', httpClientSpy);
 
-    httpClientSpy.completeWithSuccess(userResponse);
+    httpClientSpy.completeWithSuccess(HttpStatusCode.ok, userResponse);
     const response = await sut.get('any_user_id');
 
     expect(response).toEqual(userResponse);
@@ -46,12 +49,25 @@ describe('Data: RemoteGetUser', () => {
     }
   });
 
-  test('should get with httpGetClient returning exception user not found', async () => {
+  test('should get with httpGetClient returning user not found exception', async () => {
     const httpClientSpy = new HttpClientSpy();
     const sut = new RemoteGetUser('http://any_url', httpClientSpy);
 
     try {
       httpClientSpy.completeWithUserNotFound();
+      await sut.get('any_user_id');
+      throw new Error('something unexpected occurred in your test');
+    } catch (error) {
+      expect(error).toEqual(new UserNotFoundError());
+    }
+  });
+
+  test('should get with httpGetClient returning ok, but with user not found exception', async () => {
+    const httpClientSpy = new HttpClientSpy();
+    const sut = new RemoteGetUser('http://any_url', httpClientSpy);
+
+    try {
+      httpClientSpy.completeWithSuccess(HttpStatusCode.ok, {});
       await sut.get('any_user_id');
       throw new Error('something unexpected occurred in your test');
     } catch (error) {

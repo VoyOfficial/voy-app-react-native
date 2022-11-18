@@ -16,12 +16,14 @@ export default class RemoteGetUser implements GetUser {
 
     switch (statusCode) {
       case HttpStatusCode.ok:
-      case HttpStatusCode.created:
-        return body ? body : ({} as UserModel);
+        const bodyIsNotEmpty = Object.entries(body).length !== 0;
+        if (body && bodyIsNotEmpty) {
+          return body;
+        }
+
+        throw new UserNotFoundError();
       case HttpStatusCode.notFound:
         throw new UserNotFoundError();
-      case HttpStatusCode.internalServerError:
-        throw new UnexpectedError();
       default:
         throw new UnexpectedError();
     }
