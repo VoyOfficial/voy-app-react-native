@@ -5,7 +5,7 @@ type AddAccountModel = {
   contactNumber: string;
   birthDate: Date;
   maritalStatus?: string;
-  genre?: string;
+  sex?: string;
   currentState: string;
   city?: string;
   cpf: string;
