@@ -16,9 +16,9 @@ export class HttpClientSpy implements HttpPostClient, HttpGetClient {
     return this.response;
   }
 
-  async get(url: string): Promise<void> {
-    this.url = url;
-    return Promise.resolve();
+  async get(data: HttpRequest): Promise<HttpResponse<any>> {
+    this.url = data.url;
+    return this.response;
   }
 
   completeWithUnexpectedError() {

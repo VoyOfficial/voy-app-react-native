@@ -1,3 +1,6 @@
-export default interface HttpGetClient {
-  get(url: string): Promise<void>;
+import HttpRequest from './httpRequest';
+import HttpResponse from './httpResponse';
+
+export default interface HttpGetClient<R = any> {
+  get(data: HttpRequest): Promise<HttpResponse<R>>;
 }
