@@ -1,13 +1,13 @@
-import { faker } from '@faker-js/faker';
 import { UnexpectedError, ValidationError } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
 import { RemoteListLocations } from '~/data/useCases';
+import { makeUrl } from './helpers/testFactories';
 import { HttpClientSpy } from './http/httpClientSpy';
 import { mockRemoteListLocation } from './mocks/mockRemoteLocations';
 
 describe('Data: RemoteListLocations', () => {
   test('should add with httpPostClient call correct url', async () => {
-    const url = faker.internet.url();
+    const url = makeUrl();
     const { httpClient, sut } = makeSut(url);
 
     await sut.list();
@@ -74,7 +74,7 @@ describe('Data: RemoteListLocations', () => {
   });
 });
 
-const makeSut = (url = faker.internet.url()) => {
+const makeSut = (url = makeUrl()) => {
   const httpClient = new HttpClientSpy();
   const sut = new RemoteListLocations(url, httpClient);
 
