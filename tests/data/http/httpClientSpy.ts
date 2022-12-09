@@ -5,8 +5,10 @@ import {
   HttpResponse,
   HttpStatusCode,
 } from '~/data/http';
+import { UserModel } from '~/domain/models';
 
 export class HttpClientSpy implements HttpPostClient, HttpGetClient {
+  userId = '';
   url = '';
   body: any;
   response: HttpResponse<any> = { statusCode: HttpStatusCode.ok, body: {} };
@@ -17,6 +19,8 @@ export class HttpClientSpy implements HttpPostClient, HttpGetClient {
   }
 
   async get(data: HttpRequest): Promise<HttpResponse<any>> {
+    const urlArray = data.url.split('/');
+    this.userId = urlArray[urlArray.length - 1];
     this.url = data.url;
     return this.response;
   }
@@ -29,7 +33,19 @@ export class HttpClientSpy implements HttpPostClient, HttpGetClient {
     this.response.statusCode = HttpStatusCode.forbidden;
   }
 
-  completeWithSuccess() {
-    this.response = { statusCode: HttpStatusCode.created, body: {} };
+  completeWithSuccess(
+    statusCode:
+      | HttpStatusCode.ok
+      | HttpStatusCode.created = HttpStatusCode.created,
+    body?: any,
+  ) {
+    this.response = { statusCode: statusCode, body };
+  }
+
+  completeWithUserNotFound() {
+    this.response = {
+      statusCode: HttpStatusCode.notFound,
+      body: null,
+    };
   }
 }
