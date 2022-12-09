@@ -18,7 +18,7 @@ export class HttpClientSpy implements HttpPostClient, HttpGetClient {
     return this.response;
   }
 
-  async get(data: HttpRequest): Promise<HttpResponse<UserModel>> {
+  async get(data: HttpRequest): Promise<HttpResponse<any>> {
     const urlArray = data.url.split('/');
     this.userId = urlArray[urlArray.length - 1];
     this.url = data.url;
