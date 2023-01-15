@@ -5,7 +5,6 @@ import {
   HttpResponse,
   HttpStatusCode,
 } from '~/data/http';
-import { UserModel } from '~/domain/models';
 
 export class HttpClientSpy implements HttpPostClient, HttpGetClient {
   userId = '';
