@@ -37,6 +37,17 @@ describe('Data: RemoteListFavoriteLocations', () => {
 
     expect(response).toEqual([]);
   });
+
+  test('should list with httpGetClient and return noAccess exception', async () => {
+    const httpGetClient = new HttpClientSpy();
+    const url = makeUrl();
+    const sut = new RemoteListFavoriteLocations(url, httpGetClient);
+    httpGetClient.completeWithForbiddenError();
+
+    const promise = sut.list();
+
+    await expect(promise).rejects.toThrow(new NoAccessError());
+  });
 });
 
 class RemoteListFavoriteLocations implements ListFavoriteLocations {
@@ -50,8 +61,18 @@ class RemoteListFavoriteLocations implements ListFavoriteLocations {
         return [] as unknown as Promise<Array<FavoriteLocationModel>>;
       case HttpStatusCode.noContent:
         return [];
+      case HttpStatusCode.forbidden:
+        throw new NoAccessError();
       default:
         throw new UnexpectedError();
     }
+  }
+}
+
+class NoAccessError extends Error {
+  constructor() {
+    super();
+    this.message = 'No access error. Check if you have access and try again.';
+    this.name = 'NoAccessError';
   }
 }
