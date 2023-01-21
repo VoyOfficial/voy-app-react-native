@@ -1,8 +1,8 @@
-import FavoriteLocationModel from 'src/domain/models/favoriteLocationModel';
 import { faker } from '@faker-js/faker';
-import { UnexpectedError } from '~/data/errors';
-import { HttpGetClient, HttpStatusCode } from '~/data/http';
-import { ListFavoriteLocations } from '~/domain/useCases';
+import { NoAccessError, UnexpectedError } from '~/data/errors';
+import { HttpStatusCode } from '~/data/http';
+import { RemoteListFavoriteLocations } from '~/data/useCases';
+import { FavoriteLocationModel } from '~/domain/models';
 import { makeUrl } from './helpers/testFactories';
 import { HttpClientSpy } from './http/httpClientSpy';
 
@@ -63,25 +63,6 @@ describe('Data: RemoteListFavoriteLocations', () => {
   });
 });
 
-class RemoteListFavoriteLocations implements ListFavoriteLocations {
-  constructor(readonly url: string, readonly httpGetClient: HttpGetClient) {}
-
-  async list(): Promise<Array<FavoriteLocationModel>> {
-    const response = await this.httpGetClient.get({ url: this.url });
-
-    switch (response.statusCode) {
-      case HttpStatusCode.ok:
-        return response.body;
-      case HttpStatusCode.noContent:
-        return [];
-      case HttpStatusCode.forbidden:
-        throw new NoAccessError();
-      default:
-        throw new UnexpectedError();
-    }
-  }
-}
-
 const favoriteLocationsModelFactory = (): Array<FavoriteLocationModel> => {
   return [
     {
@@ -96,11 +77,3 @@ const favoriteLocationsModelFactory = (): Array<FavoriteLocationModel> => {
     },
   ];
 };
-
-class NoAccessError extends Error {
-  constructor() {
-    super();
-    this.message = 'No access error. Check if you have access and try again.';
-    this.name = 'NoAccessError';
-  }
-}
