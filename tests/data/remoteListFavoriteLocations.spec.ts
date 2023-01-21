@@ -1,16 +1,14 @@
-import { faker } from '@faker-js/faker';
 import { NoAccessError, UnexpectedError } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
 import { RemoteListFavoriteLocations } from '~/data/useCases';
-import { FavoriteLocationModel } from '~/domain/models';
+import favoriteLocationsModelFactory from './helpers/favoriteLocationsModelFactory';
 import { makeUrl } from './helpers/testFactories';
 import { HttpClientSpy } from './http/httpClientSpy';
 
 describe('Data: RemoteListFavoriteLocations', () => {
   test('should list with httpGetClient calling the correct url', () => {
-    const httpGetClient = new HttpClientSpy();
     const url = makeUrl();
-    const sut = new RemoteListFavoriteLocations(url, httpGetClient);
+    const { sut, httpGetClient } = makeSut(url);
 
     sut.list();
 
@@ -18,9 +16,7 @@ describe('Data: RemoteListFavoriteLocations', () => {
   });
 
   test('should list with httpGetClient and return unexpected exception', async () => {
-    const httpGetClient = new HttpClientSpy();
-    const url = makeUrl();
-    const sut = new RemoteListFavoriteLocations(url, httpGetClient);
+    const { sut, httpGetClient } = makeSut();
     httpGetClient.completeWithUnexpectedError();
 
     const promise = sut.list();
@@ -29,9 +25,7 @@ describe('Data: RemoteListFavoriteLocations', () => {
   });
 
   test('should list with httpGetClient returning noContent error and return list empty', async () => {
-    const httpGetClient = new HttpClientSpy();
-    const url = makeUrl();
-    const sut = new RemoteListFavoriteLocations(url, httpGetClient);
+    const { sut, httpGetClient } = makeSut();
     httpGetClient.completeWithNoContentError();
 
     const response = await sut.list();
@@ -40,9 +34,7 @@ describe('Data: RemoteListFavoriteLocations', () => {
   });
 
   test('should list with httpGetClient and return noAccess exception', async () => {
-    const httpGetClient = new HttpClientSpy();
-    const url = makeUrl();
-    const sut = new RemoteListFavoriteLocations(url, httpGetClient);
+    const { sut, httpGetClient } = makeSut();
     httpGetClient.completeWithForbiddenError();
 
     const promise = sut.list();
@@ -51,9 +43,7 @@ describe('Data: RemoteListFavoriteLocations', () => {
   });
 
   test('should list with httpGetClient and return content with success', async () => {
-    const httpGetClient = new HttpClientSpy();
-    const url = makeUrl();
-    const sut = new RemoteListFavoriteLocations(url, httpGetClient);
+    const { sut, httpGetClient } = makeSut();
     const httpResponse = favoriteLocationsModelFactory();
     httpGetClient.completeWithSuccess(HttpStatusCode.ok, httpResponse);
 
@@ -63,17 +53,9 @@ describe('Data: RemoteListFavoriteLocations', () => {
   });
 });
 
-const favoriteLocationsModelFactory = (): Array<FavoriteLocationModel> => {
-  return [
-    {
-      about: faker.lorem.paragraph(),
-      address: faker.address.secondaryAddress(),
-      businessHours: faker.date.recent().toISOString(),
-      comments: [faker.lorem.words(10)],
-      contact: faker.phone.number(),
-      images: [faker.image.city()],
-      name: faker.name.jobTitle(),
-      rating: faker.datatype.number({ min: 1, max: 10, precision: 0.1 }),
-    },
-  ];
+const makeSut = (url = makeUrl()) => {
+  const httpGetClient = new HttpClientSpy();
+  const sut = new RemoteListFavoriteLocations(url, httpGetClient);
+
+  return { sut, httpGetClient };
 };
