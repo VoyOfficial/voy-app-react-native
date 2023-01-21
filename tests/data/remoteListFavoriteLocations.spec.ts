@@ -1,4 +1,5 @@
 import FavoriteLocationModel from 'src/domain/models/favoriteLocationModel';
+import { faker } from '@faker-js/faker';
 import { UnexpectedError } from '~/data/errors';
 import { HttpGetClient, HttpStatusCode } from '~/data/http';
 import { ListFavoriteLocations } from '~/domain/useCases';
@@ -48,6 +49,18 @@ describe('Data: RemoteListFavoriteLocations', () => {
 
     await expect(promise).rejects.toThrow(new NoAccessError());
   });
+
+  test('should list with httpGetClient and return content with success', async () => {
+    const httpGetClient = new HttpClientSpy();
+    const url = makeUrl();
+    const sut = new RemoteListFavoriteLocations(url, httpGetClient);
+    const httpResponse = favoriteLocationsModelFactory();
+    httpGetClient.completeWithSuccess(HttpStatusCode.ok, httpResponse);
+
+    const response = await sut.list();
+
+    expect(response).toEqual(httpResponse);
+  });
 });
 
 class RemoteListFavoriteLocations implements ListFavoriteLocations {
@@ -58,7 +71,7 @@ class RemoteListFavoriteLocations implements ListFavoriteLocations {
 
     switch (response.statusCode) {
       case HttpStatusCode.ok:
-        return [] as unknown as Promise<Array<FavoriteLocationModel>>;
+        return response.body;
       case HttpStatusCode.noContent:
         return [];
       case HttpStatusCode.forbidden:
@@ -68,6 +81,21 @@ class RemoteListFavoriteLocations implements ListFavoriteLocations {
     }
   }
 }
+
+const favoriteLocationsModelFactory = (): Array<FavoriteLocationModel> => {
+  return [
+    {
+      about: faker.lorem.paragraph(),
+      address: faker.address.secondaryAddress(),
+      businessHours: faker.date.recent().toISOString(),
+      comments: [faker.lorem.words(10)],
+      contact: faker.phone.number(),
+      images: [faker.image.city()],
+      name: faker.name.jobTitle(),
+      rating: faker.datatype.number({ min: 1, max: 10, precision: 0.1 }),
+    },
+  ];
+};
 
 class NoAccessError extends Error {
   constructor() {
