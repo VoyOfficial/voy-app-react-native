@@ -32,6 +32,10 @@ export class HttpClientSpy implements HttpPostClient, HttpGetClient {
     this.response.statusCode = HttpStatusCode.forbidden;
   }
 
+  completeWithNoContentError() {
+    this.response.statusCode = HttpStatusCode.noContent;
+  }
+
   completeWithSuccess(
     statusCode:
       | HttpStatusCode.ok

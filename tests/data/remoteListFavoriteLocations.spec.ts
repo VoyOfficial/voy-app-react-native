@@ -26,6 +26,17 @@ describe('Data: RemoteListFavoriteLocations', () => {
 
     await expect(promise).rejects.toThrow(new UnexpectedError());
   });
+
+  test('should list with httpGetClient returning noContent error and return list empty', async () => {
+    const httpGetClient = new HttpClientSpy();
+    const url = makeUrl();
+    const sut = new RemoteListFavoriteLocations(url, httpGetClient);
+    httpGetClient.completeWithNoContentError();
+
+    const response = await sut.list();
+
+    expect(response).toEqual([]);
+  });
 });
 
 class RemoteListFavoriteLocations implements ListFavoriteLocations {
@@ -37,6 +48,8 @@ class RemoteListFavoriteLocations implements ListFavoriteLocations {
     switch (response.statusCode) {
       case HttpStatusCode.ok:
         return [] as unknown as Promise<Array<FavoriteLocationModel>>;
+      case HttpStatusCode.noContent:
+        return [];
       default:
         throw new UnexpectedError();
     }
