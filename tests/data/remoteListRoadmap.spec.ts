@@ -1,29 +1,9 @@
-import RoadmapModel from 'src/domain/models/roadmapModel';
 import { NoAccessError, UnexpectedError } from '~/data/errors';
-import { HttpGetClient, HttpStatusCode } from '~/data/http';
-import { ListRoadmap } from '../../src/domain/useCases';
+import { HttpStatusCode } from '~/data/http';
+import { RemoteListRoadmap } from '~/data/useCases';
 import roadmapModelFactory from './helpers/roadmapModelFactory';
 import { makeUrl } from './helpers/testFactories';
 import { HttpClientSpy } from './http/httpClientSpy';
-
-class RemoteListRoadmap implements ListRoadmap {
-  constructor(readonly url: string, readonly httpGetClient: HttpGetClient) {}
-
-  async list(): Promise<RoadmapModel[]> {
-    const response = await this.httpGetClient.get({ url: this.url });
-
-    switch (response.statusCode) {
-      case HttpStatusCode.ok:
-        return response.body;
-      case HttpStatusCode.noContent:
-        return [];
-      case HttpStatusCode.forbidden:
-        throw new NoAccessError();
-      default:
-        throw new UnexpectedError();
-    }
-  }
-}
 
 describe('Data: RemoteListRoadmap', () => {
   test('should list with httpGetClient calling the correct url', async () => {
