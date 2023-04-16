@@ -2,6 +2,7 @@ import { HttpPostClient, HttpStatusCode } from '~/data/http';
 import { SearchLocations } from '~/domain/useCases';
 import { SearchParam } from '~/domain/params';
 import { Filter, Ordination } from '~/domain/enums';
+import { NoAccessError } from '~/data/errors';
 import SearchLocationModel from '../../src/domain/models/searchLocationModel';
 import { makeUrl } from './helpers/testFactories';
 import { HttpClientSpy } from './http/httpClientSpy';
@@ -50,6 +51,21 @@ describe('Data: RemoteSearchLocations', () => {
 
     expect(response).toEqual([]);
   });
+
+  test('should search with httpPostClient returning noAccess error', async () => {
+    const url = makeUrl();
+    const filter = Filter.Entertainment;
+    const ordination = Ordination.Distance;
+    const { sut, httpClient } = makeSut(url);
+    httpClient.completeWithForbiddenError();
+
+    const promise = sut.search({
+      filter: filter,
+      ordination: ordination,
+    });
+
+    await expect(promise).rejects.toThrow(new NoAccessError());
+  });
 });
 
 const makeSut = (url = makeUrl()) => {
@@ -74,6 +90,8 @@ class RemoteSearchLocations implements SearchLocations {
     switch (response.statusCode) {
       case HttpStatusCode.noContent:
         return [];
+      case HttpStatusCode.forbidden:
+        throw new NoAccessError();
       default:
         return response.body;
     }
