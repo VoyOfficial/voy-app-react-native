@@ -22,6 +22,12 @@
       "~/domain/models": [
         "src/domain/models"
       ],
+      "~/domain/params": [
+        "src/domain/params"
+      ],
+      "~/domain/enums": [
+        "src/domain/enums"
+      ],
       "~/data": [
         "src/data"
       ],
