@@ -1,4 +1,4 @@
-import { HttpPostClient } from '~/data/http';
+import { HttpPostClient, HttpStatusCode } from '~/data/http';
 import { SearchLocations } from '~/domain/useCases';
 import { SearchParam } from '~/domain/params';
 import { Filter, Ordination } from '~/domain/enums';
@@ -35,6 +35,21 @@ describe('Data: RemoteSearchLocations', () => {
       ordination: ordination,
     });
   });
+
+  test('should search with httpPostClient returning noContent and returning list empty', async () => {
+    const url = makeUrl();
+    const filter = Filter.Entertainment;
+    const ordination = Ordination.Distance;
+    const { sut, httpClient } = makeSut(url);
+    httpClient.completeWithNoContentError();
+
+    const response = await sut.search({
+      filter: filter,
+      ordination: ordination,
+    });
+
+    expect(response).toEqual([]);
+  });
 });
 
 const makeSut = (url = makeUrl()) => {
@@ -51,11 +66,16 @@ class RemoteSearchLocations implements SearchLocations {
     filter,
     ordination,
   }: SearchParam): Promise<SearchLocationModel[]> {
-    this.httpPostClient.post({
+    const response = await this.httpPostClient.post({
       url: this.url,
       body: { filter: filter, ordination: ordination },
     });
 
-    return {} as Promise<SearchLocationModel[]>;
+    switch (response.statusCode) {
+      case HttpStatusCode.noContent:
+        return [];
+      default:
+        return response.body;
+    }
   }
 }
