@@ -1,8 +1,10 @@
+import BusinessHoursModel from './businessHoursModel';
+
 type FavoriteLocationModel = {
   name: string;
   about: string;
   address: string;
-  businessHours: string;
+  businessHours: BusinessHoursModel;
   contact: string;
   rating: number;
   comments: string[];

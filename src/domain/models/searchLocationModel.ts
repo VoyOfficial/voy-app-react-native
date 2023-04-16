@@ -1,8 +1,10 @@
+import BusinessHoursModel from './businessHoursModel';
+
 type SearchLocationModel = {
   name: string;
   about: string;
   address: string;
-  businessHours: string;
+  businessHours: BusinessHoursModel;
   contact: string;
   rating: number;
   isSaved: boolean;
