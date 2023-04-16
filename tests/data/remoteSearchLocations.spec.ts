@@ -18,6 +18,18 @@ describe('Data: RemoteSearchLocations', () => {
 
     expect(httpClient.url).toEqual(url);
   });
+
+  test('should search in the body of the httpPostClient call for the correct filter param', () => {
+    const url = makeUrl();
+    const { sut, httpClient } = makeSut(url);
+
+    sut.search({
+      filter: Filter.Entertainment,
+      ordination: Ordination.Distance,
+    });
+
+    expect(httpClient.body).toEqual({ filter: Filter.Entertainment });
+  });
 });
 
 const makeSut = (url = makeUrl()) => {
@@ -31,13 +43,13 @@ class RemoteSearchLocations implements SearchLocations {
   constructor(readonly url: string, readonly httpPostClient: HttpPostClient) {}
 
   async search({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     filter,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ordination,
   }: SearchParam): Promise<SearchLocationModel[]> {
     this.httpPostClient.post({
       url: this.url,
+      body: { filter: filter },
     });
 
     return {} as Promise<SearchLocationModel[]>;
