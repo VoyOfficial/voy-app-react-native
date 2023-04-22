@@ -39,9 +39,8 @@ describe('Data: RemoteSearchPlaces', () => {
       page,
     );
 
-    expect(httpClient.url).toEqual(
-      url + '/' + place.replace(' ', '%20') + '?page=' + page,
-    );
+    const params = `/${place.replace(' ', '%20')}` + `?page=${page}`;
+    expect(httpClient.url).toEqual(url + params);
   });
 
   test('should search in the body of the httpPostClient call for the correct filter and ordination params', () => {

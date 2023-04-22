@@ -12,8 +12,7 @@ export default class RemoteSearchPlaces implements SearchPlaces {
     { filter, ordination }: FilterParam,
     page = 1,
   ): Promise<SearchPlaceModel[]> {
-    const urlWithParams =
-      this.url + (place && '/' + encodeURIComponent(place)) + '?page=' + page;
+    const urlWithParams = this.makeUrl(place, page);
     const response = await this.httpPostClient.post({
       url: urlWithParams,
       body: { filter: filter, ordination: ordination },
@@ -29,5 +28,11 @@ export default class RemoteSearchPlaces implements SearchPlaces {
       default:
         throw new UnexpectedError();
     }
+  }
+
+  private makeUrl(place: string, page: number): string {
+    return (
+      this.url + (place && `/${encodeURIComponent(place)}`) + `?page=${page}`
+    );
   }
 }
