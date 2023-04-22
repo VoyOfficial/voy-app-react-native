@@ -1,9 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { HttpPostClient, HttpStatusCode } from '~/data/http';
-import { SearchLocations } from '~/domain/useCases';
+import { HttpStatusCode } from '~/data/http';
 import { Filter, Ordination } from '~/domain/enums';
 import { NoAccessError, UnexpectedError } from '~/data/errors';
-import { FilterParam } from '~/domain/params';
+import { RemoteSearchLocations } from '~/data/useCases';
 import SearchLocationModel from '../../src/domain/models/searchLocationModel';
 import { makeUrl } from './helpers/testFactories';
 import { HttpClientSpy } from './http/httpClientSpy';
@@ -111,32 +110,6 @@ const makeSut = (url = makeUrl()) => {
 
   return { sut, httpClient };
 };
-
-class RemoteSearchLocations implements SearchLocations {
-  constructor(readonly url: string, readonly httpPostClient: HttpPostClient) {}
-
-  async search(
-    { filter, ordination }: FilterParam,
-    page = 1,
-  ): Promise<SearchLocationModel[]> {
-    const urlWithParams = this.url + '?page=' + page;
-    const response = await this.httpPostClient.post({
-      url: urlWithParams,
-      body: { filter: filter, ordination: ordination },
-    });
-
-    switch (response.statusCode) {
-      case HttpStatusCode.ok:
-        return response.body;
-      case HttpStatusCode.noContent:
-        return [];
-      case HttpStatusCode.forbidden:
-        throw new NoAccessError();
-      default:
-        throw new UnexpectedError();
-    }
-  }
-}
 
 const searchLocationsModelFactory = (): SearchLocationModel[] => {
   return [

@@ -4,3 +4,4 @@ export { default as UserModel } from './userModel';
 export { default as FavoriteLocationModel } from './favoriteLocationModel';
 export { default as RoadmapModel } from './roadmapModel';
 export { default as BusinessHoursModel } from './businessHoursModel';
+export { default as SearchLocationModel } from './searchLocationModel';
