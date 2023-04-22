@@ -13,6 +13,7 @@ describe('Data: RemoteSearchPlaces', () => {
     const { sut, httpClient } = makeSut(url);
 
     sut.search(
+      '',
       {
         filter: Filter.Entertainment,
         ordination: Ordination.Distance,
@@ -23,13 +24,33 @@ describe('Data: RemoteSearchPlaces', () => {
     expect(httpClient.url).toEqual(url + '?page=' + page);
   });
 
+  test('should search with httpPostClient calling correct url with place searched', () => {
+    const page = 10;
+    const place = 'coffee shop';
+    const url = makeUrl();
+    const { sut, httpClient } = makeSut(url);
+
+    sut.search(
+      place,
+      {
+        filter: Filter.Entertainment,
+        ordination: Ordination.Distance,
+      },
+      page,
+    );
+
+    expect(httpClient.url).toEqual(
+      url + '/' + place.replace(' ', '%20') + '?page=' + page,
+    );
+  });
+
   test('should search in the body of the httpPostClient call for the correct filter and ordination params', () => {
     const url = makeUrl();
     const filter = Filter.Entertainment;
     const ordination = Ordination.Distance;
     const { sut, httpClient } = makeSut(url);
 
-    sut.search({
+    sut.search('', {
       filter: filter,
       ordination: ordination,
     });
@@ -47,7 +68,7 @@ describe('Data: RemoteSearchPlaces', () => {
     const { sut, httpClient } = makeSut(url);
     httpClient.completeWithNoContentError();
 
-    const response = await sut.search({
+    const response = await sut.search('', {
       filter: filter,
       ordination: ordination,
     });
@@ -62,7 +83,7 @@ describe('Data: RemoteSearchPlaces', () => {
     const { sut, httpClient } = makeSut(url);
     httpClient.completeWithForbiddenError();
 
-    const promise = sut.search({
+    const promise = sut.search('', {
       filter: filter,
       ordination: ordination,
     });
@@ -78,7 +99,7 @@ describe('Data: RemoteSearchPlaces', () => {
     const { sut, httpClient } = makeSut(url);
     httpClient.completeWithSuccess(HttpStatusCode.ok, body);
 
-    const response = await sut.search({
+    const response = await sut.search('', {
       filter: filter,
       ordination: ordination,
     });
@@ -93,7 +114,7 @@ describe('Data: RemoteSearchPlaces', () => {
     const { sut, httpClient } = makeSut(url);
     httpClient.completeWithUnexpectedError();
 
-    const promise = sut.search({
+    const promise = sut.search('', {
       filter: filter,
       ordination: ordination,
     });
