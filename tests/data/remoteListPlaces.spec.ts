@@ -1,11 +1,11 @@
 import { UnexpectedError, ValidationError } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
-import { RemoteListLocations } from '~/data/useCases';
+import { RemoteListPlaces } from '~/data/useCases';
 import { makeUrl } from './helpers/testFactories';
 import { HttpClientSpy } from './http/httpClientSpy';
-import { mockRemoteListLocation } from './mocks/mockRemoteLocations';
+import { mockRemoteListPlace } from './mocks/mockRemotePlaces';
 
-describe('Data: RemoteListLocations', () => {
+describe('Data: RemoteListPlaces', () => {
   test('should add with httpPostClient call correct url', async () => {
     const url = makeUrl();
     const { httpClient, sut } = makeSut(url);
@@ -39,15 +39,15 @@ describe('Data: RemoteListLocations', () => {
 
   test('Should return a list of SurveyModels if HttpClient returns 200', async () => {
     const { sut, httpClient } = makeSut();
-    const httpResult = mockRemoteListLocation();
+    const httpResult = mockRemoteListPlace();
     httpClient.response = {
       statusCode: HttpStatusCode.ok,
       body: httpResult,
     };
 
-    const locationList = await sut.list();
+    const placeList = await sut.list();
 
-    expect(locationList).toEqual([
+    expect(placeList).toEqual([
       {
         about: httpResult[0].about,
         address: httpResult[0].address,
@@ -68,15 +68,15 @@ describe('Data: RemoteListLocations', () => {
       statusCode: HttpStatusCode.noContent,
     };
 
-    const locationList = await sut.list();
+    const placeList = await sut.list();
 
-    expect(locationList).toEqual([]);
+    expect(placeList).toEqual([]);
   });
 });
 
 const makeSut = (url = makeUrl()) => {
   const httpClient = new HttpClientSpy();
-  const sut = new RemoteListLocations(url, httpClient);
+  const sut = new RemoteListPlaces(url, httpClient);
 
   return { sut, httpClient };
 };

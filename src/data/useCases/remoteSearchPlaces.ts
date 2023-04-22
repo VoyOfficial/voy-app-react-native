@@ -1,10 +1,10 @@
-import { SearchLocations } from '~/domain/useCases';
+import { SearchPlaces } from '~/domain/useCases';
 import { FilterParam } from '~/domain/params';
 import { SearchLocationModel } from '~/domain/models';
 import { HttpPostClient, HttpStatusCode } from '../http';
 import { NoAccessError, UnexpectedError } from '../errors';
 
-export default class RemoteSearchLocations implements SearchLocations {
+export default class RemoteSearchPlaces implements SearchPlaces {
   constructor(readonly url: string, readonly httpPostClient: HttpPostClient) {}
 
   async search(

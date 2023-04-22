@@ -1,8 +1,10 @@
-type LocationModel = {
+import BusinessHoursModel from './businessHoursModel';
+
+type PlaceModel = {
   name: string;
   about: string;
   address: string;
-  businessHours: string;
+  businessHours: BusinessHoursModel;
   contact: string;
   rating: number;
   isSaved: boolean;
@@ -10,4 +12,4 @@ type LocationModel = {
   images: string[];
 };
 
-export default LocationModel;
+export default PlaceModel;

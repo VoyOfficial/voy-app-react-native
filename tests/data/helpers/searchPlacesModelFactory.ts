@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { SearchLocationModel } from '~/domain/models';
+import { SearchLPlaceModel } from '~/domain/models';
 import businessHoursModelStub from '../stubs/businessHoursModelStub';
 
-const searchLocationsModelFactory = (): SearchLocationModel[] => {
+const searchPlacesModelFactory = (): SearchLPlaceModel[] => {
   return [
     {
       about: faker.lorem.paragraph(),
@@ -36,4 +36,4 @@ const makeImages = (quantity = 5): string[] => {
   return images;
 };
 
-export default searchLocationsModelFactory;
+export default searchPlacesModelFactory;

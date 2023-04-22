@@ -1,12 +1,12 @@
 import { HttpStatusCode } from '~/data/http';
 import { Filter, Ordination } from '~/domain/enums';
 import { NoAccessError, UnexpectedError } from '~/data/errors';
-import { RemoteSearchLocations } from '~/data/useCases';
+import { RemoteSearchPlaces } from '~/data/useCases';
 import { makeUrl } from './helpers/testFactories';
 import { HttpClientSpy } from './http/httpClientSpy';
-import searchLocationsModelFactory from './helpers/searchLocationsModelFactory';
+import searchPlacesModelFactory from './helpers/searchPlacesModelFactory';
 
-describe('Data: RemoteSearchLocations', () => {
+describe('Data: RemoteSearchPlaces', () => {
   test('should search with httpPostClient calling correct url with page param', () => {
     const page = 10;
     const url = makeUrl();
@@ -74,7 +74,7 @@ describe('Data: RemoteSearchLocations', () => {
     const url = makeUrl();
     const filter = Filter.Entertainment;
     const ordination = Ordination.Distance;
-    const body = searchLocationsModelFactory();
+    const body = searchPlacesModelFactory();
     const { sut, httpClient } = makeSut(url);
     httpClient.completeWithSuccess(HttpStatusCode.ok, body);
 
@@ -104,7 +104,7 @@ describe('Data: RemoteSearchLocations', () => {
 
 const makeSut = (url = makeUrl()) => {
   const httpClient = new HttpClientSpy();
-  const sut = new RemoteSearchLocations(url, httpClient);
+  const sut = new RemoteSearchPlaces(url, httpClient);
 
   return { sut, httpClient };
 };

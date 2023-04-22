@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { FavoriteLocationModel } from '~/domain/models';
+import { PlaceModel } from '~/domain/models';
 import businessHoursModelStub from '../stubs/businessHoursModelStub';
 
-const favoriteLocationsModelFactory = (): Array<FavoriteLocationModel> => {
+const placesModelFactory = (): Array<PlaceModel> => {
   return [
     {
       about: faker.lorem.paragraph(),
@@ -13,8 +13,9 @@ const favoriteLocationsModelFactory = (): Array<FavoriteLocationModel> => {
       images: [faker.image.city()],
       name: faker.name.jobTitle(),
       rating: faker.datatype.number({ min: 1, max: 10, precision: 0.1 }),
+      isSaved: faker.datatype.boolean(),
     },
   ];
 };
 
-export default favoriteLocationsModelFactory;
+export default placesModelFactory;
