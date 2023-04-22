@@ -1,8 +1,8 @@
 import { Filter, Ordination } from '../enums';
 
-type SearchParam = {
+type FilterParam = {
   filter: Filter;
   ordination: Ordination;
 };
 
-export default SearchParam;
+export default FilterParam;

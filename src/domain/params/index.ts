@@ -1,1 +1,1 @@
-export { default as SearchParam } from './searchParam';
+export { default as FilterParam } from './filterParam';

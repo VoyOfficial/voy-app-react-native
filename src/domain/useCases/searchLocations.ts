@@ -1,6 +1,9 @@
 import SearchLocationModel from '../models/searchLocationModel';
-import { SearchParam } from '../params';
+import { FilterParam } from '../params';
 
 export default interface SearchLocations {
-  search({ filter, ordination }: SearchParam): Promise<SearchLocationModel[]>;
+  search(
+    { filter, ordination }: FilterParam,
+    page: number,
+  ): Promise<SearchLocationModel[]>;
 }

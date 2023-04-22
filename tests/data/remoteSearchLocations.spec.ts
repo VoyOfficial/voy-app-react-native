@@ -1,25 +1,29 @@
 import { faker } from '@faker-js/faker';
 import { HttpPostClient, HttpStatusCode } from '~/data/http';
 import { SearchLocations } from '~/domain/useCases';
-import { SearchParam } from '~/domain/params';
 import { Filter, Ordination } from '~/domain/enums';
 import { NoAccessError, UnexpectedError } from '~/data/errors';
+import { FilterParam } from '~/domain/params';
 import SearchLocationModel from '../../src/domain/models/searchLocationModel';
 import { makeUrl } from './helpers/testFactories';
 import { HttpClientSpy } from './http/httpClientSpy';
 import businessHoursModelStub from './stubs/businessHoursModelStub';
 
 describe('Data: RemoteSearchLocations', () => {
-  test('should search with httpPostClient call correct url', () => {
+  test('should search with httpPostClient calling correct url with page param', () => {
+    const page = 10;
     const url = makeUrl();
     const { sut, httpClient } = makeSut(url);
 
-    sut.search({
-      filter: Filter.Entertainment,
-      ordination: Ordination.Distance,
-    });
+    sut.search(
+      {
+        filter: Filter.Entertainment,
+        ordination: Ordination.Distance,
+      },
+      page,
+    );
 
-    expect(httpClient.url).toEqual(url);
+    expect(httpClient.url).toEqual(url + '?page=' + page);
   });
 
   test('should search in the body of the httpPostClient call for the correct filter and ordination params', () => {
@@ -111,12 +115,13 @@ const makeSut = (url = makeUrl()) => {
 class RemoteSearchLocations implements SearchLocations {
   constructor(readonly url: string, readonly httpPostClient: HttpPostClient) {}
 
-  async search({
-    filter,
-    ordination,
-  }: SearchParam): Promise<SearchLocationModel[]> {
+  async search(
+    { filter, ordination }: FilterParam,
+    page = 1,
+  ): Promise<SearchLocationModel[]> {
+    const urlWithParams = this.url + '?page=' + page;
     const response = await this.httpPostClient.post({
-      url: this.url,
+      url: urlWithParams,
       body: { filter: filter, ordination: ordination },
     });
 
