@@ -1,11 +1,9 @@
-import { ListFavoriteLocations } from '~/domain/useCases';
+import { ListFavoritePlaces } from '~/domain/useCases';
 import { FavoriteLocationModel } from '~/domain/models';
 import { HttpGetClient, HttpStatusCode } from '../http';
 import { NoAccessError, UnexpectedError } from '../errors';
 
-export default class RemoteListFavoriteLocations
-  implements ListFavoriteLocations
-{
+export default class RemoteListFavoritePlaces implements ListFavoritePlaces {
   constructor(readonly url: string, readonly httpGetClient: HttpGetClient) {}
 
   async list(): Promise<Array<FavoriteLocationModel>> {

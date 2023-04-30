@@ -1,11 +1,11 @@
 import { NoAccessError, UnexpectedError } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
-import { RemoteListFavoriteLocations } from '~/data/useCases';
-import favoriteLocationsModelFactory from './helpers/favoriteLocationsModelFactory';
+import { RemoteListFavoritePlaces } from '~/data/useCases';
+import favoritePlacesModelFactory from './helpers/favoritePlacesModelFactory';
 import { makeUrl } from './helpers/testFactories';
 import { HttpClientSpy } from './http/httpClientSpy';
 
-describe('Data: RemoteListFavoriteLocations', () => {
+describe('Data: RemoteListFavoritePlaces', () => {
   test('should list with httpGetClient calling the correct url', () => {
     const url = makeUrl();
     const { sut, httpGetClient } = makeSut(url);
@@ -44,7 +44,7 @@ describe('Data: RemoteListFavoriteLocations', () => {
 
   test('should list with httpGetClient and return content with success', async () => {
     const { sut, httpGetClient } = makeSut();
-    const httpResponse = favoriteLocationsModelFactory();
+    const httpResponse = favoritePlacesModelFactory();
     httpGetClient.completeWithSuccess(HttpStatusCode.ok, httpResponse);
 
     const response = await sut.list();
@@ -55,7 +55,7 @@ describe('Data: RemoteListFavoriteLocations', () => {
 
 const makeSut = (url = makeUrl()) => {
   const httpGetClient = new HttpClientSpy();
-  const sut = new RemoteListFavoriteLocations(url, httpGetClient);
+  const sut = new RemoteListFavoritePlaces(url, httpGetClient);
 
   return { sut, httpGetClient };
 };

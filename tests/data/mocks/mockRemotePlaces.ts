@@ -1,10 +1,11 @@
 import { faker } from '@faker-js/faker';
-import { LocationModel } from '~/domain/models';
+import { PlaceModel } from '~/domain/models';
+import businessHoursModelStub from '../stubs/businessHoursModelStub';
 
-export const mockRemoteLocation = (): LocationModel => ({
+export const mockRemotePlace = (): PlaceModel => ({
   about: faker.lorem.paragraph(),
   address: faker.address.secondaryAddress(),
-  businessHours: faker.date.recent().toISOString(),
+  businessHours: businessHoursModelStub(),
   comments: [faker.lorem.words(10)],
   contact: faker.phone.number(),
   images: [faker.image.city()],
@@ -13,6 +14,4 @@ export const mockRemoteLocation = (): LocationModel => ({
   rating: faker.datatype.number({ min: 1, max: 10, precision: 0.1 }),
 });
 
-export const mockRemoteListLocation = (): LocationModel[] => [
-  mockRemoteLocation(),
-];
+export const mockRemoteListPlace = (): PlaceModel[] => [mockRemotePlace()];

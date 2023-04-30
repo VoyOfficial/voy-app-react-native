@@ -1,23 +1,23 @@
-import { ListLocations } from 'src/domain/useCases/listLocations';
-import { LocationModel } from '~/domain/models';
+import { PlaceModel } from '~/domain/models';
+import { ListPlaces } from '~/domain/useCases';
 import { UnexpectedError, ValidationError } from '../errors';
 import { HttpGetClient, HttpStatusCode } from '../http';
 
-export default class RemoteListLocations implements ListLocations {
+export default class RemoteListPlaces implements ListPlaces {
   constructor(
     private readonly url: string,
     private readonly httpGetClient: HttpGetClient,
   ) {}
 
-  async list(): Promise<LocationModel[]> {
+  async list(): Promise<PlaceModel[]> {
     const httpResponse = await this.httpGetClient.get({
       url: this.url,
     });
-    const remoteLocations = httpResponse?.body || [];
+    const remotePlaces = httpResponse?.body || [];
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        return remoteLocations;
+        return remotePlaces;
       case HttpStatusCode.noContent:
         return [];
       case HttpStatusCode.forbidden:
