@@ -1,8 +1,4 @@
-enum Social {
-  APPLE = 'apple',
-  GOOGLE = 'google',
-  FACEBOOK = 'facebook',
-}
+import { Social } from '../enums';
 
 export default interface SocialLogin {
   login(clientId: string, socialType: Social): Promise<string>;
