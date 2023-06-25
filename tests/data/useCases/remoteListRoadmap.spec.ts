@@ -1,9 +1,9 @@
 import { NoAccessError, UnexpectedError } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
 import { RemoteListRoadmap } from '~/data/useCases';
-import roadmapModelFactory from './helpers/roadmapModelFactory';
-import { makeUrl } from './helpers/testFactories';
-import { HttpClientSpy } from './http/httpClientSpy';
+import roadmapModelFactory from '../helpers/roadmapModelFactory';
+import { makeUrl } from '../helpers/testFactories';
+import { HttpClientSpy } from '../http/httpClientSpy';
 
 describe('Data: RemoteListRoadmap', () => {
   test('should list with httpGetClient calling the correct url', async () => {

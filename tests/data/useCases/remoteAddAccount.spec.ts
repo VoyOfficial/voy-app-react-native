@@ -2,9 +2,9 @@ import { DataStatus } from '~/data';
 import { UnexpectedError, ValidationError } from '~/data/errors';
 import { RemoteAddAccount } from '~/data/useCases';
 import { AddAccountModel } from '~/domain/models';
-import accountModelFactory from './helpers/accountModelFactory';
-import { makeUrl } from './helpers/testFactories';
-import { HttpClientSpy } from './http/httpClientSpy';
+import accountModelFactory from '../helpers/accountModelFactory';
+import { makeUrl } from '../helpers/testFactories';
+import { HttpClientSpy } from '../http/httpClientSpy';
 
 describe('Data: RemoteAddAccount', () => {
   test('should add with httpPostClient call correct url', () => {

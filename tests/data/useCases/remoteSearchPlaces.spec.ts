@@ -2,9 +2,9 @@ import { HttpStatusCode } from '~/data/http';
 import { Filter, Ordination } from '~/domain/enums';
 import { NoAccessError, UnexpectedError } from '~/data/errors';
 import { RemoteSearchPlaces } from '~/data/useCases';
-import { makeUrl } from './helpers/testFactories';
-import { HttpClientSpy } from './http/httpClientSpy';
-import searchPlacesModelFactory from './helpers/searchPlacesModelFactory';
+import { makeUrl } from '../helpers/testFactories';
+import { HttpClientSpy } from '../http/httpClientSpy';
+import searchPlacesModelFactory from '../helpers/searchPlacesModelFactory';
 
 describe('Data: RemoteSearchPlaces', () => {
   test('should search with httpPostClient calling correct url with page param', () => {

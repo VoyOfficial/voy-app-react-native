@@ -1,9 +1,9 @@
 import { NoAccessError, UnexpectedError } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
 import { RemoteListFavoritePlaces } from '~/data/useCases';
-import favoritePlacesModelFactory from './helpers/favoritePlacesModelFactory';
-import { makeUrl } from './helpers/testFactories';
-import { HttpClientSpy } from './http/httpClientSpy';
+import favoritePlacesModelFactory from '../helpers/favoritePlacesModelFactory';
+import { makeUrl } from '../helpers/testFactories';
+import { HttpClientSpy } from '../http/httpClientSpy';
 
 describe('Data: RemoteListFavoritePlaces', () => {
   test('should list with httpGetClient calling the correct url', () => {
