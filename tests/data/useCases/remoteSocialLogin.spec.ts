@@ -1,7 +1,8 @@
 import SocialLogin from 'src/domain/useCases/socialLogin';
 import { Social } from '~/domain/enums';
-import { HttpPostClient } from '~/data/http';
+import { HttpPostClient, HttpStatusCode } from '~/data/http';
 import { UnexpectedError } from '~/data/errors';
+import { DataStatus } from '~/data';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import { makeUrl } from '../helpers/testFactories';
 
@@ -40,6 +41,17 @@ describe('Data: RemoteSocialLogin', () => {
 
     expect(promise).rejects.toThrow(new UnexpectedError());
   });
+
+  test('should realize social login calling httpPostClient returning response with success', async () => {
+    const httpClient = new HttpClientSpy();
+    const url = makeUrl();
+    const clientId = 'any_clientId';
+    const sut = new RemoteSocialLogin(url, httpClient);
+
+    const response = await sut.login(clientId, Social.FACEBOOK);
+
+    expect(response).toEqual(DataStatus.connected);
+  });
 });
 
 class RemoteSocialLogin implements SocialLogin {
@@ -53,6 +65,8 @@ class RemoteSocialLogin implements SocialLogin {
     });
 
     switch (statusCode) {
+      case HttpStatusCode.ok:
+        return DataStatus.connected;
       default:
         throw new UnexpectedError();
     }
