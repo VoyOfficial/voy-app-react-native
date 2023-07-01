@@ -1,9 +1,9 @@
 import { UnexpectedError, ValidationError } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
 import { RemoteListPlaces } from '~/data/useCases';
-import { makeUrl } from './helpers/testFactories';
-import { HttpClientSpy } from './http/httpClientSpy';
-import { mockRemoteListPlace } from './mocks/mockRemotePlaces';
+import { makeUrl } from '../helpers/testFactories';
+import { HttpClientSpy } from '../http/httpClientSpy';
+import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
 
 describe('Data: RemoteListPlaces', () => {
   test('should add with httpPostClient call correct url', async () => {

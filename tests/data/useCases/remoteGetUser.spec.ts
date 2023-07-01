@@ -5,8 +5,8 @@ import {
 } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
 import { RemoteGetUser } from '~/data/useCases';
-import userModelFactory from './helpers/userModelFactory';
-import { HttpClientSpy } from './http/httpClientSpy';
+import userModelFactory from '../helpers/userModelFactory';
+import { HttpClientSpy } from '../http/httpClientSpy';
 
 describe('Data: RemoteGetUser', () => {
   test('should get with httpGetClient call correct user id', async () => {
