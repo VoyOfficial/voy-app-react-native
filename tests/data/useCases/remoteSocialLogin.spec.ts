@@ -1,8 +1,7 @@
-import SocialLogin from 'src/domain/useCases/socialLogin';
 import { Social } from '~/domain/enums';
-import { HttpPostClient, HttpStatusCode } from '~/data/http';
-import { UnexpectedError } from '~/data/errors';
+import { SocialLoginError, UnexpectedError } from '~/data/errors';
 import { DataStatus } from '~/data';
+import { RemoteSocialLogin } from '~/data/useCases';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import { makeUrl } from '../helpers/testFactories';
 
@@ -66,33 +65,3 @@ describe('Data: RemoteSocialLogin', () => {
     await expect(promise).rejects.toThrow(new SocialLoginError());
   });
 });
-
-class RemoteSocialLogin implements SocialLogin {
-  constructor(readonly url: string, readonly httpPostClient: HttpPostClient) {}
-
-  login = async (clientId: string, socialType: Social): Promise<string> => {
-    const url = this.url + '?provider=' + socialType.toLowerCase();
-    const { statusCode } = await this.httpPostClient.post({
-      url: url,
-      body: { client_id: clientId },
-    });
-
-    switch (statusCode) {
-      case HttpStatusCode.ok:
-        return DataStatus.connected;
-      case HttpStatusCode.forbidden:
-        throw new SocialLoginError();
-      default:
-        throw new UnexpectedError();
-    }
-  };
-}
-
-export default class SocialLoginError extends Error {
-  constructor() {
-    super();
-    this.message =
-      'Login error. Try logging in again, if not, try again later.';
-    this.name = 'SocialLoginError';
-  }
-}
