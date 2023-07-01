@@ -7,10 +7,9 @@ import { makeUrl } from '../helpers/testFactories';
 
 describe('Data: RemoteSocialLogin', () => {
   test('should realize social login calling httpPostClient with correct url', () => {
-    const httpClient = new HttpClientSpy();
-    const url = makeUrl();
     const clientId = 'any_clientId';
-    const sut = new RemoteSocialLogin(url, httpClient);
+    const url = makeUrl();
+    const { sut, httpClient } = makeSut(url);
     sut.login(clientId, Social.FACEBOOK);
 
     expect(httpClient.url).toEqual(
@@ -19,10 +18,8 @@ describe('Data: RemoteSocialLogin', () => {
   });
 
   test('should realize social login calling httpPostClient with correct client id', () => {
-    const httpClient = new HttpClientSpy();
-    const url = makeUrl();
     const clientId = 'any_clientId';
-    const sut = new RemoteSocialLogin(url, httpClient);
+    const { sut, httpClient } = makeSut();
     sut.login(clientId, Social.FACEBOOK);
 
     expect(httpClient.body).toEqual({
@@ -31,10 +28,8 @@ describe('Data: RemoteSocialLogin', () => {
   });
 
   test('should realize social login calling httpPostClient returning unexpected exception', async () => {
-    const httpClient = new HttpClientSpy();
-    const url = makeUrl();
     const clientId = 'any_clientId';
-    const sut = new RemoteSocialLogin(url, httpClient);
+    const { sut, httpClient } = makeSut();
     httpClient.completeWithUnexpectedError();
 
     const promise = sut.login(clientId, Social.FACEBOOK);
@@ -43,21 +38,16 @@ describe('Data: RemoteSocialLogin', () => {
   });
 
   test('should realize social login calling httpPostClient returning response with success', async () => {
-    const httpClient = new HttpClientSpy();
-    const url = makeUrl();
     const clientId = 'any_clientId';
-    const sut = new RemoteSocialLogin(url, httpClient);
-
+    const { sut } = makeSut();
     const response = await sut.login(clientId, Social.FACEBOOK);
 
     expect(response).toEqual(DataStatus.connected);
   });
 
   test('should perform social login by calling httpPostClient returning forbidden error', async () => {
-    const httpClient = new HttpClientSpy();
-    const url = makeUrl();
     const clientId = 'any_clientId';
-    const sut = new RemoteSocialLogin(url, httpClient);
+    const { sut, httpClient } = makeSut();
     httpClient.completeWithForbiddenError();
 
     const promise = sut.login(clientId, Social.FACEBOOK);
@@ -65,3 +55,10 @@ describe('Data: RemoteSocialLogin', () => {
     await expect(promise).rejects.toThrow(new SocialLoginError());
   });
 });
+
+const makeSut = (url = makeUrl()) => {
+  const httpClient = new HttpClientSpy();
+  const sut = new RemoteSocialLogin(url, httpClient);
+
+  return { sut, httpClient };
+};
