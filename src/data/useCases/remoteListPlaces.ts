@@ -8,10 +8,20 @@ export default class RemoteListPlaces implements ListPlaces {
     private readonly url: string,
     private readonly httpGetClient: HttpGetClient,
   ) {}
+  list = async (
+    location: {
+      long: string;
+      lat: string;
+    },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    page?: number,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    linesPerPage?: number | undefined,
+  ): Promise<PlaceModel[]> => {
+    const url = this.url + '?long=' + location.long + '&lat=' + location.lat;
 
-  async list(): Promise<PlaceModel[]> {
     const httpResponse = await this.httpGetClient.get({
-      url: this.url,
+      url: url,
     });
     const remotePlaces = httpResponse?.body || [];
 
@@ -25,5 +35,5 @@ export default class RemoteListPlaces implements ListPlaces {
       default:
         throw new UnexpectedError();
     }
-  }
+  };
 }

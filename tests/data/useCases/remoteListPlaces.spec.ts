@@ -6,13 +6,16 @@ import { HttpClientSpy } from '../http/httpClientSpy';
 import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
 
 describe('Data: RemoteListPlaces', () => {
-  test('should add with httpPostClient call correct url', async () => {
+  test('should list with httpPostClient call correct url', async () => {
     const url = makeUrl();
+    const location = { long: '-1213242432', lat: '-2324546432' };
     const { httpClient, sut } = makeSut(url);
 
-    await sut.list();
+    await sut.list(location);
 
-    expect(httpClient.url).toBe(url);
+    expect(httpClient.url).toBe(
+      url + '?long=' + location.long + '&lat=' + location.lat,
+    );
   });
 
   test('should throw ValidationError if HttpClient return 403', async () => {
@@ -21,7 +24,7 @@ describe('Data: RemoteListPlaces', () => {
       statusCode: HttpStatusCode.forbidden,
     };
 
-    const promise = sut.list();
+    const promise = sut.list({ long: '', lat: '' });
 
     await expect(promise).rejects.toThrow(new ValidationError());
   });
@@ -32,7 +35,7 @@ describe('Data: RemoteListPlaces', () => {
       statusCode: HttpStatusCode.internalServerError,
     };
 
-    const promise = sut.list();
+    const promise = sut.list({ long: '', lat: '' });
 
     await expect(promise).rejects.toThrow(new UnexpectedError());
   });
@@ -45,7 +48,7 @@ describe('Data: RemoteListPlaces', () => {
       body: httpResult,
     };
 
-    const placeList = await sut.list();
+    const placeList = await sut.list({ long: '', lat: '' });
 
     expect(placeList).toEqual([
       {
@@ -68,7 +71,7 @@ describe('Data: RemoteListPlaces', () => {
       statusCode: HttpStatusCode.noContent,
     };
 
-    const placeList = await sut.list();
+    const placeList = await sut.list({ long: '', lat: '' });
 
     expect(placeList).toEqual([]);
   });
