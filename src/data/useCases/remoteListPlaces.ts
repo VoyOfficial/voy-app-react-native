@@ -13,12 +13,12 @@ export default class RemoteListPlaces implements ListPlaces {
       long: string;
       lat: string;
     },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     page?: number,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     linesPerPage?: number | undefined,
   ): Promise<PlaceModel[]> => {
-    const url = this.url + '?long=' + location.long + '&lat=' + location.lat;
+    let url = this.url + '?long=' + location.long + '&lat=' + location.lat;
+    if (page) url += '&page=' + page;
 
     const httpResponse = await this.httpGetClient.get({
       url: url,

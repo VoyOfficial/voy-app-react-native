@@ -18,6 +18,19 @@ describe('Data: RemoteListPlaces', () => {
     );
   });
 
+  test('should list with httpPostClient calling correct url with page', async () => {
+    const url = makeUrl();
+    const page = 10;
+    const location = { long: '-1213242432', lat: '-2324546432' };
+    const { httpClient, sut } = makeSut(url);
+
+    await sut.list(location, page);
+
+    expect(httpClient.url).toBe(
+      url + '?long=' + location.long + '&lat=' + location.lat + '&page=' + page,
+    );
+  });
+
   test('should throw ValidationError if HttpClient return 403', async () => {
     const { sut, httpClient } = makeSut();
     httpClient.response = {
