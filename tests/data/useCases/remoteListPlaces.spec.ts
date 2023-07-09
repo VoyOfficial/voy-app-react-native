@@ -31,6 +31,25 @@ describe('Data: RemoteListPlaces', () => {
     );
   });
 
+  test('should list with httpPostClient calling correct url with linesPerPage', async () => {
+    const url = makeUrl();
+    const linesPerPage = 10;
+    const location = { long: '-1213242432', lat: '-2324546432' };
+    const { httpClient, sut } = makeSut(url);
+
+    await sut.list(location, 0, linesPerPage);
+
+    expect(httpClient.url).toBe(
+      url +
+        '?long=' +
+        location.long +
+        '&lat=' +
+        location.lat +
+        '&linesPerPage=' +
+        linesPerPage,
+    );
+  });
+
   test('should throw ValidationError if HttpClient return 403', async () => {
     const { sut, httpClient } = makeSut();
     httpClient.response = {
