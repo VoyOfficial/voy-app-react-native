@@ -1,8 +1,10 @@
 import { RecommendationModel } from '~/domain/models';
 import { ListRecommendations } from '~/domain/useCases';
-import { HttpGetClient } from '~/data/http';
+import { HttpGetClient, HttpStatusCode } from '~/data/http';
+import { UnexpectedError } from '~/data/errors';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import { makeUrl } from '../helpers/testFactories';
+import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
 
 describe('Data: ListRecommendations', () => {
   test('should list with httpGetClient calling correct url', () => {
@@ -12,6 +14,19 @@ describe('Data: ListRecommendations', () => {
     sut.list();
     expect(httpClient.url).toEqual(url);
   });
+
+  test('should return a list of recommendations if HttpGetClient returns ok', async () => {
+    const url = makeUrl();
+    const httpClient = new HttpClientSpy();
+    const httpResult = mockRemoteListPlace();
+    httpClient.completeWithSuccess(HttpStatusCode.ok, httpResult);
+    const sut = new RemoteListRecommendations(url, httpClient);
+    const listRecommendations = await sut.list();
+
+    for (let index = 0; index < listRecommendations.length; index++) {
+      expect(listRecommendations[index]).toEqual(httpResult[index]);
+    }
+  });
 });
 
 class RemoteListRecommendations implements ListRecommendations {
@@ -20,7 +35,15 @@ class RemoteListRecommendations implements ListRecommendations {
     private readonly httpGetClient: HttpGetClient,
   ) {}
   async list(): Promise<RecommendationModel[]> {
-    await this.httpGetClient.get({ url: this.url });
-    throw new Error('');
+    const { statusCode, body } = await this.httpGetClient.get({
+      url: this.url,
+    });
+
+    switch (statusCode) {
+      case HttpStatusCode.ok:
+        return body;
+      default:
+        throw new UnexpectedError();
+    }
   }
 }
