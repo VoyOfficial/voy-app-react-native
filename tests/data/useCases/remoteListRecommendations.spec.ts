@@ -27,6 +27,16 @@ describe('Data: ListRecommendations', () => {
       expect(listRecommendations[index]).toEqual(httpResult[index]);
     }
   });
+
+  test('should throw UnexpectedError if HttpGetClient returns 500', async () => {
+    const url = makeUrl();
+    const httpClient = new HttpClientSpy();
+    httpClient.completeWithUnexpectedError();
+    const sut = new RemoteListRecommendations(url, httpClient);
+    const promise = sut.list();
+
+    await expect(promise).rejects.toThrow(new UnexpectedError());
+  });
 });
 
 class RemoteListRecommendations implements ListRecommendations {
