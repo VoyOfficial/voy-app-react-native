@@ -37,6 +37,26 @@ describe('Data: ListRecommendations', () => {
 
     await expect(promise).rejects.toThrow(new UnexpectedError());
   });
+
+  test('should throw UnexpectedError if HttpGetClient returns 500', async () => {
+    const url = makeUrl();
+    const httpClient = new HttpClientSpy();
+    httpClient.completeWithUnexpectedError();
+    const sut = new RemoteListRecommendations(url, httpClient);
+    const promise = sut.list();
+
+    await expect(promise).rejects.toThrow(new UnexpectedError());
+  });
+
+  test('should return an empty list if HttpGetClient returns no content', async () => {
+    const url = makeUrl();
+    const httpClient = new HttpClientSpy();
+    httpClient.completeWithNoContentError();
+    const sut = new RemoteListRecommendations(url, httpClient);
+    const httpResult = await sut.list();
+
+    expect(httpResult).toEqual([]);
+  });
 });
 
 class RemoteListRecommendations implements ListRecommendations {
@@ -44,6 +64,7 @@ class RemoteListRecommendations implements ListRecommendations {
     private readonly url: string,
     private readonly httpGetClient: HttpGetClient,
   ) {}
+
   async list(): Promise<RecommendationModel[]> {
     const { statusCode, body } = await this.httpGetClient.get({
       url: this.url,
@@ -52,6 +73,8 @@ class RemoteListRecommendations implements ListRecommendations {
     switch (statusCode) {
       case HttpStatusCode.ok:
         return body;
+      case HttpStatusCode.noContent:
+        return [];
       default:
         throw new UnexpectedError();
     }
