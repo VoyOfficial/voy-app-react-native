@@ -6,7 +6,7 @@ import { HttpClientSpy } from '../http/httpClientSpy';
 import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
 
 describe('Data: RemoteListPlaces', () => {
-  test('should add with httpPostClient call correct url', async () => {
+  test('should list with httpGetClient call correct url', async () => {
     const url = makeUrl();
     const { httpClient, sut } = makeSut(url);
 
