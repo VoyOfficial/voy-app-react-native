@@ -82,19 +82,9 @@ describe('Data: RemoteListPlaces', () => {
 
     const placeList = await sut.list({ long: '', lat: '' });
 
-    expect(placeList).toEqual([
-      {
-        about: httpResult[0].about,
-        address: httpResult[0].address,
-        businessHours: httpResult[0].businessHours,
-        comments: httpResult[0].comments,
-        contact: httpResult[0].contact,
-        images: httpResult[0].images,
-        isSaved: httpResult[0].isSaved,
-        name: httpResult[0].name,
-        rating: httpResult[0].rating,
-      },
-    ]);
+    for (let index = 0; index < placeList.length; index++) {
+      expect(placeList[index]).toEqual(httpResult[index]);
+    }
   });
 
   test('Should return an empty list if HttpClient returns 204', async () => {

@@ -23,11 +23,10 @@ export default class RemoteListPlaces implements ListPlaces {
     const httpResponse = await this.httpGetClient.get({
       url: url,
     });
-    const remotePlaces = httpResponse?.body || [];
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        return remotePlaces;
+        return httpResponse?.body || [];
       case HttpStatusCode.noContent:
         return [];
       case HttpStatusCode.forbidden:
