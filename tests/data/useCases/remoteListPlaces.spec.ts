@@ -72,7 +72,7 @@ describe('Data: RemoteListPlaces', () => {
     await expect(promise).rejects.toThrow(new UnexpectedError());
   });
 
-  test('Should return a list of SurveyModels if HttpClient returns 200', async () => {
+  test('Should return a list of places if HttpClient returns 200', async () => {
     const { sut, httpClient } = makeSut();
     const httpResult = mockRemoteListPlace();
     httpClient.response = {
@@ -85,6 +85,18 @@ describe('Data: RemoteListPlaces', () => {
     for (let index = 0; index < placeList.length; index++) {
       expect(placeList[index]).toEqual(httpResult[index]);
     }
+  });
+
+  test('Should return a list of places empty if HttpClient returns 200', async () => {
+    const { sut, httpClient } = makeSut();
+    httpClient.response = {
+      statusCode: HttpStatusCode.ok,
+      body: undefined,
+    };
+
+    const placeList = await sut.list({ long: '', lat: '' });
+
+    expect(placeList).toEqual([]);
   });
 
   test('Should return an empty list if HttpClient returns 204', async () => {
