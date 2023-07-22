@@ -1,7 +1,6 @@
-import { RecommendationModel } from '~/domain/models';
-import { ListRecommendations } from '~/domain/useCases';
-import { HttpGetClient, HttpStatusCode } from '~/data/http';
+import { HttpStatusCode } from '~/data/http';
 import { UnexpectedError } from '~/data/errors';
+import { RemoteListRecommendations } from '~/data/useCases';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import { makeUrl } from '../helpers/testFactories';
 import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
@@ -58,25 +57,3 @@ describe('Data: ListRecommendations', () => {
     expect(httpResult).toEqual([]);
   });
 });
-
-class RemoteListRecommendations implements ListRecommendations {
-  constructor(
-    private readonly url: string,
-    private readonly httpGetClient: HttpGetClient,
-  ) {}
-
-  async list(): Promise<RecommendationModel[]> {
-    const { statusCode, body } = await this.httpGetClient.get({
-      url: this.url,
-    });
-
-    switch (statusCode) {
-      case HttpStatusCode.ok:
-        return body;
-      case HttpStatusCode.noContent:
-        return [];
-      default:
-        throw new UnexpectedError();
-    }
-  }
-}
