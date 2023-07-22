@@ -8,18 +8,15 @@ import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
 describe('Data: ListRecommendations', () => {
   test('should list with httpGetClient calling correct url', () => {
     const url = makeUrl();
-    const httpClient = new HttpClientSpy();
-    const sut = new RemoteListRecommendations(url, httpClient);
+    const { sut, httpClient } = makeSut(url);
     sut.list();
     expect(httpClient.url).toEqual(url);
   });
 
   test('should return a list of recommendations if HttpGetClient returns ok', async () => {
-    const url = makeUrl();
-    const httpClient = new HttpClientSpy();
     const httpResult = mockRemoteListPlace();
+    const { sut, httpClient } = makeSut();
     httpClient.completeWithSuccess(HttpStatusCode.ok, httpResult);
-    const sut = new RemoteListRecommendations(url, httpClient);
     const listRecommendations = await sut.list();
 
     for (let index = 0; index < listRecommendations.length; index++) {
@@ -28,32 +25,32 @@ describe('Data: ListRecommendations', () => {
   });
 
   test('should throw UnexpectedError if HttpGetClient returns 500', async () => {
-    const url = makeUrl();
-    const httpClient = new HttpClientSpy();
+    const { sut, httpClient } = makeSut();
     httpClient.completeWithUnexpectedError();
-    const sut = new RemoteListRecommendations(url, httpClient);
     const promise = sut.list();
 
     await expect(promise).rejects.toThrow(new UnexpectedError());
   });
 
   test('should throw UnexpectedError if HttpGetClient returns 500', async () => {
-    const url = makeUrl();
-    const httpClient = new HttpClientSpy();
+    const { sut, httpClient } = makeSut();
     httpClient.completeWithUnexpectedError();
-    const sut = new RemoteListRecommendations(url, httpClient);
     const promise = sut.list();
 
     await expect(promise).rejects.toThrow(new UnexpectedError());
   });
 
   test('should return an empty list if HttpGetClient returns no content', async () => {
-    const url = makeUrl();
-    const httpClient = new HttpClientSpy();
+    const { sut, httpClient } = makeSut();
     httpClient.completeWithNoContentError();
-    const sut = new RemoteListRecommendations(url, httpClient);
     const httpResult = await sut.list();
 
     expect(httpResult).toEqual([]);
   });
 });
+
+const makeSut = (url = makeUrl()) => {
+  const httpClient = new HttpClientSpy();
+  const sut = new RemoteListRecommendations(url, httpClient);
+  return { sut, httpClient };
+};
