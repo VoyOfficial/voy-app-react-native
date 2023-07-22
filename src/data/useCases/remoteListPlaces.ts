@@ -8,16 +8,25 @@ export default class RemoteListPlaces implements ListPlaces {
     private readonly url: string,
     private readonly httpGetClient: HttpGetClient,
   ) {}
+  list = async (
+    location: {
+      long: string;
+      lat: string;
+    },
+    page?: number,
+    linesPerPage?: number | undefined,
+  ): Promise<PlaceModel[]> => {
+    let url = this.url + '?long=' + location.long + '&lat=' + location.lat;
+    if (page) url += '&page=' + page;
+    if (linesPerPage) url += '&linesPerPage=' + linesPerPage;
 
-  async list(): Promise<PlaceModel[]> {
     const httpResponse = await this.httpGetClient.get({
-      url: this.url,
+      url: url,
     });
-    const remotePlaces = httpResponse?.body || [];
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        return remotePlaces;
+        return httpResponse?.body || [];
       case HttpStatusCode.noContent:
         return [];
       case HttpStatusCode.forbidden:
@@ -25,5 +34,5 @@ export default class RemoteListPlaces implements ListPlaces {
       default:
         throw new UnexpectedError();
     }
-  }
+  };
 }
