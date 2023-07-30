@@ -25,6 +25,13 @@ describe('Components: CardList', () => {
       myDistanceOfLocal,
     );
   });
+
+  test('should show the reviews correctly', () => {
+    const reviews = '1307 avaliações';
+    const { getByTestId } = render(<CardList />);
+
+    expect(getByTestId('reviews_id').props.children).toEqual(reviews);
+  });
 });
 
 const CardList = () => {
@@ -33,6 +40,7 @@ const CardList = () => {
       <Text testID="title_id">{'Mini Mundo'}</Text>
       <Text testID="location_id">{'Gramado - RS'}</Text>
       <Text testID="distance_of_local_id">{'a 237m'}</Text>
+      <Text testID="reviews_id">{'1307 avaliações'}</Text>
     </View>
   );
 };
