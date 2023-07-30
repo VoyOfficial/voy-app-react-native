@@ -16,6 +16,15 @@ describe('Components: CardList', () => {
 
     expect(getByTestId('location_id').props.children).toEqual(location);
   });
+
+  test('should show the my distance of local correctly', () => {
+    const myDistanceOfLocal = 'a 237m';
+    const { getByTestId } = render(<CardList />);
+
+    expect(getByTestId('distance_of_local_id').props.children).toEqual(
+      myDistanceOfLocal,
+    );
+  });
 });
 
 const CardList = () => {
@@ -23,6 +32,7 @@ const CardList = () => {
     <View>
       <Text testID="title_id">{'Mini Mundo'}</Text>
       <Text testID="location_id">{'Gramado - RS'}</Text>
+      <Text testID="distance_of_local_id">{'a 237m'}</Text>
     </View>
   );
 };
