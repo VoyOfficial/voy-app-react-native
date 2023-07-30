@@ -1,25 +1,26 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { render } from '@testing-library/react-native';
+import { faker } from '@faker-js/faker';
 
 describe('Components: CardList', () => {
   test('should show title with success', () => {
     const title = 'Mini Mundo';
-    const { getByTestId } = render(<CardList />);
+    const { getByTestId } = render(<CardList imageUrl="" />);
 
     expect(getByTestId('title_id').props.children).toEqual(title);
   });
 
   test('should show location of local correctly', () => {
     const location = 'Gramado - RS';
-    const { getByTestId } = render(<CardList />);
+    const { getByTestId } = render(<CardList imageUrl="" />);
 
     expect(getByTestId('location_id').props.children).toEqual(location);
   });
 
   test('should show the my distance of local correctly', () => {
     const myDistanceOfLocal = 'a 237m';
-    const { getByTestId } = render(<CardList />);
+    const { getByTestId } = render(<CardList imageUrl="" />);
 
     expect(getByTestId('distance_of_local_id').props.children).toEqual(
       myDistanceOfLocal,
@@ -28,22 +29,36 @@ describe('Components: CardList', () => {
 
   test('should show rating comments correctly', () => {
     const reviews = '(1307 avaliações)';
-    const { getByTestId } = render(<CardList />);
+    const { getByTestId } = render(<CardList imageUrl="" />);
 
     expect(getByTestId('rating_comments_id').props.children).toEqual(reviews);
   });
 
   test('should show reviews correctly', () => {
     const reviews = '4.7/5';
-    const { getByTestId } = render(<CardList />);
+    const { getByTestId } = render(<CardList imageUrl="" />);
 
     expect(getByTestId('reviews_id').props.children).toEqual(reviews);
   });
+
+  test('should show image of local with success', () => {
+    const imageUrl = faker.image.imageUrl();
+    const { getByTestId } = render(<CardList imageUrl={imageUrl} />);
+
+    expect(getByTestId('image_of_place_id').props.source).toEqual({
+      uri: imageUrl,
+    });
+  });
 });
 
-const CardList = () => {
+type Props = {
+  imageUrl: string;
+};
+
+const CardList = ({ imageUrl }: Props) => {
   return (
     <View>
+      <Image testID="image_of_place_id" source={{ uri: imageUrl }} />
       <Text testID="title_id">{'Mini Mundo'}</Text>
       <Text testID="location_id">{'Gramado - RS'}</Text>
       <Text testID="distance_of_local_id">{'a 237m'}</Text>
