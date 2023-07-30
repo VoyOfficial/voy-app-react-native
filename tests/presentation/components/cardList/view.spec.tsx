@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { render } from '@testing-library/react-native';
 
 describe('Components: CardList', () => {
@@ -9,8 +9,20 @@ describe('Components: CardList', () => {
 
     expect(getByTestId('title_id').props.children).toEqual(title);
   });
+
+  test('should show location of local correctly', () => {
+    const location = 'Gramado - RS';
+    const { getByTestId } = render(<CardList />);
+
+    expect(getByTestId('location_id').props.children).toEqual(location);
+  });
 });
 
 const CardList = () => {
-  return <Text testID="title_id">{'Mini Mundo'}</Text>;
+  return (
+    <View>
+      <Text testID="title_id">{'Mini Mundo'}</Text>
+      <Text testID="location_id">{'Gramado - RS'}</Text>
+    </View>
+  );
 };
