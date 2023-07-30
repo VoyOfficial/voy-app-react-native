@@ -26,8 +26,15 @@ describe('Components: CardList', () => {
     );
   });
 
-  test('should show the reviews correctly', () => {
-    const reviews = '1307 avaliações';
+  test('should show rating comments correctly', () => {
+    const reviews = '(1307 avaliações)';
+    const { getByTestId } = render(<CardList />);
+
+    expect(getByTestId('rating_comments_id').props.children).toEqual(reviews);
+  });
+
+  test('should show reviews correctly', () => {
+    const reviews = '4.7/5';
     const { getByTestId } = render(<CardList />);
 
     expect(getByTestId('reviews_id').props.children).toEqual(reviews);
@@ -40,7 +47,8 @@ const CardList = () => {
       <Text testID="title_id">{'Mini Mundo'}</Text>
       <Text testID="location_id">{'Gramado - RS'}</Text>
       <Text testID="distance_of_local_id">{'a 237m'}</Text>
-      <Text testID="reviews_id">{'1307 avaliações'}</Text>
+      <Text testID="rating_comments_id">{'(1307 avaliações)'}</Text>
+      <Text testID="reviews_id">{'4.7/5'}</Text>
     </View>
   );
 };
