@@ -5,22 +5,49 @@ import { faker } from '@faker-js/faker';
 
 describe('Components: CardList', () => {
   test('should show title with success', () => {
-    const title = 'Mini Mundo';
-    const { getByTestId } = render(<CardList imageUrl="" />);
+    const title = faker.company.name();
+    const { getByTestId } = render(
+      <CardList
+        imageUrl=""
+        title={title}
+        location=""
+        myDistanceOfLocal=""
+        ratingComments=""
+        reviews=""
+      />,
+    );
 
     expect(getByTestId('title_id').props.children).toEqual(title);
   });
 
   test('should show location of local correctly', () => {
-    const location = 'Gramado - RS';
-    const { getByTestId } = render(<CardList imageUrl="" />);
+    const location = faker.address.cityName();
+    const { getByTestId } = render(
+      <CardList
+        imageUrl=""
+        title=""
+        location={location}
+        myDistanceOfLocal=""
+        ratingComments=""
+        reviews=""
+      />,
+    );
 
     expect(getByTestId('location_id').props.children).toEqual(location);
   });
 
   test('should show the my distance of local correctly', () => {
-    const myDistanceOfLocal = 'a 237m';
-    const { getByTestId } = render(<CardList imageUrl="" />);
+    const myDistanceOfLocal = faker.address.latitude();
+    const { getByTestId } = render(
+      <CardList
+        imageUrl=""
+        title=""
+        location=""
+        myDistanceOfLocal={myDistanceOfLocal}
+        ratingComments=""
+        reviews=""
+      />,
+    );
 
     expect(getByTestId('distance_of_local_id').props.children).toEqual(
       myDistanceOfLocal,
@@ -28,22 +55,50 @@ describe('Components: CardList', () => {
   });
 
   test('should show rating comments correctly', () => {
-    const reviews = '(1307 avaliações)';
-    const { getByTestId } = render(<CardList imageUrl="" />);
+    const ratingComments = faker.random.word();
+    const { getByTestId } = render(
+      <CardList
+        imageUrl=""
+        title=""
+        location=""
+        myDistanceOfLocal=""
+        ratingComments={ratingComments}
+        reviews=""
+      />,
+    );
 
-    expect(getByTestId('rating_comments_id').props.children).toEqual(reviews);
+    expect(getByTestId('rating_comments_id').props.children).toEqual(
+      ratingComments,
+    );
   });
 
   test('should show reviews correctly', () => {
-    const reviews = '4.7/5';
-    const { getByTestId } = render(<CardList imageUrl="" />);
-
+    const reviews = faker.random.numeric();
+    const { getByTestId } = render(
+      <CardList
+        imageUrl=""
+        title=""
+        location=""
+        myDistanceOfLocal=""
+        ratingComments=""
+        reviews={reviews}
+      />,
+    );
     expect(getByTestId('reviews_id').props.children).toEqual(reviews);
   });
 
   test('should show image of local with success', () => {
     const imageUrl = faker.image.imageUrl();
-    const { getByTestId } = render(<CardList imageUrl={imageUrl} />);
+    const { getByTestId } = render(
+      <CardList
+        imageUrl={imageUrl}
+        title=""
+        location=""
+        myDistanceOfLocal=""
+        ratingComments=""
+        reviews=""
+      />,
+    );
 
     expect(getByTestId('image_of_place_id').props.source).toEqual({
       uri: imageUrl,
@@ -53,17 +108,29 @@ describe('Components: CardList', () => {
 
 type Props = {
   imageUrl: string;
+  title: string;
+  location: string;
+  myDistanceOfLocal: string;
+  ratingComments: string;
+  reviews: string;
 };
 
-const CardList = ({ imageUrl }: Props) => {
+const CardList = ({
+  imageUrl,
+  title,
+  location,
+  myDistanceOfLocal,
+  ratingComments,
+  reviews,
+}: Props) => {
   return (
     <View>
       <Image testID="image_of_place_id" source={{ uri: imageUrl }} />
-      <Text testID="title_id">{'Mini Mundo'}</Text>
-      <Text testID="location_id">{'Gramado - RS'}</Text>
-      <Text testID="distance_of_local_id">{'a 237m'}</Text>
-      <Text testID="rating_comments_id">{'(1307 avaliações)'}</Text>
-      <Text testID="reviews_id">{'4.7/5'}</Text>
+      <Text testID="title_id">{title}</Text>
+      <Text testID="location_id">{location}</Text>
+      <Text testID="distance_of_local_id">{myDistanceOfLocal}</Text>
+      <Text testID="rating_comments_id">{ratingComments}</Text>
+      <Text testID="reviews_id">{reviews}</Text>
     </View>
   );
 };
