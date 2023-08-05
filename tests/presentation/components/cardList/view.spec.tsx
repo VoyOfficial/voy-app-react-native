@@ -6,48 +6,21 @@ import { faker } from '@faker-js/faker';
 describe('Components: CardList', () => {
   test('should show title with success', () => {
     const title = faker.company.name();
-    const { getByTestId } = render(
-      <CardList
-        imageUrl=""
-        title={title}
-        location=""
-        myDistanceOfLocal=""
-        ratingComments=""
-        reviews=""
-      />,
-    );
+    const { getByTestId } = makeSut(title);
 
     expect(getByTestId('title_id').props.children).toEqual(title);
   });
 
   test('should show location of local correctly', () => {
     const location = faker.address.cityName();
-    const { getByTestId } = render(
-      <CardList
-        imageUrl=""
-        title=""
-        location={location}
-        myDistanceOfLocal=""
-        ratingComments=""
-        reviews=""
-      />,
-    );
+    const { getByTestId } = makeSut('', location);
 
     expect(getByTestId('location_id').props.children).toEqual(location);
   });
 
   test('should show the my distance of local correctly', () => {
     const myDistanceOfLocal = faker.address.latitude();
-    const { getByTestId } = render(
-      <CardList
-        imageUrl=""
-        title=""
-        location=""
-        myDistanceOfLocal={myDistanceOfLocal}
-        ratingComments=""
-        reviews=""
-      />,
-    );
+    const { getByTestId } = makeSut('', '', myDistanceOfLocal);
 
     expect(getByTestId('distance_of_local_id').props.children).toEqual(
       myDistanceOfLocal,
@@ -56,16 +29,7 @@ describe('Components: CardList', () => {
 
   test('should show rating comments correctly', () => {
     const ratingComments = faker.random.word();
-    const { getByTestId } = render(
-      <CardList
-        imageUrl=""
-        title=""
-        location=""
-        myDistanceOfLocal=""
-        ratingComments={ratingComments}
-        reviews=""
-      />,
-    );
+    const { getByTestId } = makeSut('', '', '', ratingComments);
 
     expect(getByTestId('rating_comments_id').props.children).toEqual(
       ratingComments,
@@ -74,37 +38,39 @@ describe('Components: CardList', () => {
 
   test('should show reviews correctly', () => {
     const reviews = faker.random.numeric();
-    const { getByTestId } = render(
-      <CardList
-        imageUrl=""
-        title=""
-        location=""
-        myDistanceOfLocal=""
-        ratingComments=""
-        reviews={reviews}
-      />,
-    );
+    const { getByTestId } = makeSut('', '', '', '', reviews);
     expect(getByTestId('reviews_id').props.children).toEqual(reviews);
   });
 
   test('should show image of local with success', () => {
     const imageUrl = faker.image.imageUrl();
-    const { getByTestId } = render(
-      <CardList
-        imageUrl={imageUrl}
-        title=""
-        location=""
-        myDistanceOfLocal=""
-        ratingComments=""
-        reviews=""
-      />,
-    );
+    const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
 
     expect(getByTestId('image_of_place_id').props.source).toEqual({
       uri: imageUrl,
     });
   });
 });
+
+const makeSut = (
+  title = '',
+  location = '',
+  myDistanceOfLocal = '',
+  ratingComments = '',
+  reviews = '',
+  imageUrl = '',
+) => {
+  return render(
+    <CardList
+      imageUrl={imageUrl}
+      title={title}
+      location={location}
+      myDistanceOfLocal={myDistanceOfLocal}
+      ratingComments={ratingComments}
+      reviews={reviews}
+    />,
+  );
+};
 
 type Props = {
   imageUrl: string;
