@@ -43,6 +43,9 @@
       "~/infra/http": [
         "src/infra/http"
       ],
+      "~/presentation/components": [
+        "src/presentation/components"
+      ]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
