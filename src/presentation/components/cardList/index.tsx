@@ -1,5 +1,15 @@
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import {
+  Container,
+  ContentWrapper,
+  DistanceOfLocal,
+  ImagePlace,
+  Location,
+  RatingComments,
+  ReviewWrapper,
+  Reviews,
+  Title,
+} from './styles';
 
 type Props = {
   imageUrl: string;
@@ -19,84 +29,29 @@ const CardList = ({
   reviews,
 }: Props) => {
   return (
-    <View
-      style={{
-        backgroundColor: '#FFF',
-        flexDirection: 'row',
-        borderRadius: 15,
-        height: 115,
-      }}
-    >
-      <Image
+    <Container>
+      <ImagePlace
         style={{
-          width: 115,
-          height: 115,
           borderTopLeftRadius: 15,
           borderBottomLeftRadius: 15,
         }}
         testID="image_of_place_id"
         source={{ uri: imageUrl }}
       />
-      <View style={{ margin: 12, justifyContent: 'space-around' }}>
-        <Text
-          style={{
-            color: '#212121',
-            fontSize: 17,
-            fontWeight: '400',
-            lineHeight: 21.25,
-          }}
-          testID="title_id"
-        >
-          {title}
-        </Text>
-        <Text
-          style={{
-            fontSize: 13,
-            fontWeight: '400',
-            lineHeight: 16.25,
-            color: '#AEAEAE',
-          }}
-          testID="location_id"
-        >
-          {location}
-        </Text>
-        <Text
-          style={{
-            fontSize: 13,
-            fontWeight: '400',
-            lineHeight: 16.25,
-            color: '#AEAEAE',
-          }}
-          testID="distance_of_local_id"
-        >
+      <ContentWrapper>
+        <Title testID="title_id">{title}</Title>
+        <Location testID="location_id">{location}</Location>
+        <DistanceOfLocal testID="distance_of_local_id">
           {myDistanceOfLocal}
-        </Text>
-        <View style={{ flexDirection: 'row' }}>
-          <Text
-            style={{
-              color: '#212121',
-              fontSize: 13,
-              fontWeight: '400',
-              lineHeight: 16.25,
-            }}
-            testID="reviews_id"
-          >
-            {reviews}
-          </Text>
-          <Text
-            style={{
-              color: '#AEAEAE',
-              fontSize: 13,
-              fontWeight: '400',
-              lineHeight: 16.25,
-            }}
-            testID="rating_comments_id"
-          >
+        </DistanceOfLocal>
+        <ReviewWrapper>
+          <Reviews testID="reviews_id">{reviews}</Reviews>
+          <RatingComments testID="rating_comments_id">
             {`(${ratingComments})`}
-          </Text>
-        </View>
-      </View>
-    </View>
+          </RatingComments>
+        </ReviewWrapper>
+      </ContentWrapper>
+    </Container>
   );
 };
 
