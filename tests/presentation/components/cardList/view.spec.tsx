@@ -32,7 +32,7 @@ describe('Components: CardList', () => {
     const { getByTestId } = makeSut('', '', '', ratingComments);
 
     expect(getByTestId('rating_comments_id').props.children).toEqual(
-      `(${ratingComments})`,
+      ` (${ratingComments})`,
     );
   });
 

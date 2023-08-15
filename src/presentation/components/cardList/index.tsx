@@ -47,7 +47,7 @@ const CardList = ({
         <ReviewWrapper>
           <Reviews testID="reviews_id">{reviews}</Reviews>
           <RatingComments testID="rating_comments_id">
-            {`(${ratingComments})`}
+            {` (${ratingComments})`}
           </RatingComments>
         </ReviewWrapper>
       </ContentWrapper>
