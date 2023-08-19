@@ -36,7 +36,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -51,5 +51,19 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>BaiJamjuree-Bold.ttf</string>
+		<string>BaiJamjuree-Light.ttf</string>
+		<string>BaiJamjuree-Medium.ttf</string>
+		<string>BaiJamjuree-Regular.ttf</string>
+		<string>BaiJamjuree-SemiBold.ttf</string>
+		<string>LexendDeca-Black.ttf</string>
+		<string>LexendDeca-Bold.ttf</string>
+		<string>LexendDeca-Light.ttf</string>
+		<string>LexendDeca-Medium.ttf</string>
+		<string>LexendDeca-Regular.ttf</string>
+		<string>LexendDeca-SemiBold.ttf</string>
+	</array>
 </dict>
 </plist>
