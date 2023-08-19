@@ -1,4 +1,4 @@
-import { UnexpectedError, ValidationError } from '~/data/errors';
+import { NoPermissionError, UnexpectedError } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
 import { RemoteListPlaces } from '~/data/useCases';
 import { makeUrl } from '../helpers/testFactories';
@@ -50,7 +50,7 @@ describe('Data: RemoteListPlaces', () => {
     );
   });
 
-  test('should throw ValidationError if HttpClient return 403', async () => {
+  test('should throw NoPermissionError if HttpClient return 403', async () => {
     const { sut, httpClient } = makeSut();
     httpClient.response = {
       statusCode: HttpStatusCode.forbidden,
@@ -58,7 +58,7 @@ describe('Data: RemoteListPlaces', () => {
 
     const promise = sut.list({ long: '', lat: '' });
 
-    await expect(promise).rejects.toThrow(new ValidationError());
+    await expect(promise).rejects.toThrow(new NoPermissionError());
   });
 
   test('Should throw UnexpectedError if HttpClient returns 500', async () => {

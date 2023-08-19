@@ -1,7 +1,7 @@
 import { ListRecommendations } from '~/domain/useCases';
 import { RecommendationModel } from '~/domain/models';
 import { HttpGetClient, HttpStatusCode } from '../http';
-import { UnexpectedError } from '../errors';
+import { NoPermissionError, UnexpectedError } from '../errors';
 
 export default class RemoteListRecommendations implements ListRecommendations {
   constructor(
@@ -19,6 +19,8 @@ export default class RemoteListRecommendations implements ListRecommendations {
         return body;
       case HttpStatusCode.noContent:
         return [];
+      case HttpStatusCode.forbidden:
+        throw new NoPermissionError();
       default:
         throw new UnexpectedError();
     }

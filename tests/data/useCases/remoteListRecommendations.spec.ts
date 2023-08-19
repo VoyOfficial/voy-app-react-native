@@ -1,5 +1,5 @@
 import { HttpStatusCode } from '~/data/http';
-import { UnexpectedError } from '~/data/errors';
+import { NoPermissionError, UnexpectedError } from '~/data/errors';
 import { RemoteListRecommendations } from '~/data/useCases';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import { makeUrl } from '../helpers/testFactories';
@@ -46,6 +46,17 @@ describe('Data: ListRecommendations', () => {
     const httpResult = await sut.list();
 
     expect(httpResult).toEqual([]);
+  });
+
+  test('should throw NoPermission exception if HttpClient return is forbidden status', async () => {
+    const { sut, httpClient } = makeSut();
+    httpClient.response = {
+      statusCode: HttpStatusCode.forbidden,
+    };
+
+    const promise = sut.list();
+
+    await expect(promise).rejects.toThrow(new NoPermissionError());
   });
 });
 

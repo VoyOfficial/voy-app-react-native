@@ -1,6 +1,6 @@
 import { PlaceModel } from '~/domain/models';
 import { ListPlaces } from '~/domain/useCases';
-import { UnexpectedError, ValidationError } from '../errors';
+import { NoPermissionError, UnexpectedError } from '../errors';
 import { HttpGetClient, HttpStatusCode } from '../http';
 
 export default class RemoteListPlaces implements ListPlaces {
@@ -30,7 +30,7 @@ export default class RemoteListPlaces implements ListPlaces {
       case HttpStatusCode.noContent:
         return [];
       case HttpStatusCode.forbidden:
-        throw new ValidationError();
+        throw new NoPermissionError();
       default:
         throw new UnexpectedError();
     }
