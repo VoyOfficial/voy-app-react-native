@@ -6,8 +6,8 @@ import {
   DistanceOfLocal,
   IconWrapper,
   ImagePlace,
+  LineWrapper,
   Location,
-  LocationWrapper,
   RatingComments,
   ReviewWrapper,
   Reviews,
@@ -43,15 +43,20 @@ const CardList = ({
       />
       <ContentWrapper>
         <Title testID="title_id">{title}</Title>
-        <LocationWrapper>
+        <LineWrapper>
           <IconWrapper>
             <Icon testID="location_icon_id" name="location" />
           </IconWrapper>
           <Location testID="location_id">{location}</Location>
-        </LocationWrapper>
-        <DistanceOfLocal testID="distance_of_local_id">
-          {myDistanceOfLocal}
-        </DistanceOfLocal>
+        </LineWrapper>
+        <LineWrapper>
+          <IconWrapper>
+            <Icon testID="walking_icon_id" name="walking" />
+          </IconWrapper>
+          <DistanceOfLocal testID="distance_of_local_id">
+            {myDistanceOfLocal}
+          </DistanceOfLocal>
+        </LineWrapper>
         <ReviewWrapper>
           <Reviews testID="reviews_id">{reviews}</Reviews>
           <RatingComments testID="rating_comments_id">

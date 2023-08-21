@@ -25,7 +25,7 @@ export const Title = styled.Text`
   line-height: 21.25px;
 `;
 
-export const LocationWrapper = styled.View`
+export const LineWrapper = styled.View`
   flex-direction: row;
   align-items: center;
 `;

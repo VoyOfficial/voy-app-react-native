@@ -57,6 +57,13 @@ describe('Components: CardList', () => {
 
     expect(getByTestId('location_icon_id')).toBeTruthy();
   });
+
+  test('should show walking icon with success', () => {
+    const imageUrl = faker.image.imageUrl();
+    const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
+
+    expect(getByTestId('walking_icon_id')).toBeTruthy();
+  });
 });
 
 const makeSut = (
