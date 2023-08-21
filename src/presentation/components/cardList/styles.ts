@@ -25,6 +25,11 @@ export const Title = styled.Text`
   line-height: 21.25px;
 `;
 
+export const LocationWrapper = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
 export const Location = styled.Text`
   font-family: 'LexendDeca-Regular';
   font-size: 13px;
@@ -59,4 +64,8 @@ export const RatingComments = styled.Text`
 
 export const ReviewWrapper = styled.View`
   flex-direction: row;
+`;
+
+export const IconWrapper = styled.View`
+  margin-right: 7px;
 `;

@@ -1,10 +1,13 @@
 import React from 'react';
+import Icon from '../../assets/fonts/Voy';
 import {
   Container,
   ContentWrapper,
   DistanceOfLocal,
+  IconWrapper,
   ImagePlace,
   Location,
+  LocationWrapper,
   RatingComments,
   ReviewWrapper,
   Reviews,
@@ -40,7 +43,12 @@ const CardList = ({
       />
       <ContentWrapper>
         <Title testID="title_id">{title}</Title>
-        <Location testID="location_id">{location}</Location>
+        <LocationWrapper>
+          <IconWrapper>
+            <Icon testID="location_icon_id" name="location" />
+          </IconWrapper>
+          <Location testID="location_id">{location}</Location>
+        </LocationWrapper>
         <DistanceOfLocal testID="distance_of_local_id">
           {myDistanceOfLocal}
         </DistanceOfLocal>

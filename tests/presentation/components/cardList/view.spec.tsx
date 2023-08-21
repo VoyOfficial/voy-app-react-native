@@ -50,6 +50,13 @@ describe('Components: CardList', () => {
       uri: imageUrl,
     });
   });
+
+  test('should show location icon with success', () => {
+    const imageUrl = faker.image.imageUrl();
+    const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
+
+    expect(getByTestId('location_icon_id')).toBeTruthy();
+  });
 });
 
 const makeSut = (
