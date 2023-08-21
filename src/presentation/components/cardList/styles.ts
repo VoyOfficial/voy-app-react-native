@@ -62,10 +62,6 @@ export const RatingComments = styled.Text`
   color: #aeaeae;
 `;
 
-export const ReviewWrapper = styled.View`
-  flex-direction: row;
-`;
-
 export const IconWrapper = styled.View`
   margin-right: 7px;
 `;

@@ -9,7 +9,6 @@ import {
   LineWrapper,
   Location,
   RatingComments,
-  ReviewWrapper,
   Reviews,
   Title,
 } from './styles';
@@ -57,12 +56,15 @@ const CardList = ({
             {myDistanceOfLocal}
           </DistanceOfLocal>
         </LineWrapper>
-        <ReviewWrapper>
+        <LineWrapper>
+          <IconWrapper>
+            <Icon color="#FFAB5E" testID="star_icon_id" name="star" />
+          </IconWrapper>
           <Reviews testID="reviews_id">{reviews}</Reviews>
           <RatingComments testID="rating_comments_id">
             {` (${ratingComments})`}
           </RatingComments>
-        </ReviewWrapper>
+        </LineWrapper>
       </ContentWrapper>
     </Container>
   );

@@ -64,6 +64,13 @@ describe('Components: CardList', () => {
 
     expect(getByTestId('walking_icon_id')).toBeTruthy();
   });
+
+  test('should show star icon with success', () => {
+    const imageUrl = faker.image.imageUrl();
+    const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
+
+    expect(getByTestId('star_icon_id')).toBeTruthy();
+  });
 });
 
 const makeSut = (
