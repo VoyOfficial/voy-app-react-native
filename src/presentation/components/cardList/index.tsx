@@ -1,6 +1,7 @@
 import React from 'react';
 import Icon from '../../assets/fonts/Voy';
 import {
+  AmountOfReviews,
   Container,
   ContentWrapper,
   DistanceOfLocal,
@@ -8,8 +9,7 @@ import {
   ImagePlace,
   LineWrapper,
   Location,
-  RatingComments,
-  Reviews,
+  Rating,
   Title,
 } from './styles';
 
@@ -18,8 +18,8 @@ type Props = {
   title: string;
   location: string;
   myDistanceOfLocal: string;
-  ratingComments: string;
-  reviews: string;
+  amountOfReviews: string;
+  rating: string;
 };
 
 const CardList = ({
@@ -27,8 +27,8 @@ const CardList = ({
   title,
   location,
   myDistanceOfLocal,
-  ratingComments,
-  reviews,
+  amountOfReviews,
+  rating,
 }: Props) => {
   return (
     <Container>
@@ -60,10 +60,10 @@ const CardList = ({
           <IconWrapper>
             <Icon color="#FFAB5E" testID="star_icon_id" name="star" />
           </IconWrapper>
-          <Reviews testID="reviews_id">{reviews}</Reviews>
-          <RatingComments testID="rating_comments_id">
-            {` (${ratingComments})`}
-          </RatingComments>
+          <Rating testID="rating_id">{rating}</Rating>
+          <AmountOfReviews testID="amount_of_reviews_id">
+            {` (${amountOfReviews})`}
+          </AmountOfReviews>
         </LineWrapper>
       </ContentWrapper>
     </Container>

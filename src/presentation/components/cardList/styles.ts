@@ -46,7 +46,7 @@ export const DistanceOfLocal = styled.Text`
   color: #aeaeae;
 `;
 
-export const Reviews = styled.Text`
+export const Rating = styled.Text`
   font-family: 'BaiJamjuree-Bold';
   font-size: 13px;
   font-weight: 400;
@@ -54,7 +54,7 @@ export const Reviews = styled.Text`
   color: #212121;
 `;
 
-export const RatingComments = styled.Text`
+export const AmountOfReviews = styled.Text`
   font-family: 'LexendDeca-Regular';
   font-size: 13px;
   font-weight: 400;

@@ -27,19 +27,19 @@ describe('Components: CardList', () => {
     );
   });
 
-  test('should show rating comments correctly', () => {
-    const ratingComments = faker.random.word();
-    const { getByTestId } = makeSut('', '', '', ratingComments);
+  test('should show amount of reviews correctly', () => {
+    const amountOfReviews = faker.random.word();
+    const { getByTestId } = makeSut('', '', '', amountOfReviews);
 
-    expect(getByTestId('rating_comments_id').props.children).toEqual(
-      ` (${ratingComments})`,
+    expect(getByTestId('amount_of_reviews_id').props.children).toEqual(
+      ` (${amountOfReviews})`,
     );
   });
 
-  test('should show reviews correctly', () => {
-    const reviews = faker.random.numeric();
-    const { getByTestId } = makeSut('', '', '', '', reviews);
-    expect(getByTestId('reviews_id').props.children).toEqual(reviews);
+  test('should show rating correctly', () => {
+    const rating = faker.random.numeric();
+    const { getByTestId } = makeSut('', '', '', '', rating);
+    expect(getByTestId('rating_id').props.children).toEqual(rating);
   });
 
   test('should show image of local with success', () => {
@@ -77,8 +77,8 @@ const makeSut = (
   title = '',
   location = '',
   myDistanceOfLocal = '',
-  ratingComments = '',
-  reviews = '',
+  amountOfReviews = '',
+  rating = '',
   imageUrl = '',
 ) => {
   return render(
@@ -87,8 +87,8 @@ const makeSut = (
       title={title}
       location={location}
       myDistanceOfLocal={myDistanceOfLocal}
-      ratingComments={ratingComments}
-      reviews={reviews}
+      amountOfReviews={amountOfReviews}
+      rating={rating}
     />,
   );
 };
