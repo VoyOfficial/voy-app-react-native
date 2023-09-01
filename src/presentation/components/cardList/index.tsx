@@ -1,4 +1,5 @@
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
 import Icon from '../../assets/fonts/Voy';
 import {
   AmountOfReviews,
@@ -66,6 +67,7 @@ const CardList = ({
           </AmountOfReviews>
         </LineWrapper>
       </ContentWrapper>
+      <TouchableOpacity testID="save_button_id"></TouchableOpacity>
     </Container>
   );
 };

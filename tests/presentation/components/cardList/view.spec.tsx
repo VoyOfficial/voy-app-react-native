@@ -71,6 +71,13 @@ describe('Components: CardList', () => {
 
     expect(getByTestId('star_icon_id')).toBeTruthy();
   });
+
+  test('should show save to favorites button', () => {
+    const imageUrl = faker.image.imageUrl();
+    const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
+
+    expect(getByTestId('save_button_id')).toBeTruthy();
+  });
 });
 
 const makeSut = (
