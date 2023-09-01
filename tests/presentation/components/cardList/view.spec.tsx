@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
 import { CardList } from '~/presentation/components';
 
@@ -78,6 +78,18 @@ describe('Components: CardList', () => {
 
     expect(getByTestId('save_button_id')).toBeTruthy();
   });
+
+  test('should save to favorites when pressing favorite button', () => {
+    const favorite = jest.fn();
+    const imageUrl = faker.image.imageUrl();
+    const { getByTestId } = makeSut('', '', '', '', '', imageUrl, favorite);
+
+    const saveButton = getByTestId('save_button_id');
+
+    fireEvent.press(saveButton);
+
+    expect(favorite).toHaveBeenCalledTimes(1);
+  });
 });
 
 const makeSut = (
@@ -87,6 +99,7 @@ const makeSut = (
   amountOfReviews = '',
   rating = '',
   imageUrl = '',
+  favorite = () => {},
 ) => {
   return render(
     <CardList
@@ -96,6 +109,7 @@ const makeSut = (
       myDistanceOfLocal={myDistanceOfLocal}
       amountOfReviews={amountOfReviews}
       rating={rating}
+      favorite={favorite}
     />,
   );
 };

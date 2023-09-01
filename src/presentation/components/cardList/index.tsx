@@ -21,6 +21,7 @@ type Props = {
   myDistanceOfLocal: string;
   amountOfReviews: string;
   rating: string;
+  favorite: () => void;
 };
 
 const CardList = ({
@@ -30,6 +31,7 @@ const CardList = ({
   myDistanceOfLocal,
   amountOfReviews,
   rating,
+  favorite,
 }: Props) => {
   return (
     <Container>
@@ -67,7 +69,10 @@ const CardList = ({
           </AmountOfReviews>
         </LineWrapper>
       </ContentWrapper>
-      <TouchableOpacity testID="save_button_id"></TouchableOpacity>
+      <TouchableOpacity
+        testID="save_button_id"
+        onPress={favorite}
+      ></TouchableOpacity>
     </Container>
   );
 };
