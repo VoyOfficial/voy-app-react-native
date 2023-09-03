@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import Icon from '../../assets/fonts/Voy';
 import {
   AmountOfReviews,
@@ -35,14 +35,7 @@ const CardList = ({
 }: Props) => {
   return (
     <Container>
-      <ImagePlace
-        style={{
-          borderTopLeftRadius: 15,
-          borderBottomLeftRadius: 15,
-        }}
-        testID="image_of_place_id"
-        source={{ uri: imageUrl }}
-      />
+      <ImagePlace testID="image_of_place_id" source={{ uri: imageUrl }} />
       <ContentWrapper>
         <Title testID="title_id">{title}</Title>
         <LineWrapper>
@@ -69,10 +62,15 @@ const CardList = ({
           </AmountOfReviews>
         </LineWrapper>
       </ContentWrapper>
-      <TouchableOpacity
-        testID="save_button_id"
-        onPress={favorite}
-      ></TouchableOpacity>
+      <View style={{ margin: 12 }}>
+        <TouchableOpacity
+          style={{ backgroundColor: '#F1F5F6', padding: 7, borderRadius: 11 }}
+          testID="save_button_id"
+          onPress={favorite}
+        >
+          <Icon name="save" testID="save_icon_id" size={19} color="#C5CACC" />
+        </TouchableOpacity>
+      </View>
     </Container>
   );
 };
