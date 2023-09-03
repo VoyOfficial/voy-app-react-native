@@ -67,3 +67,13 @@ export const AmountOfReviews = styled.Text`
 export const IconWrapper = styled.View`
   margin-right: 7px;
 `;
+
+export const FavoriteButton = styled.TouchableOpacity`
+  background-color: #f1f5f6;
+  padding: 7px;
+  border-radius: 11px;
+`;
+
+export const FavoriteWrapper = styled.View`
+  margin: 12px;
+`;
