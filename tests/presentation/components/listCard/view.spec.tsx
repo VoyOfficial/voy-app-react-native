@@ -1,9 +1,9 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
-import { CardList } from '~/presentation/components';
+import { ListCard } from '~/presentation/components';
 
-describe('Components: CardList', () => {
+describe('Components: ListCard', () => {
   test('should show title with success', () => {
     const title = faker.company.name();
     const { getByTestId } = makeSut(title);
@@ -102,7 +102,7 @@ const makeSut = (
   favorite = () => {},
 ) => {
   return render(
-    <CardList
+    <ListCard
       imageUrl={imageUrl}
       title={title}
       location={location}

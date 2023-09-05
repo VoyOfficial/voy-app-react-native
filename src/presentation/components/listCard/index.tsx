@@ -26,7 +26,7 @@ type Props = {
   favorite: () => void;
 };
 
-const CardList = ({
+const ListCard = ({
   imageUrl,
   title,
   location,
@@ -75,4 +75,4 @@ const CardList = ({
   );
 };
 
-export default CardList;
+export default ListCard;
