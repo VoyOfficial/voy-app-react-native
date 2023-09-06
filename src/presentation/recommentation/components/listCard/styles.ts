@@ -16,9 +16,7 @@ export const ImageContent = styled.Image`
   height: 155px;
 `;
 
-export const Wrapper = styled.View`
-  padding: 10px;
-`;
+export const ContentWrapper = styled.View``;
 
 export const WrapperTitle = styled.View`
   flex-direction: row;
@@ -48,7 +46,12 @@ export const IconStartWrapper = styled.View`
   margin-right: 7px;
 `;
 
-export const SaveBtn = styled.TouchableOpacity``;
+export const SaveBtn = styled.TouchableOpacity`
+  background-color: #f1f5f6;
+  border-radius: 11px;
+  padding: 7px;
+  height: 33px;
+`;
 
 export const DistanceOfLocal = styled.Text`
   font-family: 'LexendDeca-Regular';
@@ -67,7 +70,7 @@ export const Title = styled.Text`
 `;
 
 export const Rating = styled.Text`
-  font-family: 'BaiJamjuree-Bold';
+  font-family: 'LexendDeca-Regular';
   font-size: 13px;
   font-weight: 400;
   line-height: 16.25px;
@@ -80,4 +83,11 @@ export const Location = styled.Text`
   font-weight: 400;
   line-height: 16.25px;
   color: #aeaeae;
+`;
+
+export const Wrapper = styled.View`
+  flex-direction: row;
+  flex: 1;
+  justify-content: space-between;
+  padding: 10px;
 `;

@@ -2,6 +2,7 @@ import React from 'react';
 import Icon from '../../../assets/fonts/Voy';
 import {
   Container,
+  ContentWrapper,
   DistanceOfLocal,
   IconStartWrapper,
   IconWrapper,
@@ -43,30 +44,32 @@ const ListCard = ({
         }}
       />
       <Wrapper>
-        <WrapperTitle>
-          <Title testID="title_id">{title}</Title>
-          <SaveBtn testID="save_location_id" onPress={onSaveLocation}>
-            <Save name="save" testID="save_icon_id" />
-          </SaveBtn>
-        </WrapperTitle>
-        <WrapperLine>
-          <IconWrapper>
-            <Icon testID="location_icon_id" name="location" />
-          </IconWrapper>
-          <Location testID="location_id">{location}</Location>
-        </WrapperLine>
-        <WrapperLine>
-          <IconWrapper>
-            <Icon testID="walking_icon_id" name="walking" />
-          </IconWrapper>
-          <DistanceOfLocal testID="distance_of_local_id">
-            {myDistanceOfLocal}
-          </DistanceOfLocal>
-          <IconStartWrapper>
-            <Icon color="#FFAB5E" testID="star_icon_id" name="star" />
-          </IconStartWrapper>
-          <Rating testID="rating_id">{rating}</Rating>
-        </WrapperLine>
+        <ContentWrapper>
+          <WrapperTitle>
+            <Title testID="title_id">{title}</Title>
+          </WrapperTitle>
+          <WrapperLine>
+            <IconWrapper>
+              <Icon testID="location_icon_id" name="location" />
+            </IconWrapper>
+            <Location testID="location_id">{location}</Location>
+          </WrapperLine>
+          <WrapperLine>
+            <IconWrapper>
+              <Icon testID="walking_icon_id" name="walking" />
+            </IconWrapper>
+            <DistanceOfLocal testID="distance_of_local_id">
+              {myDistanceOfLocal}
+            </DistanceOfLocal>
+            <IconStartWrapper>
+              <Icon color="#FFAB5E" testID="star_icon_id" name="star" />
+            </IconStartWrapper>
+            <Rating testID="rating_id">{rating}</Rating>
+          </WrapperLine>
+        </ContentWrapper>
+        <SaveBtn testID="save_location_id" onPress={onSaveLocation}>
+          <Save name="save" testID="save_icon_id" />
+        </SaveBtn>
       </Wrapper>
     </Container>
   );
