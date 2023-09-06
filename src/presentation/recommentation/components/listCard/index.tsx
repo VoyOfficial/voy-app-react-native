@@ -1,18 +1,16 @@
 import React from 'react';
-import {
-  DistanceOfLocal,
-  Location,
-  Rating,
-  Title,
-} from '../../../components/cardList/styles';
 import Icon from '../../../assets/fonts/Voy';
 import {
   Container,
+  DistanceOfLocal,
   IconStartWrapper,
   IconWrapper,
   ImageContent,
+  Location,
+  Rating,
   Save,
   SaveBtn,
+  Title,
   Wrapper,
   WrapperLine,
   WrapperTitle,
