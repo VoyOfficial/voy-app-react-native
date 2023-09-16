@@ -1,7 +1,7 @@
 enum Ordination {
   MostRated = 'Mais avaliados',
   MostCommented = 'Mais comentados',
-  Distance = 'Distância',
+  Closer = 'Mais próximo',
 }
 
 export default Ordination;
