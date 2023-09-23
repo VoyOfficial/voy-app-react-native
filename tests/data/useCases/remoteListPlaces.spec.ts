@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { NoPermissionError, UnexpectedError } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
 import { RemoteListPlaces } from '~/data/useCases';
@@ -18,26 +19,13 @@ describe('Data: RemoteListPlaces', () => {
     );
   });
 
-  test('should list with httpPostClient calling correct url with page', async () => {
+  test('should list with httpPostClient calling correct url with nextPageToken', async () => {
     const url = makeUrl();
-    const page = 10;
+    const nextPageToken = faker.random.alphaNumeric();
     const location = { long: '-1213242432', lat: '-2324546432' };
     const { httpClient, sut } = makeSut(url);
 
-    await sut.list(location, page);
-
-    expect(httpClient.url).toBe(
-      url + '?long=' + location.long + '&lat=' + location.lat + '&page=' + page,
-    );
-  });
-
-  test('should list with httpPostClient calling correct url with linesPerPage', async () => {
-    const url = makeUrl();
-    const linesPerPage = 10;
-    const location = { long: '-1213242432', lat: '-2324546432' };
-    const { httpClient, sut } = makeSut(url);
-
-    await sut.list(location, 0, linesPerPage);
+    await sut.list(location, nextPageToken);
 
     expect(httpClient.url).toBe(
       url +
@@ -45,8 +33,8 @@ describe('Data: RemoteListPlaces', () => {
         location.long +
         '&lat=' +
         location.lat +
-        '&linesPerPage=' +
-        linesPerPage,
+        '&nextPageToken=' +
+        nextPageToken,
     );
   });
 

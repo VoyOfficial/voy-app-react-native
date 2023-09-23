@@ -13,12 +13,10 @@ export default class RemoteListPlaces implements ListPlaces {
       long: string;
       lat: string;
     },
-    page?: number,
-    linesPerPage?: number | undefined,
+    nextPageToken?: string,
   ): Promise<PlaceModel[]> => {
     let url = this.url + '?long=' + location.long + '&lat=' + location.lat;
-    if (page) url += '&page=' + page;
-    if (linesPerPage) url += '&linesPerPage=' + linesPerPage;
+    if (nextPageToken) url += '&nextPageToken=' + nextPageToken;
 
     const httpResponse = await this.httpGetClient.get({
       url: url,
