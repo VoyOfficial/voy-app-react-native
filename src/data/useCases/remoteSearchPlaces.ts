@@ -31,10 +31,10 @@ export default class RemoteSearchPlaces implements SearchPlaces {
   }
 
   private makeUrl(place: string, nextPageToken?: string): string {
-    return (
-      this.url +
-      (place && `/${encodeURIComponent(place)}`) +
-      `?nextPageToken=${nextPageToken}`
-    );
+    let url = this.url;
+    if (place) url += `/${encodeURIComponent(place)}`;
+    if (nextPageToken) url += `?nextPageToken=${nextPageToken}`;
+
+    return url;
   }
 }

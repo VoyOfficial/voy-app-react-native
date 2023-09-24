@@ -25,6 +25,18 @@ describe('Data: RemoteSearchPlaces', () => {
     expect(httpClient.url).toEqual(url + '?nextPageToken=' + nextPageToken);
   });
 
+  test('should search with httpPostClient calling correct url without nextPageToken param', () => {
+    const url = makeUrl();
+    const { sut, httpClient } = makeSut(url);
+
+    sut.search('', {
+      type: Filter.Entertainment,
+      ordination: Ordination.Closer,
+    });
+
+    expect(httpClient.url).toEqual(url);
+  });
+
   test('should search with httpPostClient calling correct url with place searched', () => {
     const nextPageToken = faker.random.alphaNumeric();
     const place = 'coffee shop';
