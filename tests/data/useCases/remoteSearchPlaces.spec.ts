@@ -1,15 +1,14 @@
-import { faker } from '@faker-js/faker';
 import { HttpStatusCode } from '~/data/http';
 import { Filter, Ordination } from '~/domain/enums';
 import { NoAccessError, UnexpectedError } from '~/data/errors';
 import { RemoteSearchPlaces } from '~/data/useCases';
-import { makeUrl } from '../helpers/testFactories';
+import { makeNextPageToken, makeUrl } from '../helpers/testFactories';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import searchPlacesModelFactory from '../helpers/searchPlacesModelFactory';
 
 describe('Data: RemoteSearchPlaces', () => {
   test('should search with httpPostClient calling correct url with nextPageToken param', () => {
-    const nextPageToken = faker.random.alphaNumeric();
+    const nextPageToken = makeNextPageToken();
     const url = makeUrl();
     const { sut, httpClient } = makeSut(url);
 
@@ -38,7 +37,7 @@ describe('Data: RemoteSearchPlaces', () => {
   });
 
   test('should search with httpPostClient calling correct url with place searched', () => {
-    const nextPageToken = faker.random.alphaNumeric();
+    const nextPageToken = makeNextPageToken();
     const place = 'coffee shop';
     const url = makeUrl();
     const { sut, httpClient } = makeSut(url);

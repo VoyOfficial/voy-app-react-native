@@ -1,8 +1,7 @@
-import { faker } from '@faker-js/faker';
 import { NoPermissionError, UnexpectedError } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
 import { RemoteListPlaces } from '~/data/useCases';
-import { makeUrl } from '../helpers/testFactories';
+import { makeNextPageToken, makeUrl } from '../helpers/testFactories';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
 
@@ -21,7 +20,7 @@ describe('Data: RemoteListPlaces', () => {
 
   test('should list with httpPostClient calling correct url with nextPageToken', async () => {
     const url = makeUrl();
-    const nextPageToken = faker.random.alphaNumeric();
+    const nextPageToken = makeNextPageToken();
     const location = { long: '-1213242432', lat: '-2324546432' };
     const { httpClient, sut } = makeSut(url);
 
