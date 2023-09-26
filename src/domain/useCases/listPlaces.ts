@@ -6,7 +6,6 @@ export default interface ListPlaces {
       long: string;
       lat: string;
     },
-    page: number,
-    linesPerPage?: number,
+    nextPageToken?: string,
   ): Promise<PlaceModel[]>;
 }

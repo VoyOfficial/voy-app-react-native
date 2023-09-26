@@ -9,13 +9,13 @@ export default class RemoteSearchPlaces implements SearchPlaces {
 
   async search(
     place: string,
-    { filter, ordination }: FilterParam,
-    page = 1,
+    { type, ordination }: FilterParam,
+    nextPageToken?: string,
   ): Promise<SearchPlaceModel[]> {
-    const urlWithParams = this.makeUrl(place, page);
+    const urlWithParams = this.makeUrl(place, nextPageToken);
     const response = await this.httpPostClient.post({
       url: urlWithParams,
-      body: { filter: filter, ordination: ordination },
+      body: { type: type, ordination: ordination },
     });
 
     switch (response.statusCode) {
@@ -30,9 +30,11 @@ export default class RemoteSearchPlaces implements SearchPlaces {
     }
   }
 
-  private makeUrl(place: string, page: number): string {
-    return (
-      this.url + (place && `/${encodeURIComponent(place)}`) + `?page=${page}`
-    );
+  private makeUrl(place: string, nextPageToken?: string): string {
+    let url = this.url;
+    if (place) url += `/${encodeURIComponent(place)}`;
+    if (nextPageToken) url += `?nextPageToken=${nextPageToken}`;
+
+    return url;
   }
 }

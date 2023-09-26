@@ -4,7 +4,7 @@ import { FilterParam } from '../params';
 export default interface SearchPlaces {
   search(
     place: string,
-    { filter, ordination }: FilterParam,
-    page: number,
+    { type, ordination }: FilterParam,
+    nextPageToken?: string,
   ): Promise<SearchPlaceModel[]>;
 }
