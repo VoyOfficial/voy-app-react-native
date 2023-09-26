@@ -10,6 +10,13 @@ describe('Components: CardList', () => {
 
     expect(getByTestId('title_id').props.children).toEqual(title);
   });
+
+  test('should show button "Ver todos" correctly', () => {
+    const title = faker.random.word();
+    const { getByTestId } = render(<CardList title={title} />);
+
+    expect(getByTestId('see_all_id').props.children).toEqual('Ver todos');
+  });
 });
 
 type Props = {
@@ -20,6 +27,7 @@ const CardList = ({ title }: Props) => {
   return (
     <View>
       <Text testID="title_id">{title}</Text>
+      <Text testID="see_all_id">{'Ver todos'}</Text>
     </View>
   );
 };
