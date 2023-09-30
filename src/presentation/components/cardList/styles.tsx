@@ -1,3 +1,5 @@
+import React from 'react';
+import { FlatList } from 'react-native';
 import { styled } from 'styled-components/native';
 
 export const Container = styled.View``;
@@ -25,3 +27,12 @@ export const SeeAll = styled.Text`
   font-family: 'LexendDeca-Regular';
   color: #5742e0;
 `;
+
+const ItemSeparator = styled.View`
+  height: 15px;
+`;
+
+export const List = styled.FlatList.attrs({
+  showsVerticalScrollIndicator: false,
+  ItemSeparatorComponent: () => <ItemSeparator />,
+})`` as unknown as typeof FlatList;

@@ -1,9 +1,9 @@
 import React from 'react';
-import { FlatList, View } from 'react-native';
 import ListCard from '../listCard';
 import {
   Container,
   HeaderWrapper,
+  List,
   SeeAll,
   SeeAllButton,
   Title,
@@ -33,10 +33,8 @@ const CardList = ({ title, seeAll, placeList }: Props) => {
           <SeeAll testID="see_all_id">{'Ver todos'}</SeeAll>
         </SeeAllButton>
       </HeaderWrapper>
-      <FlatList
+      <List
         data={placeList}
-        ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
-        showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => (
           <ListCard
             index={index}
