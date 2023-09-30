@@ -8,80 +8,48 @@ import CardList, {
 describe('Components: CardList', () => {
   test('should show title of CardList with success', () => {
     const title = faker.random.word();
-    const { getByTestId } = render(
-      <CardList
-        placeList={makePlaceList(5)}
-        title={title}
-        seeAll={() => {}}
-        favorite={() => {}}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut(title);
 
     expect(getByTestId('title_id').props.children).toEqual(title);
   });
 
   test('should show button "Ver todos" correctly', () => {
-    const title = faker.random.word();
-    const { getByTestId } = render(
-      <CardList
-        placeList={makePlaceList(5)}
-        title={title}
-        seeAll={() => {}}
-        favorite={() => {}}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut();
 
     expect(getByTestId('see_all_id').props.children).toEqual('Ver todos');
   });
 
   test('should press button "Ver todos" with success', () => {
-    const title = faker.random.word();
-    const seeAll = jest.fn();
-    const { getByTestId } = render(
-      <CardList
-        placeList={makePlaceList(5)}
-        title={title}
-        seeAll={seeAll}
-        favorite={() => {}}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+      seeAllSpy,
+    } = makeSut();
 
     fireEvent.press(getByTestId('see_all_button_id'));
 
-    expect(seeAll).toHaveBeenCalledTimes(1);
+    expect(seeAllSpy).toHaveBeenCalledTimes(1);
   });
 
   test('should call favorite function when press the save button', () => {
-    const title = faker.random.word();
-    const seeAll = jest.fn();
-
-    const favorite = jest.fn();
-    const { getByTestId } = render(
-      <CardList
-        placeList={makePlaceList(5)}
-        title={title}
-        seeAll={seeAll}
-        favorite={favorite}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+      favoriteSpy,
+    } = makeSut();
 
     fireEvent.press(getByTestId('save_button_1_id'));
 
-    expect(favorite).toHaveBeenCalledTimes(1);
+    expect(favoriteSpy).toHaveBeenCalledTimes(1);
   });
 
   test('should show card list successfully', () => {
-    const title = faker.random.word();
-    const seeAll = jest.fn();
-    const placeList = makePlaceList(5);
-    const { getByTestId } = render(
-      <CardList
-        placeList={placeList}
-        title={title}
-        seeAll={seeAll}
-        favorite={() => {}}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+      placeList,
+    } = makeSut();
 
     placeList.forEach((place, index) => {
       expect(getByTestId(`image_of_place_${index}_id`).props.source).toEqual({
@@ -102,6 +70,23 @@ describe('Components: CardList', () => {
     });
   });
 });
+
+const makeSut = (title = '') => {
+  const placeList = makePlaceList(5);
+  const seeAll = jest.fn();
+  const favorite = jest.fn();
+
+  const sut = render(
+    <CardList
+      placeList={placeList}
+      title={title}
+      seeAll={seeAll}
+      favorite={favorite}
+    />,
+  );
+
+  return { sut, placeList, seeAllSpy: seeAll, favoriteSpy: favorite };
+};
 
 const makePlaceList = (quantity: number): Array<Place> => {
   const placeList = [];
