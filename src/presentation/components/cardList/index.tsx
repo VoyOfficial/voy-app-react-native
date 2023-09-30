@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, View } from 'react-native';
 import ListCard from '../listCard';
 import {
   Container,
@@ -35,6 +35,8 @@ const CardList = ({ title, seeAll, placeList }: Props) => {
       </HeaderWrapper>
       <FlatList
         data={placeList}
+        ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => (
           <ListCard
             index={index}
