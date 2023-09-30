@@ -1,5 +1,8 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
+import { GetByQuery } from '@testing-library/react-native/build/queries/makeQueries';
+import { TextMatch } from '@testing-library/react-native/build/matches';
+import { TextMatchOptions } from '@testing-library/react-native/build/queries/text';
 import CardList from '../../../../src/presentation/components/cardList';
 import placeListFactory from '../../../presentation/helpers/placeListFactory';
 import { makeTitle } from '../../../presentation/helpers/testFactories';
@@ -51,21 +54,21 @@ describe('Components: CardList', () => {
     } = makeSut();
 
     placeList.forEach((place, index) => {
-      expect(getByTestId(`image_of_place_${index}_id`).props.source).toEqual({
+      const {
+        imageOfPlace,
+        title,
+        location,
+        distanceOfLocal,
+        amountOfReviews,
+      } = getPlaceDetails(index, getByTestId);
+
+      expect(imageOfPlace).toEqual({
         uri: place.imageUrl,
       });
-      expect(getByTestId(`title_${index}_id`).props.children).toEqual(
-        place.title,
-      );
-      expect(getByTestId(`location_${index}_id`).props.children).toEqual(
-        place.location,
-      );
-      expect(
-        getByTestId(`distance_of_local_${index}_id`).props.children,
-      ).toEqual(place.myDistanceOfLocal);
-      expect(
-        getByTestId(`amount_of_reviews_${index}_id`).props.children,
-      ).toEqual(` (${place.amountOfReviews})`);
+      expect(title).toEqual(place.title);
+      expect(location).toEqual(place.location);
+      expect(distanceOfLocal).toEqual(place.myDistanceOfLocal);
+      expect(amountOfReviews).toEqual(` (${place.amountOfReviews})`);
     });
   });
 });
@@ -85,4 +88,25 @@ const makeSut = (title = '') => {
   );
 
   return { sut, placeList, seeAllSpy: seeAll, favoriteSpy: favorite };
+};
+
+const getPlaceDetails = (
+  index: number,
+  getByTestId: GetByQuery<TextMatch, TextMatchOptions>,
+) => {
+  const imageOfPlace = getByTestId(`image_of_place_${index}_id`).props.source;
+  const title = getByTestId(`title_${index}_id`).props.children;
+  const location = getByTestId(`location_${index}_id`).props.children;
+  const distanceOfLocal = getByTestId(`distance_of_local_${index}_id`).props
+    .children;
+  const amountOfReviews = getByTestId(`amount_of_reviews_${index}_id`).props
+    .children;
+
+  return {
+    imageOfPlace,
+    title,
+    location,
+    distanceOfLocal,
+    amountOfReviews,
+  };
 };
