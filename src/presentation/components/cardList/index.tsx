@@ -1,6 +1,13 @@
 import React from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList } from 'react-native';
 import ListCard from '../listCard';
+import {
+  Container,
+  HeaderWrapper,
+  SeeAll,
+  SeeAllButton,
+  Title,
+} from './styles';
 
 export type Place = {
   imageUrl: string;
@@ -19,11 +26,13 @@ type Props = {
 
 const CardList = ({ title, seeAll, placeList }: Props) => {
   return (
-    <View>
-      <Text testID="title_id">{title}</Text>
-      <TouchableOpacity testID="see_all_button_id" onPress={seeAll}>
-        <Text testID="see_all_id">{'Ver todos'}</Text>
-      </TouchableOpacity>
+    <Container>
+      <HeaderWrapper>
+        <Title testID="title_id">{title}</Title>
+        <SeeAllButton testID="see_all_button_id" onPress={seeAll}>
+          <SeeAll testID="see_all_id">{'Ver todos'}</SeeAll>
+        </SeeAllButton>
+      </HeaderWrapper>
       <FlatList
         data={placeList}
         renderItem={({ item, index }) => (
@@ -41,7 +50,7 @@ const CardList = ({ title, seeAll, placeList }: Props) => {
           />
         )}
       />
-    </View>
+    </Container>
   );
 };
 
