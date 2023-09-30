@@ -22,9 +22,10 @@ type Props = {
   title: string;
   seeAll: () => void;
   placeList: Array<Place>;
+  favorite: () => void;
 };
 
-const CardList = ({ title, seeAll, placeList }: Props) => {
+const CardList = ({ title, seeAll, placeList, favorite }: Props) => {
   return (
     <Container>
       <HeaderWrapper>
@@ -35,13 +36,13 @@ const CardList = ({ title, seeAll, placeList }: Props) => {
       </HeaderWrapper>
       <List
         data={placeList}
-        renderItem={({ item, index }) => factoryListCard(index, item)}
+        renderItem={({ item, index }) => factoryListCard(index, item, favorite)}
       />
     </Container>
   );
 };
 
-const factoryListCard = (index: number, place: Place) => {
+const factoryListCard = (index: number, place: Place, favorite: () => void) => {
   return (
     <ListCard
       index={index}
@@ -51,9 +52,7 @@ const factoryListCard = (index: number, place: Place) => {
       myDistanceOfLocal={place.myDistanceOfLocal}
       amountOfReviews={place.amountOfReviews}
       rating={place.rating}
-      favorite={function (): void {
-        throw new Error('Function not implemented.');
-      }}
+      favorite={favorite}
     />
   );
 };

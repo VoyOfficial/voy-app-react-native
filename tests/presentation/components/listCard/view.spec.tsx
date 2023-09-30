@@ -76,7 +76,7 @@ describe('Components: ListCard', () => {
     const imageUrl = faker.image.imageUrl();
     const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
 
-    expect(getByTestId('save_button_id')).toBeTruthy();
+    expect(getByTestId('save_button_0_id')).toBeTruthy();
   });
 
   test('should save to favorites when pressing favorite button', () => {
@@ -84,7 +84,7 @@ describe('Components: ListCard', () => {
     const imageUrl = faker.image.imageUrl();
     const { getByTestId } = makeSut('', '', '', '', '', imageUrl, favorite);
 
-    const saveButton = getByTestId('save_button_id');
+    const saveButton = getByTestId('save_button_0_id');
 
     fireEvent.press(saveButton);
 

@@ -9,7 +9,12 @@ describe('Components: CardList', () => {
   test('should show title of CardList with success', () => {
     const title = faker.random.word();
     const { getByTestId } = render(
-      <CardList placeList={makePlaceList(5)} title={title} seeAll={() => {}} />,
+      <CardList
+        placeList={makePlaceList(5)}
+        title={title}
+        seeAll={() => {}}
+        favorite={() => {}}
+      />,
     );
 
     expect(getByTestId('title_id').props.children).toEqual(title);
@@ -18,7 +23,12 @@ describe('Components: CardList', () => {
   test('should show button "Ver todos" correctly', () => {
     const title = faker.random.word();
     const { getByTestId } = render(
-      <CardList placeList={makePlaceList(5)} title={title} seeAll={() => {}} />,
+      <CardList
+        placeList={makePlaceList(5)}
+        title={title}
+        seeAll={() => {}}
+        favorite={() => {}}
+      />,
     );
 
     expect(getByTestId('see_all_id').props.children).toEqual('Ver todos');
@@ -28,7 +38,12 @@ describe('Components: CardList', () => {
     const title = faker.random.word();
     const seeAll = jest.fn();
     const { getByTestId } = render(
-      <CardList placeList={makePlaceList(5)} title={title} seeAll={seeAll} />,
+      <CardList
+        placeList={makePlaceList(5)}
+        title={title}
+        seeAll={seeAll}
+        favorite={() => {}}
+      />,
     );
 
     fireEvent.press(getByTestId('see_all_button_id'));
@@ -36,12 +51,36 @@ describe('Components: CardList', () => {
     expect(seeAll).toHaveBeenCalledTimes(1);
   });
 
+  test('should call favorite function when press the save button', () => {
+    const title = faker.random.word();
+    const seeAll = jest.fn();
+
+    const favorite = jest.fn();
+    const { getByTestId } = render(
+      <CardList
+        placeList={makePlaceList(5)}
+        title={title}
+        seeAll={seeAll}
+        favorite={favorite}
+      />,
+    );
+
+    fireEvent.press(getByTestId('save_button_1_id'));
+
+    expect(favorite).toHaveBeenCalledTimes(1);
+  });
+
   test('should show card list successfully', () => {
     const title = faker.random.word();
     const seeAll = jest.fn();
     const placeList = makePlaceList(5);
     const { getByTestId } = render(
-      <CardList placeList={placeList} title={title} seeAll={seeAll} />,
+      <CardList
+        placeList={placeList}
+        title={title}
+        seeAll={seeAll}
+        favorite={() => {}}
+      />,
     );
 
     placeList.forEach((place, index) => {
