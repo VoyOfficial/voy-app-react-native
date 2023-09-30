@@ -35,22 +35,26 @@ const CardList = ({ title, seeAll, placeList }: Props) => {
       </HeaderWrapper>
       <List
         data={placeList}
-        renderItem={({ item, index }) => (
-          <ListCard
-            index={index}
-            title={item.title}
-            imageUrl={item.imageUrl}
-            location={item.location}
-            myDistanceOfLocal={item.myDistanceOfLocal}
-            amountOfReviews={item.amountOfReviews}
-            rating={item.rating}
-            favorite={function (): void {
-              throw new Error('Function not implemented.');
-            }}
-          />
-        )}
+        renderItem={({ item, index }) => factoryListCard(index, item)}
       />
     </Container>
+  );
+};
+
+const factoryListCard = (index: number, place: Place) => {
+  return (
+    <ListCard
+      index={index}
+      title={place.title}
+      imageUrl={place.imageUrl}
+      location={place.location}
+      myDistanceOfLocal={place.myDistanceOfLocal}
+      amountOfReviews={place.amountOfReviews}
+      rating={place.rating}
+      favorite={function (): void {
+        throw new Error('Function not implemented.');
+      }}
+    />
   );
 };
 
