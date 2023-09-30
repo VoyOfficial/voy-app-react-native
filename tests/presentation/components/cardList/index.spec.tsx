@@ -1,13 +1,12 @@
 import React from 'react';
-import { faker } from '@faker-js/faker';
 import { fireEvent, render } from '@testing-library/react-native';
-import CardList, {
-  Place,
-} from '../../../../src/presentation/components/cardList';
+import CardList from '../../../../src/presentation/components/cardList';
+import placeListFactory from '../../../presentation/helpers/placeListFactory';
+import { makeTitle } from '../../../presentation/helpers/testFactories';
 
 describe('Components: CardList', () => {
   test('should show title of CardList with success', () => {
-    const title = faker.random.word();
+    const title = makeTitle();
     const {
       sut: { getByTestId },
     } = makeSut(title);
@@ -72,7 +71,7 @@ describe('Components: CardList', () => {
 });
 
 const makeSut = (title = '') => {
-  const placeList = makePlaceList(5);
+  const placeList = placeListFactory(5);
   const seeAll = jest.fn();
   const favorite = jest.fn();
 
@@ -86,19 +85,4 @@ const makeSut = (title = '') => {
   );
 
   return { sut, placeList, seeAllSpy: seeAll, favoriteSpy: favorite };
-};
-
-const makePlaceList = (quantity: number): Array<Place> => {
-  const placeList = [];
-  for (let index = 0; index < quantity; index++) {
-    placeList.push({
-      imageUrl: faker.image.imageUrl(),
-      title: faker.random.words(),
-      location: faker.random.word(),
-      myDistanceOfLocal: faker.random.numeric(),
-      amountOfReviews: faker.random.numeric(),
-      rating: faker.random.numeric(),
-    });
-  }
-  return placeList;
 };
