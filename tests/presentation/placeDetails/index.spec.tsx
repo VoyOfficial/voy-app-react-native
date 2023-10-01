@@ -21,18 +21,30 @@ describe('Presentation: PlaceDetails', () => {
 
     expect(getByTestId('description_id').props.children).toEqual(description);
   });
+
+  test('should show location with success', () => {
+    const description = faker.lorem.paragraph();
+    const location = faker.address.cityName();
+    const { getByTestId } = render(
+      <PlaceDetails title="" description={description} location={location} />,
+    );
+
+    expect(getByTestId('location_id').props.children).toEqual(location);
+  });
 });
 
 type Props = {
   title: string;
   description: string;
+  location: string;
 };
 
-const PlaceDetails = ({ title, description }: Props) => {
+const PlaceDetails = ({ title, description, location }: Props) => {
   return (
     <View>
       <Text testID="title_id">{title}</Text>
       <Text testID="description_id">{description}</Text>
+      <Text testID="location_id">{location}</Text>
     </View>
   );
 };
