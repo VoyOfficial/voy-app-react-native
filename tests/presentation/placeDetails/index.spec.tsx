@@ -12,6 +12,7 @@ describe('Presentation: PlaceDetails', () => {
         description=""
         location={''}
         myDistanceOfLocal={''}
+        amountOfReviews={''}
       />,
     );
 
@@ -26,6 +27,7 @@ describe('Presentation: PlaceDetails', () => {
         description={description}
         location={''}
         myDistanceOfLocal={''}
+        amountOfReviews={''}
       />,
     );
 
@@ -41,6 +43,7 @@ describe('Presentation: PlaceDetails', () => {
         description={description}
         location={location}
         myDistanceOfLocal={''}
+        amountOfReviews={''}
       />,
     );
 
@@ -57,11 +60,33 @@ describe('Presentation: PlaceDetails', () => {
         description={description}
         location={location}
         myDistanceOfLocal={myDistanceOfLocal}
+        amountOfReviews={''}
       />,
     );
 
     expect(getByTestId('distance_of_local_id').props.children).toEqual(
       myDistanceOfLocal,
+    );
+  });
+
+  test('should show amount of reviews with success', () => {
+    const description = faker.lorem.paragraph();
+    const location = faker.address.cityName();
+    const myDistanceOfLocal = faker.random.numeric(4);
+    const amount = faker.random.numeric(4);
+    const amountOfReviews = amount + ' avaliações';
+    const { getByTestId } = render(
+      <PlaceDetails
+        title=""
+        description={description}
+        location={location}
+        myDistanceOfLocal={myDistanceOfLocal}
+        amountOfReviews={amountOfReviews}
+      />,
+    );
+
+    expect(getByTestId('amount_of_reviews_id').props.children).toEqual(
+      amountOfReviews,
     );
   });
 });
@@ -71,6 +96,7 @@ type Props = {
   description: string;
   location: string;
   myDistanceOfLocal: string;
+  amountOfReviews: string;
 };
 
 const PlaceDetails = ({
@@ -78,6 +104,7 @@ const PlaceDetails = ({
   description,
   location,
   myDistanceOfLocal,
+  amountOfReviews,
 }: Props) => {
   return (
     <View>
@@ -85,6 +112,7 @@ const PlaceDetails = ({
       <Text testID="description_id">{description}</Text>
       <Text testID="location_id">{location}</Text>
       <Text testID="distance_of_local_id">{myDistanceOfLocal}</Text>
+      <Text testID="amount_of_reviews_id">{amountOfReviews}</Text>
     </View>
   );
 };
