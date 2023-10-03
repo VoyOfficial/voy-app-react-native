@@ -13,6 +13,7 @@ describe('Presentation: PlaceDetails', () => {
         location={''}
         myDistanceOfLocal={''}
         amountOfReviews={''}
+        rating={''}
       />,
     );
 
@@ -28,6 +29,7 @@ describe('Presentation: PlaceDetails', () => {
         location={''}
         myDistanceOfLocal={''}
         amountOfReviews={''}
+        rating={''}
       />,
     );
 
@@ -44,6 +46,7 @@ describe('Presentation: PlaceDetails', () => {
         location={location}
         myDistanceOfLocal={''}
         amountOfReviews={''}
+        rating={''}
       />,
     );
 
@@ -61,6 +64,7 @@ describe('Presentation: PlaceDetails', () => {
         location={location}
         myDistanceOfLocal={myDistanceOfLocal}
         amountOfReviews={''}
+        rating={''}
       />,
     );
 
@@ -82,12 +86,34 @@ describe('Presentation: PlaceDetails', () => {
         location={location}
         myDistanceOfLocal={myDistanceOfLocal}
         amountOfReviews={amountOfReviews}
+        rating={''}
       />,
     );
 
     expect(getByTestId('amount_of_reviews_id').props.children).toEqual(
       amountOfReviews,
     );
+  });
+
+  test('should show rating correctly', () => {
+    const description = faker.lorem.paragraph();
+    const location = faker.address.cityName();
+    const myDistanceOfLocal = faker.random.numeric(4);
+    const amount = faker.random.numeric(4);
+    const amountOfReviews = amount + ' avaliações';
+    const rating = faker.random.numeric(1) + '/' + faker.random.numeric(1);
+    const { getByTestId } = render(
+      <PlaceDetails
+        title=""
+        description={description}
+        location={location}
+        myDistanceOfLocal={myDistanceOfLocal}
+        amountOfReviews={amountOfReviews}
+        rating={rating}
+      />,
+    );
+
+    expect(getByTestId('rating_id').props.children).toEqual(rating);
   });
 });
 
@@ -97,6 +123,7 @@ type Props = {
   location: string;
   myDistanceOfLocal: string;
   amountOfReviews: string;
+  rating: string;
 };
 
 const PlaceDetails = ({
@@ -105,6 +132,7 @@ const PlaceDetails = ({
   location,
   myDistanceOfLocal,
   amountOfReviews,
+  rating,
 }: Props) => {
   return (
     <View>
@@ -113,6 +141,7 @@ const PlaceDetails = ({
       <Text testID="location_id">{location}</Text>
       <Text testID="distance_of_local_id">{myDistanceOfLocal}</Text>
       <Text testID="amount_of_reviews_id">{amountOfReviews}</Text>
+      <Text testID="rating_id">{rating}</Text>
     </View>
   );
 };
