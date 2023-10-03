@@ -8,21 +8,21 @@ describe('Components: ListCard', () => {
     const title = faker.company.name();
     const { getByTestId } = makeSut(title);
 
-    expect(getByTestId('title_id').props.children).toEqual(title);
+    expect(getByTestId('title_0_id').props.children).toEqual(title);
   });
 
   test('should show location of local correctly', () => {
     const location = faker.address.cityName();
     const { getByTestId } = makeSut('', location);
 
-    expect(getByTestId('location_id').props.children).toEqual(location);
+    expect(getByTestId('location_0_id').props.children).toEqual(location);
   });
 
   test('should show the my distance of local correctly', () => {
     const myDistanceOfLocal = faker.address.latitude();
     const { getByTestId } = makeSut('', '', myDistanceOfLocal);
 
-    expect(getByTestId('distance_of_local_id').props.children).toEqual(
+    expect(getByTestId('distance_of_local_0_id').props.children).toEqual(
       myDistanceOfLocal,
     );
   });
@@ -31,7 +31,7 @@ describe('Components: ListCard', () => {
     const amountOfReviews = faker.random.word();
     const { getByTestId } = makeSut('', '', '', amountOfReviews);
 
-    expect(getByTestId('amount_of_reviews_id').props.children).toEqual(
+    expect(getByTestId('amount_of_reviews_0_id').props.children).toEqual(
       ` (${amountOfReviews})`,
     );
   });
@@ -39,14 +39,14 @@ describe('Components: ListCard', () => {
   test('should show rating correctly', () => {
     const rating = faker.random.numeric();
     const { getByTestId } = makeSut('', '', '', '', rating);
-    expect(getByTestId('rating_id').props.children).toEqual(rating);
+    expect(getByTestId('rating_0_id').props.children).toEqual(rating);
   });
 
   test('should show image of local with success', () => {
     const imageUrl = faker.image.imageUrl();
     const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
 
-    expect(getByTestId('image_of_place_id').props.source).toEqual({
+    expect(getByTestId('image_of_place_0_id').props.source).toEqual({
       uri: imageUrl,
     });
   });
@@ -76,7 +76,7 @@ describe('Components: ListCard', () => {
     const imageUrl = faker.image.imageUrl();
     const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
 
-    expect(getByTestId('save_button_id')).toBeTruthy();
+    expect(getByTestId('save_button_0_id')).toBeTruthy();
   });
 
   test('should save to favorites when pressing favorite button', () => {
@@ -84,7 +84,7 @@ describe('Components: ListCard', () => {
     const imageUrl = faker.image.imageUrl();
     const { getByTestId } = makeSut('', '', '', '', '', imageUrl, favorite);
 
-    const saveButton = getByTestId('save_button_id');
+    const saveButton = getByTestId('save_button_0_id');
 
     fireEvent.press(saveButton);
 
@@ -103,6 +103,7 @@ const makeSut = (
 ) => {
   return render(
     <ListCard
+      index={0}
       imageUrl={imageUrl}
       title={title}
       location={location}
