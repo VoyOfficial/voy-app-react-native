@@ -15,6 +15,7 @@ describe('Presentation: PlaceDetails', () => {
         amountOfReviews={''}
         rating={''}
         businessHoursSummary={''}
+        fullLocation=""
       />,
     );
 
@@ -32,6 +33,7 @@ describe('Presentation: PlaceDetails', () => {
         amountOfReviews={''}
         rating={''}
         businessHoursSummary={''}
+        fullLocation=""
       />,
     );
 
@@ -50,6 +52,7 @@ describe('Presentation: PlaceDetails', () => {
         amountOfReviews={''}
         rating={''}
         businessHoursSummary={''}
+        fullLocation=""
       />,
     );
 
@@ -69,6 +72,7 @@ describe('Presentation: PlaceDetails', () => {
         amountOfReviews={''}
         rating={''}
         businessHoursSummary={''}
+        fullLocation=""
       />,
     );
 
@@ -92,6 +96,7 @@ describe('Presentation: PlaceDetails', () => {
         amountOfReviews={amountOfReviews}
         rating={''}
         businessHoursSummary={''}
+        fullLocation=""
       />,
     );
 
@@ -116,6 +121,7 @@ describe('Presentation: PlaceDetails', () => {
         amountOfReviews={amountOfReviews}
         rating={rating}
         businessHoursSummary={''}
+        fullLocation=""
       />,
     );
 
@@ -139,11 +145,39 @@ describe('Presentation: PlaceDetails', () => {
         amountOfReviews={amountOfReviews}
         rating={rating}
         businessHoursSummary={businessHoursSummary}
+        fullLocation=""
       />,
     );
 
     expect(getByTestId('business_hours_summary_id').props.children).toEqual(
       businessHoursSummary,
+    );
+  });
+
+  test('should show full location with success', () => {
+    const description = faker.lorem.paragraph();
+    const location = faker.address.cityName();
+    const myDistanceOfLocal = faker.random.numeric(4);
+    const amount = faker.random.numeric(4);
+    const amountOfReviews = amount + ' avaliações';
+    const rating = faker.random.numeric(1) + '/' + faker.random.numeric(1);
+    const businessHoursSummary = 'Diariamente - Acesso livre (24 horas)';
+    const fullLocation = faker.address.streetAddress();
+    const { getByTestId } = render(
+      <PlaceDetails
+        title=""
+        description={description}
+        location={location}
+        myDistanceOfLocal={myDistanceOfLocal}
+        amountOfReviews={amountOfReviews}
+        rating={rating}
+        businessHoursSummary={businessHoursSummary}
+        fullLocation={fullLocation}
+      />,
+    );
+
+    expect(getByTestId('full_location_id').props.children).toEqual(
+      fullLocation,
     );
   });
 });
@@ -156,6 +190,7 @@ type Props = {
   amountOfReviews: string;
   rating: string;
   businessHoursSummary: string;
+  fullLocation: string;
 };
 
 const PlaceDetails = ({
@@ -166,6 +201,7 @@ const PlaceDetails = ({
   amountOfReviews,
   rating,
   businessHoursSummary,
+  fullLocation,
 }: Props) => {
   return (
     <View>
@@ -176,6 +212,7 @@ const PlaceDetails = ({
       <Text testID="amount_of_reviews_id">{amountOfReviews}</Text>
       <Text testID="rating_id">{rating}</Text>
       <Text testID="business_hours_summary_id">{businessHoursSummary}</Text>
+      <Text testID="full_location_id">{fullLocation}</Text>
     </View>
   );
 };
