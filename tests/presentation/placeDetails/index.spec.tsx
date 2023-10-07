@@ -14,6 +14,7 @@ describe('Presentation: PlaceDetails', () => {
         myDistanceOfLocal={''}
         amountOfReviews={''}
         rating={''}
+        businessHoursSummary={''}
       />,
     );
 
@@ -30,6 +31,7 @@ describe('Presentation: PlaceDetails', () => {
         myDistanceOfLocal={''}
         amountOfReviews={''}
         rating={''}
+        businessHoursSummary={''}
       />,
     );
 
@@ -47,6 +49,7 @@ describe('Presentation: PlaceDetails', () => {
         myDistanceOfLocal={''}
         amountOfReviews={''}
         rating={''}
+        businessHoursSummary={''}
       />,
     );
 
@@ -65,6 +68,7 @@ describe('Presentation: PlaceDetails', () => {
         myDistanceOfLocal={myDistanceOfLocal}
         amountOfReviews={''}
         rating={''}
+        businessHoursSummary={''}
       />,
     );
 
@@ -87,6 +91,7 @@ describe('Presentation: PlaceDetails', () => {
         myDistanceOfLocal={myDistanceOfLocal}
         amountOfReviews={amountOfReviews}
         rating={''}
+        businessHoursSummary={''}
       />,
     );
 
@@ -110,10 +115,36 @@ describe('Presentation: PlaceDetails', () => {
         myDistanceOfLocal={myDistanceOfLocal}
         amountOfReviews={amountOfReviews}
         rating={rating}
+        businessHoursSummary={''}
       />,
     );
 
     expect(getByTestId('rating_id').props.children).toEqual(rating);
+  });
+
+  test('should show business hours summary successfully', () => {
+    const description = faker.lorem.paragraph();
+    const location = faker.address.cityName();
+    const myDistanceOfLocal = faker.random.numeric(4);
+    const amount = faker.random.numeric(4);
+    const amountOfReviews = amount + ' avaliações';
+    const rating = faker.random.numeric(1) + '/' + faker.random.numeric(1);
+    const businessHoursSummary = 'Diariamente - Acesso livre (24 horas)';
+    const { getByTestId } = render(
+      <PlaceDetails
+        title=""
+        description={description}
+        location={location}
+        myDistanceOfLocal={myDistanceOfLocal}
+        amountOfReviews={amountOfReviews}
+        rating={rating}
+        businessHoursSummary={businessHoursSummary}
+      />,
+    );
+
+    expect(getByTestId('business_hours_summary_id').props.children).toEqual(
+      businessHoursSummary,
+    );
   });
 });
 
@@ -124,6 +155,7 @@ type Props = {
   myDistanceOfLocal: string;
   amountOfReviews: string;
   rating: string;
+  businessHoursSummary: string;
 };
 
 const PlaceDetails = ({
@@ -133,6 +165,7 @@ const PlaceDetails = ({
   myDistanceOfLocal,
   amountOfReviews,
   rating,
+  businessHoursSummary,
 }: Props) => {
   return (
     <View>
@@ -142,6 +175,7 @@ const PlaceDetails = ({
       <Text testID="distance_of_local_id">{myDistanceOfLocal}</Text>
       <Text testID="amount_of_reviews_id">{amountOfReviews}</Text>
       <Text testID="rating_id">{rating}</Text>
+      <Text testID="business_hours_summary_id">{businessHoursSummary}</Text>
     </View>
   );
 };
