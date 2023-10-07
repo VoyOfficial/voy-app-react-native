@@ -16,6 +16,7 @@ describe('Presentation: PlaceDetails', () => {
         rating={''}
         businessHoursSummary={''}
         fullLocation=""
+        contact=""
       />,
     );
 
@@ -34,6 +35,7 @@ describe('Presentation: PlaceDetails', () => {
         rating={''}
         businessHoursSummary={''}
         fullLocation=""
+        contact=""
       />,
     );
 
@@ -53,6 +55,7 @@ describe('Presentation: PlaceDetails', () => {
         rating={''}
         businessHoursSummary={''}
         fullLocation=""
+        contact=""
       />,
     );
 
@@ -73,6 +76,7 @@ describe('Presentation: PlaceDetails', () => {
         rating={''}
         businessHoursSummary={''}
         fullLocation=""
+        contact=""
       />,
     );
 
@@ -97,6 +101,7 @@ describe('Presentation: PlaceDetails', () => {
         rating={''}
         businessHoursSummary={''}
         fullLocation=""
+        contact=""
       />,
     );
 
@@ -122,6 +127,7 @@ describe('Presentation: PlaceDetails', () => {
         rating={rating}
         businessHoursSummary={''}
         fullLocation=""
+        contact=""
       />,
     );
 
@@ -146,6 +152,7 @@ describe('Presentation: PlaceDetails', () => {
         rating={rating}
         businessHoursSummary={businessHoursSummary}
         fullLocation=""
+        contact=""
       />,
     );
 
@@ -173,12 +180,40 @@ describe('Presentation: PlaceDetails', () => {
         rating={rating}
         businessHoursSummary={businessHoursSummary}
         fullLocation={fullLocation}
+        contact=""
       />,
     );
 
     expect(getByTestId('full_location_id').props.children).toEqual(
       fullLocation,
     );
+  });
+
+  test('should show contact of place with success', () => {
+    const description = faker.lorem.paragraph();
+    const location = faker.address.cityName();
+    const myDistanceOfLocal = faker.random.numeric(4);
+    const amount = faker.random.numeric(4);
+    const amountOfReviews = amount + ' avaliações';
+    const rating = faker.random.numeric(1) + '/' + faker.random.numeric(1);
+    const businessHoursSummary = 'Diariamente - Acesso livre (24 horas)';
+    const fullLocation = faker.address.streetAddress();
+    const contact = faker.phone.number();
+    const { getByTestId } = render(
+      <PlaceDetails
+        title=""
+        description={description}
+        location={location}
+        myDistanceOfLocal={myDistanceOfLocal}
+        amountOfReviews={amountOfReviews}
+        rating={rating}
+        businessHoursSummary={businessHoursSummary}
+        fullLocation={fullLocation}
+        contact={contact}
+      />,
+    );
+
+    expect(getByTestId('contact_id').props.children).toEqual(contact);
   });
 });
 
@@ -191,6 +226,7 @@ type Props = {
   rating: string;
   businessHoursSummary: string;
   fullLocation: string;
+  contact: string;
 };
 
 const PlaceDetails = ({
@@ -202,6 +238,7 @@ const PlaceDetails = ({
   rating,
   businessHoursSummary,
   fullLocation,
+  contact,
 }: Props) => {
   return (
     <View>
@@ -213,6 +250,7 @@ const PlaceDetails = ({
       <Text testID="rating_id">{rating}</Text>
       <Text testID="business_hours_summary_id">{businessHoursSummary}</Text>
       <Text testID="full_location_id">{fullLocation}</Text>
+      <Text testID="contact_id">{contact}</Text>
     </View>
   );
 };
