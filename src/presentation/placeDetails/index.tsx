@@ -25,16 +25,155 @@ const PlaceDetails = ({
   contact,
 }: Props) => {
   return (
-    <View>
-      <Text testID="title_id">{title}</Text>
-      <Text testID="description_id">{description}</Text>
-      <Text testID="location_id">{location}</Text>
-      <Text testID="distance_of_local_id">{myDistanceOfLocal}</Text>
-      <Text testID="amount_of_reviews_id">{amountOfReviews}</Text>
-      <Text testID="rating_id">{rating}</Text>
-      <Text testID="business_hours_summary_id">{businessHoursSummary}</Text>
-      <Text testID="full_location_id">{fullLocation}</Text>
-      <Text testID="contact_id">{contact}</Text>
+    <View style={{ paddingHorizontal: 26 }}>
+      <Text
+        testID="title_id"
+        style={{
+          fontSize: 20,
+          lineHeight: 25,
+          fontWeight: '500',
+          fontFamily: 'LexendDeca-Regular',
+          marginBottom: 25,
+        }}
+      >
+        {title}
+      </Text>
+      <Text
+        testID="description_id"
+        style={{
+          fontFamily: 'LexendDeca-Regular',
+          fontSize: 13,
+          lineHeight: 20,
+          fontWeight: '400',
+          color: '#B3B3B3',
+          marginBottom: 18,
+        }}
+      >
+        {description}
+      </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          paddingBottom: 22,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: '#F1F5F6',
+            padding: 8,
+            borderRadius: 10,
+            marginRight: 11,
+          }}
+        >
+          <Text
+            testID="location_id"
+            style={{
+              fontFamily: 'LexendDeca-Regular',
+              fontSize: 13,
+              fontWeight: '400',
+              lineHeight: 16,
+              color: '#B3B3B3',
+            }}
+          >
+            {location}
+          </Text>
+        </View>
+        <View
+          style={{ backgroundColor: '#F1F5F6', padding: 8, borderRadius: 10 }}
+        >
+          <Text
+            testID="distance_of_local_id"
+            style={{
+              fontFamily: 'LexendDeca-Regular',
+              fontSize: 13,
+              fontWeight: '400',
+              lineHeight: 16,
+              color: '#B3B3B3',
+            }}
+          >
+            {myDistanceOfLocal}
+          </Text>
+        </View>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          paddingVertical: 22,
+          borderBottomWidth: 1,
+          paddingBottom: 22,
+          borderColor: '#E6E6E6',
+          borderTopWidth: 1,
+          paddingTop: 22,
+        }}
+      >
+        <View>
+          <Text
+            testID="amount_of_reviews_id"
+            style={{
+              fontFamily: 'LexendDeca-Regular',
+              fontSize: 13,
+              fontWeight: '400',
+              lineHeight: 16,
+              textDecorationLine: 'underline',
+            }}
+          >
+            {amountOfReviews}
+          </Text>
+        </View>
+        <View>
+          <Text
+            testID="rating_id"
+            style={{
+              fontFamily: 'LexendDeca-Regular',
+              fontSize: 17,
+              fontWeight: '400',
+              lineHeight: 21,
+            }}
+          >
+            {rating}
+          </Text>
+        </View>
+      </View>
+      <View style={{ marginTop: 18 }}>
+        <Text
+          testID="business_hours_summary_id"
+          style={{
+            fontFamily: 'LexendDeca-Regular',
+            fontSize: 13,
+            fontWeight: '400',
+            lineHeight: 16.25,
+          }}
+        >
+          {businessHoursSummary}
+        </Text>
+      </View>
+      <View style={{ marginTop: 18 }}>
+        <Text
+          testID="full_location_id"
+          style={{
+            fontFamily: 'LexendDeca-Regular',
+            fontSize: 13,
+            fontWeight: '400',
+            lineHeight: 16.25,
+          }}
+        >
+          {fullLocation}
+        </Text>
+      </View>
+      <View style={{ marginTop: 18 }}>
+        <Text
+          testID="contact_id"
+          style={{
+            fontFamily: 'LexendDeca-Regular',
+            fontSize: 13,
+            fontWeight: '400',
+            lineHeight: 16.25,
+          }}
+        >
+          {contact}
+        </Text>
+      </View>
     </View>
   );
 };
