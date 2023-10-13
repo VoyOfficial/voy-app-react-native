@@ -152,6 +152,12 @@ describe('Presentation: PlaceDetails', () => {
       ).toEqual(photo);
     });
   });
+
+  test('should show star icon with success', () => {
+    const { getByTestId } = makeSut('', '', '', '', '', '', '', '', '', ['']);
+
+    expect(getByTestId('star_icon_id')).toBeTruthy();
+  });
 });
 
 const makeSut = (

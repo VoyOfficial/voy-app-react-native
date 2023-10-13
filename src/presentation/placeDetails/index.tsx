@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image, Text, View } from 'react-native';
+import Icon from '../assets/fonts/Voy';
 
 export const getStyleOfPhotoOfReviewProfile = (index: number) => {
   switch (index) {
@@ -82,7 +83,8 @@ const Reviews = ({
         {amountOfReviews}
       </Text>
     </View>
-    <View>
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <Icon color="#FFAB5E" testID="star_icon_id" name="star" size={12} />
       <Text
         testID="rating_id"
         style={{
@@ -90,6 +92,7 @@ const Reviews = ({
           fontSize: 17,
           fontWeight: '400',
           lineHeight: 21,
+          marginLeft: 7,
         }}
       >
         {rating}
