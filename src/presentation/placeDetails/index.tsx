@@ -1,6 +1,19 @@
 import React from 'react';
 import { Image, Text, View } from 'react-native';
 
+export const getStyleOfPhotoOfReviewProfile = (index: number) => {
+  switch (index) {
+    case 0:
+      return { zIndex: 1, left: 0 };
+    case 1:
+      return { zIndex: 2, left: -10 };
+    case 2:
+      return { zIndex: 3, left: -20 };
+    default:
+      break;
+  }
+};
+
 type Props = {
   title: string;
   description: string;
@@ -33,16 +46,29 @@ const Reviews = ({
       borderColor: '#E6E6E6',
       borderTopWidth: 1,
       paddingTop: 22,
+      alignItems: 'center',
     }}
   >
-    <View>
-      {photoOfReviewProfiles.map((photo, index) => (
-        <Image
-          key={index}
-          testID={`photo_of_review_profiles_${index}_id`}
-          source={{ uri: photo }}
-        />
-      ))}
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', marginRight: -11 }}>
+        {photoOfReviewProfiles.map((photo, index) => (
+          <Image
+            key={index}
+            testID={`photo_of_review_profiles_${index}_id`}
+            source={{ uri: photo }}
+            style={[
+              {
+                width: 31,
+                height: 31,
+                borderRadius: 15,
+                borderWidth: 3,
+                borderColor: '#FFFFFF',
+              },
+              getStyleOfPhotoOfReviewProfile(index),
+            ]}
+          />
+        ))}
+      </View>
       <Text
         testID="amount_of_reviews_id"
         style={{

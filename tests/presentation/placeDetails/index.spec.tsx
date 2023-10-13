@@ -1,7 +1,32 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
-import PlaceDetails from '../../../src/presentation/placeDetails';
+import PlaceDetails, {
+  getStyleOfPhotoOfReviewProfile,
+} from '../../../src/presentation/placeDetails';
+
+describe('PlaceDetails: getStyleOfPhotoOfReviewProfile', () => {
+  test('should get style of photo of review profile when index equals 0', () => {
+    const index = 0;
+    const style = getStyleOfPhotoOfReviewProfile(index);
+
+    expect(style).toEqual({ zIndex: 1, left: 0 });
+  });
+
+  test('should get style of photo of review profile when index equals 1', () => {
+    const index = 1;
+    const style = getStyleOfPhotoOfReviewProfile(index);
+
+    expect(style).toEqual({ zIndex: 2, left: -10 });
+  });
+
+  test('should get style of photo of review profile when index equals 2', () => {
+    const index = 2;
+    const style = getStyleOfPhotoOfReviewProfile(index);
+
+    expect(style).toEqual({ zIndex: 3, left: -20 });
+  });
+});
 
 describe('Presentation: PlaceDetails', () => {
   test('should show title with success', () => {
