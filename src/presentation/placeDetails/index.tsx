@@ -207,7 +207,12 @@ const PlaceDetails = ({
             alignItems: 'center',
           }}
         >
-          <Icon testID="location_icon_id" name="location" />
+          <Icon
+            testID="location_icon_id"
+            name="location"
+            size={11}
+            color="#212121"
+          />
           <Text
             testID="location_id"
             style={{
@@ -223,8 +228,20 @@ const PlaceDetails = ({
           </Text>
         </View>
         <View
-          style={{ backgroundColor: '#F1F5F6', padding: 8, borderRadius: 10 }}
+          style={{
+            backgroundColor: '#F1F5F6',
+            padding: 8,
+            borderRadius: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
         >
+          <Icon
+            testID="walking_icon_id"
+            name="walking"
+            size={11}
+            color="#212121"
+          />
           <Text
             testID="distance_of_local_id"
             style={{
@@ -233,6 +250,7 @@ const PlaceDetails = ({
               fontWeight: '400',
               lineHeight: 16,
               color: '#B3B3B3',
+              marginLeft: 7,
             }}
           >
             {myDistanceOfLocal}
