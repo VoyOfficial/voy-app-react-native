@@ -203,8 +203,11 @@ const PlaceDetails = ({
             padding: 8,
             borderRadius: 10,
             marginRight: 11,
+            flexDirection: 'row',
+            alignItems: 'center',
           }}
         >
+          <Icon testID="location_icon_id" name="location" />
           <Text
             testID="location_id"
             style={{
@@ -213,6 +216,7 @@ const PlaceDetails = ({
               fontWeight: '400',
               lineHeight: 16,
               color: '#B3B3B3',
+              marginLeft: 7,
             }}
           >
             {location}
