@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 
 type Props = {
   title: string;
@@ -11,14 +11,17 @@ type Props = {
   businessHoursSummary: string;
   fullLocation: string;
   contact: string;
+  photoOfReviewProfiles: Array<string>;
 };
 
 const Reviews = ({
   amountOfReviews,
   rating,
+  photoOfReviewProfiles,
 }: {
   amountOfReviews: string;
   rating: string;
+  photoOfReviewProfiles: Array<string>;
 }) => (
   <View
     style={{
@@ -33,6 +36,13 @@ const Reviews = ({
     }}
   >
     <View>
+      {photoOfReviewProfiles.map((photo, index) => (
+        <Image
+          key={index}
+          testID={`photo_of_review_profiles_${index}_id`}
+          source={{ uri: photo }}
+        />
+      ))}
       <Text
         testID="amount_of_reviews_id"
         style={{
@@ -123,6 +133,7 @@ const PlaceDetails = ({
   businessHoursSummary,
   fullLocation,
   contact,
+  photoOfReviewProfiles,
 }: Props) => {
   return (
     <View style={{ paddingHorizontal: 26 }}>
@@ -195,7 +206,11 @@ const PlaceDetails = ({
           </Text>
         </View>
       </View>
-      <Reviews amountOfReviews={amountOfReviews} rating={rating} />
+      <Reviews
+        amountOfReviews={amountOfReviews}
+        rating={rating}
+        photoOfReviewProfiles={photoOfReviewProfiles}
+      />
       <MoreDetails
         businessHoursSummary={businessHoursSummary}
         contact={contact}

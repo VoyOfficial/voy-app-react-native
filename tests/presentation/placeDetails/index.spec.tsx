@@ -102,6 +102,31 @@ describe('Presentation: PlaceDetails', () => {
 
     expect(getByTestId('contact_id').props.children).toEqual(contact);
   });
+
+  test('should show the photo of reviews profiles with success', () => {
+    const photoOfReviewProfiles: Array<string> = [];
+    for (let index = 0; index < 5; index++) {
+      photoOfReviewProfiles.push(faker.image.avatar());
+    }
+    const { getByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      photoOfReviewProfiles,
+    );
+
+    photoOfReviewProfiles.forEach((photo, index) => {
+      expect(
+        getByTestId(`photo_of_review_profiles_${index}_id`).props.source.uri,
+      ).toEqual(photo);
+    });
+  });
 });
 
 const makeSut = (
@@ -114,6 +139,7 @@ const makeSut = (
   fullLocation = '',
   contact = '',
   title = '',
+  photoOfReviewProfiles = [''],
 ) => {
   return render(
     <PlaceDetails
@@ -126,6 +152,7 @@ const makeSut = (
       businessHoursSummary={businessHoursSummary}
       fullLocation={fullLocation}
       contact={contact}
+      photoOfReviewProfiles={photoOfReviewProfiles}
     />,
   );
 };
