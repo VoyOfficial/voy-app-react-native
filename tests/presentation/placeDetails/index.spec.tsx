@@ -170,6 +170,12 @@ describe('Presentation: PlaceDetails', () => {
 
     expect(getByTestId('walking_icon_id')).toBeTruthy();
   });
+
+  test('should show full location icon with success', () => {
+    const { getByTestId } = makeSut('', '', '', '', '', '', '', '', '', ['']);
+
+    expect(getByTestId('full_location_icon_id')).toBeTruthy();
+  });
 });
 
 const makeSut = (

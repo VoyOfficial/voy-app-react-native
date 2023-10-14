@@ -124,7 +124,31 @@ const MoreDetails = ({
         {businessHoursSummary}
       </Text>
     </View>
-    <View style={{ marginTop: 18 }}>
+    <View
+      style={{
+        marginTop: 18,
+        flexDirection: 'row',
+        alignItems: 'center',
+      }}
+    >
+      <View
+        style={{
+          width: 30,
+          height: 30,
+          backgroundColor: '#F1F5F6',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 10,
+          marginRight: 7,
+        }}
+      >
+        <Icon
+          testID="full_location_icon_id"
+          name="location_outline"
+          size={16}
+          color="#000000"
+        />
+      </View>
       <Text
         testID="full_location_id"
         style={{
