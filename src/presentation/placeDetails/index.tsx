@@ -1,6 +1,31 @@
 import React from 'react';
-import { Image, Text, View } from 'react-native';
 import Icon from '../assets/fonts/Voy';
+import {
+  AmountOfReviews,
+  AmountOfReviewsContainer,
+  BusinessHourIconWrapper,
+  BusinessHours,
+  BusinessHoursSummaryContainer,
+  Container,
+  Description,
+  DistanceDetailsContainer,
+  DistanceOfLocal,
+  DistanceOfLocalContainer,
+  FullLocation,
+  FullLocationContainer,
+  FullLocationIconWrapper,
+  Location,
+  LocationContainer,
+  Phone,
+  PhoneContainer,
+  PhoneIconWrapper,
+  ProfileImage,
+  ProfileOfReviewProfilesWrapper,
+  Rating,
+  RatingContainer,
+  ReviewContainer,
+  Title,
+} from './styles';
 
 export const getStyleOfPhotoOfReviewProfile = (index: number) => {
   switch (index) {
@@ -37,68 +62,27 @@ const Reviews = ({
   rating: string;
   photoOfReviewProfiles: Array<string>;
 }) => (
-  <View
-    style={{
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingVertical: 22,
-      borderBottomWidth: 1,
-      paddingBottom: 22,
-      borderColor: '#E6E6E6',
-      borderTopWidth: 1,
-      paddingTop: 22,
-      alignItems: 'center',
-    }}
-  >
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <View style={{ flexDirection: 'row', marginRight: -11 }}>
+  <ReviewContainer>
+    <AmountOfReviewsContainer>
+      <ProfileOfReviewProfilesWrapper>
         {photoOfReviewProfiles.map((photo, index) => (
-          <Image
+          <ProfileImage
             key={index}
             testID={`photo_of_review_profiles_${index}_id`}
             source={{ uri: photo }}
-            style={[
-              {
-                width: 31,
-                height: 31,
-                borderRadius: 15,
-                borderWidth: 3,
-                borderColor: '#FFFFFF',
-              },
-              getStyleOfPhotoOfReviewProfile(index),
-            ]}
+            style={getStyleOfPhotoOfReviewProfile(index)}
           />
         ))}
-      </View>
-      <Text
-        testID="amount_of_reviews_id"
-        style={{
-          fontFamily: 'LexendDeca-Regular',
-          fontSize: 13,
-          fontWeight: '400',
-          lineHeight: 16,
-          textDecorationLine: 'underline',
-        }}
-      >
+      </ProfileOfReviewProfilesWrapper>
+      <AmountOfReviews testID="amount_of_reviews_id">
         {amountOfReviews}
-      </Text>
-    </View>
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      </AmountOfReviews>
+    </AmountOfReviewsContainer>
+    <RatingContainer>
       <Icon color="#FFAB5E" testID="star_icon_id" name="star" size={12} />
-      <Text
-        testID="rating_id"
-        style={{
-          fontFamily: 'LexendDeca-Regular',
-          fontSize: 17,
-          fontWeight: '400',
-          lineHeight: 21,
-          marginLeft: 7,
-        }}
-      >
-        {rating}
-      </Text>
-    </View>
-  </View>
+      <Rating testID="rating_id">{rating}</Rating>
+    </RatingContainer>
+  </ReviewContainer>
 );
 
 const MoreDetails = ({
@@ -111,105 +95,41 @@ const MoreDetails = ({
   contact: string;
 }) => (
   <>
-    <View style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
-      <View
-        style={{
-          width: 30,
-          height: 30,
-          backgroundColor: '#F1F5F6',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 10,
-          marginRight: 7,
-        }}
-      >
+    <BusinessHoursSummaryContainer>
+      <BusinessHourIconWrapper>
         <Icon
           testID="clock_icon_id"
           name="clock_outline"
           size={16}
           color="#000000"
         />
-      </View>
-      <Text
-        testID="business_hours_summary_id"
-        style={{
-          fontFamily: 'LexendDeca-Regular',
-          fontSize: 13,
-          fontWeight: '400',
-          lineHeight: 16.25,
-        }}
-      >
+      </BusinessHourIconWrapper>
+      <BusinessHours testID="business_hours_summary_id">
         {businessHoursSummary}
-      </Text>
-    </View>
-    <View
-      style={{
-        marginTop: 18,
-        flexDirection: 'row',
-        alignItems: 'center',
-      }}
-    >
-      <View
-        style={{
-          width: 30,
-          height: 30,
-          backgroundColor: '#F1F5F6',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 10,
-          marginRight: 7,
-        }}
-      >
+      </BusinessHours>
+    </BusinessHoursSummaryContainer>
+    <FullLocationContainer>
+      <FullLocationIconWrapper>
         <Icon
           testID="full_location_icon_id"
           name="location_outline"
           size={16}
           color="#000000"
         />
-      </View>
-      <Text
-        testID="full_location_id"
-        style={{
-          fontFamily: 'LexendDeca-Regular',
-          fontSize: 13,
-          fontWeight: '400',
-          lineHeight: 16.25,
-        }}
-      >
-        {fullLocation}
-      </Text>
-    </View>
-    <View style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
-      <View
-        style={{
-          width: 30,
-          height: 30,
-          backgroundColor: '#F1F5F6',
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 10,
-          marginRight: 7,
-        }}
-      >
+      </FullLocationIconWrapper>
+      <FullLocation testID="full_location_id">{fullLocation}</FullLocation>
+    </FullLocationContainer>
+    <PhoneContainer>
+      <PhoneIconWrapper>
         <Icon
           testID="phone_icon_id"
           name="phone_outline"
           size={16}
           color="#000000"
         />
-      </View>
-      <Text
-        testID="contact_id"
-        style={{
-          fontFamily: 'LexendDeca-Regular',
-          fontSize: 13,
-          fontWeight: '400',
-          lineHeight: 16.25,
-        }}
-      >
-        {contact}
-      </Text>
-    </View>
+      </PhoneIconWrapper>
+      <Phone testID="contact_id">{contact}</Phone>
+    </PhoneContainer>
   </>
 );
 const PlaceDetails = ({
@@ -225,98 +145,31 @@ const PlaceDetails = ({
   photoOfReviewProfiles,
 }: Props) => {
   return (
-    <View style={{ paddingHorizontal: 26 }}>
-      <Text
-        testID="title_id"
-        style={{
-          fontSize: 20,
-          lineHeight: 25,
-          fontWeight: '500',
-          fontFamily: 'LexendDeca-Regular',
-          marginBottom: 25,
-        }}
-      >
-        {title}
-      </Text>
-      <Text
-        testID="description_id"
-        style={{
-          fontFamily: 'LexendDeca-Regular',
-          fontSize: 13,
-          lineHeight: 20,
-          fontWeight: '400',
-          color: '#B3B3B3',
-          marginBottom: 18,
-        }}
-      >
-        {description}
-      </Text>
-      <View
-        style={{
-          flexDirection: 'row',
-          paddingBottom: 22,
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: '#F1F5F6',
-            padding: 8,
-            borderRadius: 10,
-            marginRight: 11,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
+    <Container>
+      <Title testID="title_id">{title}</Title>
+      <Description testID="description_id">{description}</Description>
+      <DistanceDetailsContainer>
+        <LocationContainer>
           <Icon
             testID="location_icon_id"
             name="location"
             size={11}
             color="#212121"
           />
-          <Text
-            testID="location_id"
-            style={{
-              fontFamily: 'LexendDeca-Regular',
-              fontSize: 13,
-              fontWeight: '400',
-              lineHeight: 16,
-              color: '#B3B3B3',
-              marginLeft: 7,
-            }}
-          >
-            {location}
-          </Text>
-        </View>
-        <View
-          style={{
-            backgroundColor: '#F1F5F6',
-            padding: 8,
-            borderRadius: 10,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
+          <Location testID="location_id">{location}</Location>
+        </LocationContainer>
+        <DistanceOfLocalContainer>
           <Icon
             testID="walking_icon_id"
             name="walking"
             size={11}
             color="#212121"
           />
-          <Text
-            testID="distance_of_local_id"
-            style={{
-              fontFamily: 'LexendDeca-Regular',
-              fontSize: 13,
-              fontWeight: '400',
-              lineHeight: 16,
-              color: '#B3B3B3',
-              marginLeft: 7,
-            }}
-          >
+          <DistanceOfLocal testID="distance_of_local_id">
             {myDistanceOfLocal}
-          </Text>
-        </View>
-      </View>
+          </DistanceOfLocal>
+        </DistanceOfLocalContainer>
+      </DistanceDetailsContainer>
       <Reviews
         amountOfReviews={amountOfReviews}
         rating={rating}
@@ -327,7 +180,7 @@ const PlaceDetails = ({
         contact={contact}
         fullLocation={fullLocation}
       />
-    </View>
+    </Container>
   );
 };
 
