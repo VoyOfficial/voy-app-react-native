@@ -182,6 +182,12 @@ describe('Presentation: PlaceDetails', () => {
 
     expect(getByTestId('clock_icon_id')).toBeTruthy();
   });
+
+  test('should show phone icon with success', () => {
+    const { getByTestId } = makeSut('', '', '', '', '', '', '', '', '', ['']);
+
+    expect(getByTestId('phone_icon_id')).toBeTruthy();
+  });
 });
 
 const makeSut = (

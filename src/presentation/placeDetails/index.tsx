@@ -179,7 +179,25 @@ const MoreDetails = ({
         {fullLocation}
       </Text>
     </View>
-    <View style={{ marginTop: 18 }}>
+    <View style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
+      <View
+        style={{
+          width: 30,
+          height: 30,
+          backgroundColor: '#F1F5F6',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 10,
+          marginRight: 7,
+        }}
+      >
+        <Icon
+          testID="phone_icon_id"
+          name="phone_outline"
+          size={16}
+          color="#000000"
+        />
+      </View>
       <Text
         testID="contact_id"
         style={{
