@@ -111,7 +111,25 @@ const MoreDetails = ({
   contact: string;
 }) => (
   <>
-    <View style={{ marginTop: 18 }}>
+    <View style={{ marginTop: 18, flexDirection: 'row', alignItems: 'center' }}>
+      <View
+        style={{
+          width: 30,
+          height: 30,
+          backgroundColor: '#F1F5F6',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 10,
+          marginRight: 7,
+        }}
+      >
+        <Icon
+          testID="clock_icon_id"
+          name="clock_outline"
+          size={16}
+          color="#000000"
+        />
+      </View>
       <Text
         testID="business_hours_summary_id"
         style={{

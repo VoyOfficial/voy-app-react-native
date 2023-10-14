@@ -176,6 +176,12 @@ describe('Presentation: PlaceDetails', () => {
 
     expect(getByTestId('full_location_icon_id')).toBeTruthy();
   });
+
+  test('should show clock icon with success', () => {
+    const { getByTestId } = makeSut('', '', '', '', '', '', '', '', '', ['']);
+
+    expect(getByTestId('clock_icon_id')).toBeTruthy();
+  });
 });
 
 const makeSut = (
