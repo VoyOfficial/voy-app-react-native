@@ -11,7 +11,8 @@
     "lint": "eslint '*/**/*.{js,jsx,ts,tsx}' --fix",
     "pretty": "prettier --config ./.prettierrc.js --write \"*/**/*.{js,jsx,ts,tsx,json}\"",
     "prepare": "husky install",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "web": "react-scripts start"
   },
   "lint-staged": {
     "**/*.ts?(x)": [
@@ -23,11 +24,14 @@
   "dependencies": {
     "axios": "^0.27.2",
     "react": "18.0.0",
+    "react-dom": "^18.2.0",
     "react-native": "0.69.2",
     "react-native-vector-icons": "^10.0.0",
+    "react-native-web": "^0.19.9",
     "styled-components": "^6.0.7"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "7.21.0",
     "@babel/core": "^7.12.9",
     "@babel/plugin-proposal-decorators": "^7.18.9",
     "@babel/runtime": "^7.12.5",
@@ -55,6 +59,7 @@
     "jest": "^26.6.3",
     "lint-staged": "^13.0.3",
     "metro-react-native-babel-preset": "^0.70.3",
+    "react-scripts": "^5.0.1",
     "react-test-renderer": "18.0.0",
     "typescript": "^4.4.4"
   },
@@ -62,5 +67,17 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
