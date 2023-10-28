@@ -188,6 +188,27 @@ describe('Presentation: PlaceDetails', () => {
 
     expect(getByTestId('phone_icon_id')).toBeTruthy();
   });
+
+  test('should show background image correctly', () => {
+    const backgroundImage = faker.image.city();
+    const { getByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+    );
+
+    expect(getByTestId('background_image_id').props.source).toEqual({
+      uri: backgroundImage,
+    });
+  });
 });
 
 const makeSut = (
@@ -201,6 +222,7 @@ const makeSut = (
   contact = '',
   title = '',
   photoOfReviewProfiles = [''],
+  backgroundImage = '',
 ) => {
   return render(
     <PlaceDetails
@@ -214,6 +236,7 @@ const makeSut = (
       fullLocation={fullLocation}
       contact={contact}
       photoOfReviewProfiles={photoOfReviewProfiles}
+      backgroundImage={backgroundImage}
     />,
   );
 };

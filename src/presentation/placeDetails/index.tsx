@@ -1,4 +1,5 @@
 import React from 'react';
+import { Image } from 'react-native';
 import Icon from '../assets/fonts/Voy';
 import {
   AmountOfReviews,
@@ -51,6 +52,7 @@ type Props = {
   fullLocation: string;
   contact: string;
   photoOfReviewProfiles: Array<string>;
+  backgroundImage: string;
 };
 
 const Reviews = ({
@@ -143,9 +145,11 @@ const PlaceDetails = ({
   fullLocation,
   contact,
   photoOfReviewProfiles,
+  backgroundImage,
 }: Props) => {
   return (
     <Container>
+      <Image testID="background_image_id" source={{ uri: backgroundImage }} />
       <Title testID="title_id">{title}</Title>
       <Description testID="description_id">{description}</Description>
       <DistanceDetailsContainer>
