@@ -209,6 +209,36 @@ describe('Presentation: PlaceDetails', () => {
       uri: backgroundImage,
     });
   });
+
+  test('should show gallery summary images with correct images', () => {
+    const gallerySummary = [''];
+    for (let index = 0; index < 5; index++) {
+      gallerySummary.push(faker.image.city());
+    }
+    const backgroundImage = faker.image.city();
+    const { getByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+      gallerySummary,
+    );
+
+    gallerySummary.forEach((image, id) => {
+      expect(
+        getByTestId(`gallery_summary_image_${id}_id`).props.source,
+      ).toEqual({
+        uri: image,
+      });
+    });
+  });
 });
 
 const makeSut = (
@@ -223,6 +253,7 @@ const makeSut = (
   title = '',
   photoOfReviewProfiles = [''],
   backgroundImage = '',
+  gallerySummaryImages = [''],
 ) => {
   return render(
     <PlaceDetails
@@ -237,6 +268,7 @@ const makeSut = (
       contact={contact}
       photoOfReviewProfiles={photoOfReviewProfiles}
       backgroundImage={backgroundImage}
+      gallerySummaryImages={gallerySummaryImages}
     />,
   );
 };

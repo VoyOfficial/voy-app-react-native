@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image } from 'react-native';
+import { Image, View } from 'react-native';
 import Icon from '../assets/fonts/Voy';
 import {
   AmountOfReviews,
@@ -53,6 +53,7 @@ type Props = {
   contact: string;
   photoOfReviewProfiles: Array<string>;
   backgroundImage: string;
+  gallerySummaryImages: Array<string>;
 };
 
 const Reviews = ({
@@ -146,10 +147,20 @@ const PlaceDetails = ({
   contact,
   photoOfReviewProfiles,
   backgroundImage,
+  gallerySummaryImages,
 }: Props) => {
   return (
     <Container>
       <Image testID="background_image_id" source={{ uri: backgroundImage }} />
+      <View>
+        {gallerySummaryImages.map((image, id) => (
+          <Image
+            key={id}
+            testID={`gallery_summary_image_${id}_id`}
+            source={{ uri: image }}
+          />
+        ))}
+      </View>
       <Title testID="title_id">{title}</Title>
       <Description testID="description_id">{description}</Description>
       <DistanceDetailsContainer>
