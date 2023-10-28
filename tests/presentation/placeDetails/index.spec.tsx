@@ -241,7 +241,7 @@ describe('Presentation: PlaceDetails', () => {
   });
 
   test('should show the most available number of images in the gallery correctly', () => {
-    const gallerySummary = [''];
+    const gallerySummary = [];
     for (let index = 0; index < 8; index++) {
       gallerySummary.push(faker.image.city());
     }
@@ -262,7 +262,32 @@ describe('Presentation: PlaceDetails', () => {
     );
     expect(
       getByTestId('most_available_number_of_images_id').props.children,
-    ).toEqual('+6');
+    ).toEqual('+5');
+  });
+
+  test('should not show the most available number of images in the gallery', () => {
+    const gallerySummary = [];
+    for (let index = 0; index < 4; index++) {
+      gallerySummary.push(faker.image.city());
+    }
+    const backgroundImage = faker.image.city();
+    const { queryByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+      gallerySummary,
+    );
+    expect(
+      queryByTestId('most_available_number_of_images_id'),
+    ).not.toBeTruthy();
   });
 });
 

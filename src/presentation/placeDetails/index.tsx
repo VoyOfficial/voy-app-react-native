@@ -165,14 +165,18 @@ const PlaceDetails = ({
   backgroundImage,
   gallerySummaryImages,
 }: Props) => {
+  const mostAvailableNumberOfImages = gallerySummaryImages.length - 4;
+
   return (
     <Container>
       <Image testID="background_image_id" source={{ uri: backgroundImage }} />
       <View>
         {renderGallerySummaryImages(gallerySummaryImages)}
-        <Text testID="most_available_number_of_images_id">
-          {`+${gallerySummaryImages.length - 3}`}
-        </Text>
+        {mostAvailableNumberOfImages > 0 && (
+          <Text testID="most_available_number_of_images_id">
+            {`+${mostAvailableNumberOfImages + 1}`}
+          </Text>
+        )}
       </View>
       <Title testID="title_id">{title}</Title>
       <Description testID="description_id">{description}</Description>

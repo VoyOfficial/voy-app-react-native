@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { FavoriteLPlaceModel } from '~/domain/models';
+import { FavoritePlaceModel } from '~/domain/models';
 import businessHoursModelStub from '../stubs/businessHoursModelStub';
 
-const favoritePlacesModelFactory = (): Array<FavoriteLPlaceModel> => {
+const favoritePlacesModelFactory = (): Array<FavoritePlaceModel> => {
   return [
     {
       about: faker.lorem.paragraph(),
