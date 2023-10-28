@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import Icon from '../assets/fonts/Voy';
 import {
   AmountOfReviews,
@@ -135,6 +135,22 @@ const MoreDetails = ({
     </PhoneContainer>
   </>
 );
+
+const renderGallerySummaryImages = (images: Array<string>) => {
+  const gallerySummaryImages = [];
+  for (let index = 0; index < 4; index++) {
+    gallerySummaryImages.push(
+      <Image
+        key={index}
+        testID={`gallery_summary_image_${index}_id`}
+        source={{ uri: images[index] }}
+      />,
+    );
+  }
+
+  return gallerySummaryImages;
+};
+
 const PlaceDetails = ({
   title,
   description,
@@ -153,13 +169,10 @@ const PlaceDetails = ({
     <Container>
       <Image testID="background_image_id" source={{ uri: backgroundImage }} />
       <View>
-        {gallerySummaryImages.map((image, id) => (
-          <Image
-            key={id}
-            testID={`gallery_summary_image_${id}_id`}
-            source={{ uri: image }}
-          />
-        ))}
+        {renderGallerySummaryImages(gallerySummaryImages)}
+        <Text testID="most_available_number_of_images_id">
+          {`+${gallerySummaryImages.length - 3}`}
+        </Text>
       </View>
       <Title testID="title_id">{title}</Title>
       <Description testID="description_id">{description}</Description>

@@ -212,7 +212,7 @@ describe('Presentation: PlaceDetails', () => {
 
   test('should show gallery summary images with correct images', () => {
     const gallerySummary = [''];
-    for (let index = 0; index < 5; index++) {
+    for (let index = 0; index < 6; index++) {
       gallerySummary.push(faker.image.city());
     }
     const backgroundImage = faker.image.city();
@@ -231,13 +231,38 @@ describe('Presentation: PlaceDetails', () => {
       gallerySummary,
     );
 
-    gallerySummary.forEach((image, id) => {
+    for (let index = 0; index < 4; index++) {
       expect(
-        getByTestId(`gallery_summary_image_${id}_id`).props.source,
+        getByTestId(`gallery_summary_image_${index}_id`).props.source,
       ).toEqual({
-        uri: image,
+        uri: gallerySummary[index],
       });
-    });
+    }
+  });
+
+  test('should show the most available number of images in the gallery correctly', () => {
+    const gallerySummary = [''];
+    for (let index = 0; index < 8; index++) {
+      gallerySummary.push(faker.image.city());
+    }
+    const backgroundImage = faker.image.city();
+    const { getByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+      gallerySummary,
+    );
+    expect(
+      getByTestId('most_available_number_of_images_id').props.children,
+    ).toEqual('+6');
   });
 });
 
