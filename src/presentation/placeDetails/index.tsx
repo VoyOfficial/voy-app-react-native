@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { BlurView } from '@react-native-community/blur';
 import Icon from '../assets/fonts/Voy';
 import {
@@ -56,6 +56,7 @@ type Props = {
   photoOfReviewProfiles: Array<string>;
   backgroundImage: string;
   gallerySummaryImages: Array<string>;
+  showAllImagesOfGallery: () => void;
 };
 
 const Reviews = ({
@@ -192,6 +193,7 @@ const PlaceDetails = ({
   photoOfReviewProfiles,
   backgroundImage,
   gallerySummaryImages,
+  showAllImagesOfGallery,
 }: Props) => {
   const mostAvailableNumberOfImages = gallerySummaryImages.length - 4;
 
@@ -233,14 +235,19 @@ const PlaceDetails = ({
           />
           {renderGallerySummaryImages(gallerySummaryImages)}
           {mostAvailableNumberOfImages > 0 && (
-            <View
+            <TouchableOpacity
+              testID="button_show_all_images_of_gallery_id"
+              onPress={showAllImagesOfGallery}
               style={{
                 justifyContent: 'center',
                 position: 'absolute',
                 right: 0,
                 alignSelf: 'center',
-                marginRight: 32,
+                marginRight: 16,
                 zIndex: 2,
+                width: 56,
+                height: 54,
+                alignItems: 'center',
               }}
             >
               <Text
@@ -255,7 +262,7 @@ const PlaceDetails = ({
               >
                 {`+${mostAvailableNumberOfImages + 1}`}
               </Text>
-            </View>
+            </TouchableOpacity>
           )}
         </View>
       </View>

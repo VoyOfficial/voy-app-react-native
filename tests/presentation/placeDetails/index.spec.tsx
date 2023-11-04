@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
 import PlaceDetails, {
   getStyleOfPhotoOfReviewProfile,
@@ -316,6 +316,35 @@ describe('Presentation: PlaceDetails', () => {
     ).not.toBeTruthy();
     expect(getByTestId('gallery_summary_image_background_3_id')).toBeTruthy();
   });
+
+  test('should press the last image of gallery with success', () => {
+    const showAllImagesOfGallery = jest.fn();
+    const gallerySummary = [];
+    for (let index = 0; index < 8; index++) {
+      gallerySummary.push(faker.image.city());
+    }
+    const backgroundImage = faker.image.city();
+    const { getByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+      gallerySummary,
+      showAllImagesOfGallery,
+    );
+
+    fireEvent.press(getByTestId('button_show_all_images_of_gallery_id'));
+
+    expect(showAllImagesOfGallery).toHaveBeenCalledTimes(1);
+    expect(showAllImagesOfGallery).toHaveBeenCalledWith();
+  });
 });
 
 const makeSut = (
@@ -331,6 +360,7 @@ const makeSut = (
   photoOfReviewProfiles = [''],
   backgroundImage = '',
   gallerySummaryImages = [''],
+  showAllImagesOfGallery = () => {},
 ) => {
   return render(
     <PlaceDetails
@@ -346,6 +376,7 @@ const makeSut = (
       photoOfReviewProfiles={photoOfReviewProfiles}
       backgroundImage={backgroundImage}
       gallerySummaryImages={gallerySummaryImages}
+      showAllImagesOfGallery={showAllImagesOfGallery}
     />,
   );
 };
