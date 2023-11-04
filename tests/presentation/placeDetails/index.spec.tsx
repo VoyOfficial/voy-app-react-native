@@ -289,6 +289,33 @@ describe('Presentation: PlaceDetails', () => {
       queryByTestId('most_available_number_of_images_id'),
     ).not.toBeTruthy();
   });
+
+  test('should show the last image of gallery with background color black', () => {
+    const gallerySummary = [];
+    for (let index = 0; index < 4; index++) {
+      gallerySummary.push(faker.image.city());
+    }
+    const backgroundImage = faker.image.city();
+    const { getByTestId, queryByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+      gallerySummary,
+    );
+
+    expect(
+      queryByTestId('gallery_summary_image_background_2_id'),
+    ).not.toBeTruthy();
+    expect(getByTestId('gallery_summary_image_background_3_id')).toBeTruthy();
+  });
 });
 
 const makeSut = (

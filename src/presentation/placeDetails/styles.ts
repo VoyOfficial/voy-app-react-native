@@ -163,7 +163,9 @@ export const AmountOfReviewsContainer = styled.View`
   align-items: center;
 `;
 
-export const Container = styled.View`
+export const Container = styled.View``;
+
+export const ContentContainer = styled.View`
   padding: 0 26px;
 `;
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image, Text, View } from 'react-native';
+import { BlurView } from '@react-native-community/blur';
 import Icon from '../assets/fonts/Voy';
 import {
   AmountOfReviews,
@@ -8,6 +9,7 @@ import {
   BusinessHours,
   BusinessHoursSummaryContainer,
   Container,
+  ContentContainer,
   Description,
   DistanceDetailsContainer,
   DistanceOfLocal,
@@ -140,11 +142,37 @@ const renderGallerySummaryImages = (images: Array<string>) => {
   const gallerySummaryImages = [];
   for (let index = 0; index < 4; index++) {
     gallerySummaryImages.push(
-      <Image
-        key={index}
-        testID={`gallery_summary_image_${index}_id`}
-        source={{ uri: images[index] }}
-      />,
+      <>
+        {index === 3 && (
+          <View
+            testID={`gallery_summary_image_background_${index}_id`}
+            style={{
+              width: 56,
+              height: 54,
+              position: 'absolute',
+              backgroundColor: 'black',
+              right: 0,
+              zIndex: 2,
+              marginRight: 15,
+              marginTop: 15,
+              borderRadius: 10,
+              opacity: 0.5,
+            }}
+          />
+        )}
+        <Image
+          key={index}
+          testID={`gallery_summary_image_${index}_id`}
+          source={{ uri: images[index] }}
+          style={{
+            width: 56,
+            height: 54,
+            borderRadius: 10,
+            marginHorizontal: 5,
+            shadowOpacity: 0.5,
+          }}
+        />
+      </>,
     );
   }
 
@@ -169,49 +197,104 @@ const PlaceDetails = ({
 
   return (
     <Container>
-      <Image testID="background_image_id" source={{ uri: backgroundImage }} />
-      <View>
-        {renderGallerySummaryImages(gallerySummaryImages)}
-        {mostAvailableNumberOfImages > 0 && (
-          <Text testID="most_available_number_of_images_id">
-            {`+${mostAvailableNumberOfImages + 1}`}
-          </Text>
-        )}
+      <View style={{ height: '40%' }}>
+        <Image
+          testID="background_image_id"
+          source={{ uri: backgroundImage }}
+          resizeMode="cover"
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        />
+        <View
+          style={{
+            flexDirection: 'row',
+            position: 'absolute',
+            bottom: 0,
+            alignSelf: 'center',
+            paddingVertical: 15,
+            paddingHorizontal: 10,
+            marginBottom: 15,
+          }}
+        >
+          <BlurView
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              borderRadius: 20,
+            }}
+            blurType="light"
+            blurAmount={10}
+            reducedTransparencyFallbackColor="white"
+          />
+          {renderGallerySummaryImages(gallerySummaryImages)}
+          {mostAvailableNumberOfImages > 0 && (
+            <View
+              style={{
+                justifyContent: 'center',
+                position: 'absolute',
+                right: 0,
+                alignSelf: 'center',
+                marginRight: 32,
+                zIndex: 2,
+              }}
+            >
+              <Text
+                testID="most_available_number_of_images_id"
+                style={{
+                  color: '#FFFFFF',
+                  fontFamily: 'LexendDeca-Regular',
+                  fontWeight: '400',
+                  lineHeight: 21.25,
+                  fontSize: 17,
+                }}
+              >
+                {`+${mostAvailableNumberOfImages + 1}`}
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
-      <Title testID="title_id">{title}</Title>
-      <Description testID="description_id">{description}</Description>
-      <DistanceDetailsContainer>
-        <LocationContainer>
-          <Icon
-            testID="location_icon_id"
-            name="location"
-            size={11}
-            color="#212121"
-          />
-          <Location testID="location_id">{location}</Location>
-        </LocationContainer>
-        <DistanceOfLocalContainer>
-          <Icon
-            testID="walking_icon_id"
-            name="walking"
-            size={11}
-            color="#212121"
-          />
-          <DistanceOfLocal testID="distance_of_local_id">
-            {myDistanceOfLocal}
-          </DistanceOfLocal>
-        </DistanceOfLocalContainer>
-      </DistanceDetailsContainer>
-      <Reviews
-        amountOfReviews={amountOfReviews}
-        rating={rating}
-        photoOfReviewProfiles={photoOfReviewProfiles}
-      />
-      <MoreDetails
-        businessHoursSummary={businessHoursSummary}
-        contact={contact}
-        fullLocation={fullLocation}
-      />
+      <ContentContainer>
+        <Title testID="title_id">{title}</Title>
+        <Description testID="description_id">{description}</Description>
+        <DistanceDetailsContainer>
+          <LocationContainer>
+            <Icon
+              testID="location_icon_id"
+              name="location"
+              size={11}
+              color="#212121"
+            />
+            <Location testID="location_id">{location}</Location>
+          </LocationContainer>
+          <DistanceOfLocalContainer>
+            <Icon
+              testID="walking_icon_id"
+              name="walking"
+              size={11}
+              color="#212121"
+            />
+            <DistanceOfLocal testID="distance_of_local_id">
+              {myDistanceOfLocal}
+            </DistanceOfLocal>
+          </DistanceOfLocalContainer>
+        </DistanceDetailsContainer>
+        <Reviews
+          amountOfReviews={amountOfReviews}
+          rating={rating}
+          photoOfReviewProfiles={photoOfReviewProfiles}
+        />
+        <MoreDetails
+          businessHoursSummary={businessHoursSummary}
+          contact={contact}
+          fullLocation={fullLocation}
+        />
+      </ContentContainer>
     </Container>
   );
 };
