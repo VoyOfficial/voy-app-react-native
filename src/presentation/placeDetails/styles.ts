@@ -8,7 +8,7 @@ export const Title = styled(Text)`
   font-size: 20px;
   line-height: 25px;
   font-weight: 500;
-
+  margin-top: 22px;
   margin-bottom: 25px;
 `;
 
@@ -163,10 +163,20 @@ export const AmountOfReviewsContainer = styled.View`
   align-items: center;
 `;
 
-export const Container = styled.View``;
+export const ScrollContainer = styled.ScrollView.attrs({
+  showsVerticalScrollIndicator: false,
+})`
+  flex: 1;
+`;
 
 export const ContentContainer = styled.View`
   padding: 0 26px;
+  flex: 0.6;
+  z-index: 2;
+  background-color: #ffffff;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  top: -20px;
 `;
 
 export const DistanceDetailsContainer = styled.View`

@@ -8,7 +8,6 @@ import {
   BusinessHourIconWrapper,
   BusinessHours,
   BusinessHoursSummaryContainer,
-  Container,
   ContentContainer,
   Description,
   DistanceDetailsContainer,
@@ -27,6 +26,7 @@ import {
   Rating,
   RatingContainer,
   ReviewContainer,
+  ScrollContainer,
   Title,
 } from './styles';
 
@@ -198,8 +198,14 @@ const PlaceDetails = ({
   const mostAvailableNumberOfImages = gallerySummaryImages.length - 4;
 
   return (
-    <Container>
-      <View style={{ height: '40%' }}>
+    <ScrollContainer>
+      <View
+        style={{
+          height: 360,
+          zIndex: 1,
+          top: 0,
+        }}
+      >
         <Image
           testID="background_image_id"
           source={{ uri: backgroundImage }}
@@ -217,7 +223,7 @@ const PlaceDetails = ({
             alignSelf: 'center',
             paddingVertical: 15,
             paddingHorizontal: 10,
-            marginBottom: 15,
+            marginBottom: 36,
           }}
         >
           <BlurView
@@ -302,7 +308,7 @@ const PlaceDetails = ({
           fullLocation={fullLocation}
         />
       </ContentContainer>
-    </Container>
+    </ScrollContainer>
   );
 };
 
