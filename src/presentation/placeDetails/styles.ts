@@ -1,4 +1,6 @@
 import styled from 'styled-components/native';
+import { BlurView } from '@react-native-community/blur';
+import Icon from '../assets/fonts/Voy';
 
 const Text = styled.Text`
   font-family: 'LexendDeca-Regular';
@@ -187,4 +189,117 @@ export const DistanceDetailsContainer = styled.View`
 export const RatingContainer = styled.View`
   flex-direction: row;
   align-items: center;
+`;
+
+type Props = {
+  name?: string;
+};
+
+export const StarIcon = styled(Icon).attrs({
+  color: '#FFAB5E',
+  name: 'star',
+  size: 12,
+})<Props>``;
+
+export const ClockOutlineIcon = styled(Icon).attrs({
+  color: '#000000',
+  name: 'clock_outline',
+  size: 16,
+})<Props>``;
+
+export const LocationOutlineIcon = styled(Icon).attrs({
+  color: '#000000',
+  name: 'location_outline',
+  size: 16,
+})<Props>``;
+
+export const LocationIcon = styled(Icon).attrs({
+  color: '#212121',
+  name: 'location',
+  size: 11,
+})<Props>``;
+
+export const PhoneOutlineIcon = styled(Icon).attrs({
+  color: '#000000',
+  name: 'phone_outline',
+  size: 16,
+})<Props>``;
+
+export const WalkingIcon = styled(Icon).attrs({
+  color: '#212121',
+  name: 'walking',
+  size: 11,
+})<Props>``;
+
+export const GallerySummaryImageBackground = styled.View`
+  width: 56px;
+  height: 54px;
+  position: absolute;
+  background-color: #000000;
+  right: 0;
+  z-index: 2;
+  margin-right: 15px;
+  margin-top: 15px;
+  border-radius: 10px;
+  opacity: 0.5;
+`;
+
+export const GallerySummaryImage = styled.Image.attrs({
+  style: { shadowOpacity: 0.5 },
+})`
+  width: 56px;
+  height: 54px;
+  border-radius: 10px;
+  margin: 0 5px;
+`;
+
+export const BackgroundImage = styled.Image`
+  width: 100%;
+  height: 100%;
+`;
+
+export const ImagesWrapper = styled.View`
+  height: 360px;
+  z-index: 1;
+  top: 0;
+`;
+
+export const GallerySummaryImagesWrapper = styled.View`
+  flex-direction: row;
+  position: absolute;
+  bottom: 0;
+  align-self: center;
+  padding: 15px 10px;
+  margin-bottom: 36px;
+`;
+
+export const BlurOfGallerySummaryImages = styled(BlurView).attrs({
+  blurType: 'light',
+  blurAmount: 10,
+  reducedTransparencyFallbackColor: 'white',
+})`
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+`;
+
+export const ButtonShowAllImagesOfGallery = styled.TouchableOpacity`
+  justify-content: center;
+  position: absolute;
+  right: 0;
+  align-self: center;
+  margin-right: 16px;
+  z-index: 2;
+  width: 56px;
+  height: 54px;
+  align-items: center;
+`;
+
+export const MostAvailableNumberOfImages = styled(Text)`
+  color: #ffffff;
+  font-weight: 400;
+  line-height: 21.25px;
+  font-size: 17px;
 `;

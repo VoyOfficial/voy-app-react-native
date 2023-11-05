@@ -1,13 +1,14 @@
 import React from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { BlurView } from '@react-native-community/blur';
-import Icon from '../assets/fonts/Voy';
 import {
   AmountOfReviews,
   AmountOfReviewsContainer,
+  BackgroundImage,
+  BlurOfGallerySummaryImages,
   BusinessHourIconWrapper,
   BusinessHours,
   BusinessHoursSummaryContainer,
+  ButtonShowAllImagesOfGallery,
+  ClockOutlineIcon,
   ContentContainer,
   Description,
   DistanceDetailsContainer,
@@ -16,18 +17,28 @@ import {
   FullLocation,
   FullLocationContainer,
   FullLocationIconWrapper,
+  GallerySummaryImage,
+  GallerySummaryImageBackground,
+  GallerySummaryImagesWrapper,
+  ImagesWrapper,
   Location,
   LocationContainer,
+  LocationIcon,
+  LocationOutlineIcon,
+  MostAvailableNumberOfImages,
   Phone,
   PhoneContainer,
   PhoneIconWrapper,
+  PhoneOutlineIcon,
   ProfileImage,
   ProfileOfReviewProfilesWrapper,
   Rating,
   RatingContainer,
   ReviewContainer,
   ScrollContainer,
+  StarIcon,
   Title,
+  WalkingIcon,
 } from './styles';
 
 export const getStyleOfPhotoOfReviewProfile = (index: number) => {
@@ -85,7 +96,7 @@ const Reviews = ({
       </AmountOfReviews>
     </AmountOfReviewsContainer>
     <RatingContainer>
-      <Icon color="#FFAB5E" testID="star_icon_id" name="star" size={12} />
+      <StarIcon testID="star_icon_id" />
       <Rating testID="rating_id">{rating}</Rating>
     </RatingContainer>
   </ReviewContainer>
@@ -103,12 +114,7 @@ const MoreDetails = ({
   <>
     <BusinessHoursSummaryContainer>
       <BusinessHourIconWrapper>
-        <Icon
-          testID="clock_icon_id"
-          name="clock_outline"
-          size={16}
-          color="#000000"
-        />
+        <ClockOutlineIcon testID="clock_icon_id" />
       </BusinessHourIconWrapper>
       <BusinessHours testID="business_hours_summary_id">
         {businessHoursSummary}
@@ -116,23 +122,13 @@ const MoreDetails = ({
     </BusinessHoursSummaryContainer>
     <FullLocationContainer>
       <FullLocationIconWrapper>
-        <Icon
-          testID="full_location_icon_id"
-          name="location_outline"
-          size={16}
-          color="#000000"
-        />
+        <LocationOutlineIcon testID="full_location_icon_id" />
       </FullLocationIconWrapper>
       <FullLocation testID="full_location_id">{fullLocation}</FullLocation>
     </FullLocationContainer>
     <PhoneContainer>
       <PhoneIconWrapper>
-        <Icon
-          testID="phone_icon_id"
-          name="phone_outline"
-          size={16}
-          color="#000000"
-        />
+        <PhoneOutlineIcon testID="phone_icon_id" />
       </PhoneIconWrapper>
       <Phone testID="contact_id">{contact}</Phone>
     </PhoneContainer>
@@ -145,33 +141,14 @@ const renderGallerySummaryImages = (images: Array<string>) => {
     gallerySummaryImages.push(
       <>
         {index === 3 && (
-          <View
+          <GallerySummaryImageBackground
             testID={`gallery_summary_image_background_${index}_id`}
-            style={{
-              width: 56,
-              height: 54,
-              position: 'absolute',
-              backgroundColor: 'black',
-              right: 0,
-              zIndex: 2,
-              marginRight: 15,
-              marginTop: 15,
-              borderRadius: 10,
-              opacity: 0.5,
-            }}
           />
         )}
-        <Image
+        <GallerySummaryImage
           key={index}
           testID={`gallery_summary_image_${index}_id`}
           source={{ uri: images[index] }}
-          style={{
-            width: 56,
-            height: 54,
-            borderRadius: 10,
-            marginHorizontal: 5,
-            shadowOpacity: 0.5,
-          }}
         />
       </>,
     );
@@ -199,99 +176,37 @@ const PlaceDetails = ({
 
   return (
     <ScrollContainer>
-      <View
-        style={{
-          height: 360,
-          zIndex: 1,
-          top: 0,
-        }}
-      >
-        <Image
+      <ImagesWrapper>
+        <BackgroundImage
           testID="background_image_id"
           source={{ uri: backgroundImage }}
           resizeMode="cover"
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
         />
-        <View
-          style={{
-            flexDirection: 'row',
-            position: 'absolute',
-            bottom: 0,
-            alignSelf: 'center',
-            paddingVertical: 15,
-            paddingHorizontal: 10,
-            marginBottom: 36,
-          }}
-        >
-          <BlurView
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              borderRadius: 20,
-            }}
-            blurType="light"
-            blurAmount={10}
-            reducedTransparencyFallbackColor="white"
-          />
+        <GallerySummaryImagesWrapper>
+          <BlurOfGallerySummaryImages style={{ borderRadius: 20 }} />
           {renderGallerySummaryImages(gallerySummaryImages)}
           {mostAvailableNumberOfImages > 0 && (
-            <TouchableOpacity
+            <ButtonShowAllImagesOfGallery
               testID="button_show_all_images_of_gallery_id"
               onPress={showAllImagesOfGallery}
-              style={{
-                justifyContent: 'center',
-                position: 'absolute',
-                right: 0,
-                alignSelf: 'center',
-                marginRight: 16,
-                zIndex: 2,
-                width: 56,
-                height: 54,
-                alignItems: 'center',
-              }}
             >
-              <Text
-                testID="most_available_number_of_images_id"
-                style={{
-                  color: '#FFFFFF',
-                  fontFamily: 'LexendDeca-Regular',
-                  fontWeight: '400',
-                  lineHeight: 21.25,
-                  fontSize: 17,
-                }}
-              >
+              <MostAvailableNumberOfImages testID="most_available_number_of_images_id">
                 {`+${mostAvailableNumberOfImages + 1}`}
-              </Text>
-            </TouchableOpacity>
+              </MostAvailableNumberOfImages>
+            </ButtonShowAllImagesOfGallery>
           )}
-        </View>
-      </View>
+        </GallerySummaryImagesWrapper>
+      </ImagesWrapper>
       <ContentContainer>
         <Title testID="title_id">{title}</Title>
         <Description testID="description_id">{description}</Description>
         <DistanceDetailsContainer>
           <LocationContainer>
-            <Icon
-              testID="location_icon_id"
-              name="location"
-              size={11}
-              color="#212121"
-            />
+            <LocationIcon testID="location_icon_id" />
             <Location testID="location_id">{location}</Location>
           </LocationContainer>
           <DistanceOfLocalContainer>
-            <Icon
-              testID="walking_icon_id"
-              name="walking"
-              size={11}
-              color="#212121"
-            />
+            <WalkingIcon testID="walking_icon_id" />
             <DistanceOfLocal testID="distance_of_local_id">
               {myDistanceOfLocal}
             </DistanceOfLocal>
