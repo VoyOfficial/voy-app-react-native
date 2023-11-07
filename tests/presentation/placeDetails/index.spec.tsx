@@ -211,7 +211,7 @@ describe('Presentation: PlaceDetails', () => {
   });
 
   test('should show gallery summary images with correct images', () => {
-    const gallerySummary = [''];
+    const gallerySummary: Array<string> = [];
     for (let index = 0; index < 6; index++) {
       gallerySummary.push(faker.image.city());
     }
@@ -237,6 +237,42 @@ describe('Presentation: PlaceDetails', () => {
       ).toEqual({
         uri: gallerySummary[index],
       });
+    }
+  });
+
+  test('should show gallery summary images with correct images when the gallerySummary is less than 4', () => {
+    const gallerySummary: Array<string> = [];
+    for (let index = 0; index < 3; index++) {
+      gallerySummary.push(faker.image.city());
+    }
+    const backgroundImage = faker.image.city();
+    const { queryByTestId, getByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+      gallerySummary,
+    );
+
+    for (let index = 0; index < gallerySummary.length; index++) {
+      if (index !== 3) {
+        expect(
+          getByTestId(`gallery_summary_image_${index}_id`).props.source,
+        ).toEqual({
+          uri: gallerySummary[index],
+        });
+      } else {
+        expect(
+          queryByTestId(`gallery_summary_image_${index}_id`),
+        ).not.toBeTruthy();
+      }
     }
   });
 

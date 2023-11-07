@@ -137,21 +137,34 @@ const MoreDetails = ({
 
 const renderGallerySummaryImages = (images: Array<string>) => {
   const gallerySummaryImages = [];
-  for (let index = 0; index < 4; index++) {
-    gallerySummaryImages.push(
-      <>
-        {index === 3 && (
-          <GallerySummaryImageBackground
-            testID={`gallery_summary_image_background_${index}_id`}
-          />
-        )}
+
+  if (images.length <= 3) {
+    for (let index = 0; index < images.length; index++) {
+      gallerySummaryImages.push(
         <GallerySummaryImage
           key={index}
           testID={`gallery_summary_image_${index}_id`}
           source={{ uri: images[index] }}
-        />
-      </>,
-    );
+        />,
+      );
+    }
+  } else {
+    for (let index = 0; index < 4; index++) {
+      gallerySummaryImages.push(
+        <>
+          {index === 3 && (
+            <GallerySummaryImageBackground
+              testID={`gallery_summary_image_background_${index}_id`}
+            />
+          )}
+          <GallerySummaryImage
+            key={index}
+            testID={`gallery_summary_image_${index}_id`}
+            source={{ uri: images[index] }}
+          />
+        </>,
+      );
+    }
   }
 
   return gallerySummaryImages;
