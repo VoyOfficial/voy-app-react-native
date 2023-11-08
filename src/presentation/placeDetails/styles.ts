@@ -55,116 +55,6 @@ export const Location = styled(Text)`
   margin-left: 7px;
 `;
 
-export const ReviewContainer = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 22px 0;
-  border-bottom-width: 1px;
-  padding-bottom: 22px;
-  border-color: #e6e6e6;
-  border-top-width: 1px;
-  padding-top: 22px;
-  align-items: center;
-`;
-
-export const ProfileImage = styled.Image`
-  width: 31px;
-  height: 31px;
-  border-radius: 15px;
-  border-width: 3px;
-  border-color: #ffffff;
-`;
-
-export const AmountOfReviews = styled(Text)`
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 16px;
-  text-decoration-line: underline;
-`;
-
-export const Rating = styled(Text)`
-  font-size: 17px;
-  font-weight: 400;
-  line-height: 21px;
-  margin-left: 7px;
-`;
-
-export const BusinessHoursSummaryContainer = styled.View`
-  margin-top: 18px;
-  flex-direction: row;
-  align-items: center;
-`;
-
-export const BusinessHourIconWrapper = styled.View`
-  width: 30px;
-  height: 30px;
-  background-color: #f1f5f6;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-  margin-right: 7px;
-`;
-
-export const BusinessHours = styled(Text)`
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 16.25px;
-`;
-
-export const FullLocationContainer = styled.View`
-  margin-top: 18px;
-  flex-direction: row;
-  align-items: center;
-`;
-
-export const FullLocationIconWrapper = styled.View`
-  width: 30px;
-  height: 30px;
-  background-color: #f1f5f6;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-  margin-right: 7px;
-`;
-
-export const FullLocation = styled(Text)`
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 16.25px;
-`;
-
-export const PhoneContainer = styled.View`
-  margin-top: 18px;
-  flex-direction: row;
-  align-items: center;
-`;
-
-export const PhoneIconWrapper = styled.View`
-  width: 30px;
-  height: 30px;
-  background-color: #f1f5f6;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-  margin-right: 7px;
-`;
-
-export const Phone = styled(Text)`
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 16.25px;
-`;
-
-export const ProfileOfReviewProfilesWrapper = styled.View`
-  flex-direction: row;
-  margin-right: -11px;
-`;
-
-export const AmountOfReviewsContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-`;
-
 export const ScrollContainer = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
@@ -186,32 +76,9 @@ export const DistanceDetailsContainer = styled.View`
   padding-bottom: 22px;
 `;
 
-export const RatingContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-`;
-
 type Props = {
   name?: string;
 };
-
-export const StarIcon = styled(Icon).attrs({
-  color: '#FFAB5E',
-  name: 'star',
-  size: 12,
-})<Props>``;
-
-export const ClockOutlineIcon = styled(Icon).attrs({
-  color: '#000000',
-  name: 'clock_outline',
-  size: 16,
-})<Props>``;
-
-export const LocationOutlineIcon = styled(Icon).attrs({
-  color: '#000000',
-  name: 'location_outline',
-  size: 16,
-})<Props>``;
 
 export const LocationIcon = styled(Icon).attrs({
   color: '#212121',
@@ -219,38 +86,11 @@ export const LocationIcon = styled(Icon).attrs({
   size: 11,
 })<Props>``;
 
-export const PhoneOutlineIcon = styled(Icon).attrs({
-  color: '#000000',
-  name: 'phone_outline',
-  size: 16,
-})<Props>``;
-
 export const WalkingIcon = styled(Icon).attrs({
   color: '#212121',
   name: 'walking',
   size: 11,
 })<Props>``;
-
-export const GallerySummaryImageBackground = styled.View`
-  width: 56px;
-  height: 54px;
-  position: absolute;
-  background-color: #000000;
-  right: 0;
-  z-index: 1;
-  border-radius: 10px;
-  opacity: 0.5;
-  margin-right: 5px;
-`;
-
-export const GallerySummaryImage = styled.Image.attrs({
-  style: { shadowOpacity: 0.5 },
-})`
-  width: 56px;
-  height: 54px;
-  border-radius: 10px;
-  margin: 0 5px;
-`;
 
 export const BackgroundImage = styled.Image`
   width: 100%;
@@ -283,22 +123,3 @@ export const BlurOfGallerySummaryImages = styled(BlurView).attrs({
   bottom: 0;
   right: 0;
 `;
-
-export const MostAvailableNumberOfImages = styled(Text)`
-  color: #ffffff;
-  font-weight: 400;
-  line-height: 21.25px;
-  font-size: 17px;
-`;
-
-export const WrapperMostAvailableNumberOfImages = styled.View`
-  position: absolute;
-  z-index: 2;
-  width: 56px;
-  height: 54px;
-  justify-content: center;
-  align-items: center;
-  padding-left: 4px;
-`;
-
-export const GallerySummaryImageButton = styled.TouchableOpacity``;

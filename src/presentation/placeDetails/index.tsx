@@ -1,59 +1,22 @@
 import React from 'react';
+import { GallerySummaryImages, MoreDetails, Reviews } from './components';
 import {
-  AmountOfReviews,
-  AmountOfReviewsContainer,
   BackgroundImage,
   BlurOfGallerySummaryImages,
-  BusinessHourIconWrapper,
-  BusinessHours,
-  BusinessHoursSummaryContainer,
-  ClockOutlineIcon,
   ContentContainer,
   Description,
   DistanceDetailsContainer,
   DistanceOfLocal,
   DistanceOfLocalContainer,
-  FullLocation,
-  FullLocationContainer,
-  FullLocationIconWrapper,
-  GallerySummaryImage,
-  GallerySummaryImageBackground,
-  GallerySummaryImageButton,
   GallerySummaryImagesWrapper,
   ImagesWrapper,
   Location,
   LocationContainer,
   LocationIcon,
-  LocationOutlineIcon,
-  MostAvailableNumberOfImages,
-  Phone,
-  PhoneContainer,
-  PhoneIconWrapper,
-  PhoneOutlineIcon,
-  ProfileImage,
-  ProfileOfReviewProfilesWrapper,
-  Rating,
-  RatingContainer,
-  ReviewContainer,
   ScrollContainer,
-  StarIcon,
   Title,
   WalkingIcon,
-  WrapperMostAvailableNumberOfImages,
 } from './styles';
-
-export const getStyleOfPhotoOfReviewProfile = (index: number) => {
-  switch (index) {
-    case 0:
-      return { zIndex: 1, left: 0 };
-    case 1:
-      return { zIndex: 2, left: -10 };
-    case 2:
-      return { zIndex: 3, left: -20 };
-    default:
-      break;
-  }
-};
 
 type Props = {
   title: string;
@@ -69,127 +32,6 @@ type Props = {
   backgroundImage: string;
   gallerySummaryImages: Array<string>;
   pressSummaryImageFromGallery: () => void;
-};
-
-const Reviews = ({
-  amountOfReviews,
-  rating,
-  photoOfReviewProfiles,
-}: {
-  amountOfReviews: string;
-  rating: string;
-  photoOfReviewProfiles: Array<string>;
-}) => (
-  <ReviewContainer>
-    <AmountOfReviewsContainer>
-      <ProfileOfReviewProfilesWrapper>
-        {photoOfReviewProfiles.map((photo, index) => (
-          <ProfileImage
-            key={index}
-            testID={`photo_of_review_profiles_${index}_id`}
-            source={{ uri: photo }}
-            style={getStyleOfPhotoOfReviewProfile(index)}
-          />
-        ))}
-      </ProfileOfReviewProfilesWrapper>
-      <AmountOfReviews testID="amount_of_reviews_id">
-        {amountOfReviews}
-      </AmountOfReviews>
-    </AmountOfReviewsContainer>
-    <RatingContainer>
-      <StarIcon testID="star_icon_id" />
-      <Rating testID="rating_id">{rating}</Rating>
-    </RatingContainer>
-  </ReviewContainer>
-);
-
-const MoreDetails = ({
-  businessHoursSummary,
-  fullLocation,
-  contact,
-}: {
-  businessHoursSummary: string;
-  fullLocation: string;
-  contact: string;
-}) => (
-  <>
-    <BusinessHoursSummaryContainer>
-      <BusinessHourIconWrapper>
-        <ClockOutlineIcon testID="clock_icon_id" />
-      </BusinessHourIconWrapper>
-      <BusinessHours testID="business_hours_summary_id">
-        {businessHoursSummary}
-      </BusinessHours>
-    </BusinessHoursSummaryContainer>
-    <FullLocationContainer>
-      <FullLocationIconWrapper>
-        <LocationOutlineIcon testID="full_location_icon_id" />
-      </FullLocationIconWrapper>
-      <FullLocation testID="full_location_id">{fullLocation}</FullLocation>
-    </FullLocationContainer>
-    <PhoneContainer>
-      <PhoneIconWrapper>
-        <PhoneOutlineIcon testID="phone_icon_id" />
-      </PhoneIconWrapper>
-      <Phone testID="contact_id">{contact}</Phone>
-    </PhoneContainer>
-  </>
-);
-
-const renderGallerySummaryImages = (
-  images: Array<string>,
-  pressSummaryImageFromGallery: (image: string) => void,
-) => {
-  const gallerySummaryImages = [];
-
-  if (images.length <= 3) {
-    for (let index = 0; index < images.length; index++) {
-      gallerySummaryImages.push(
-        <GallerySummaryImageButton
-          key={index}
-          testID={`gallery_summary_image_button_${index}_id`}
-          onPress={() => pressSummaryImageFromGallery(images[index])}
-        >
-          <GallerySummaryImage
-            testID={`gallery_summary_image_${index}_id`}
-            source={{ uri: images[index] }}
-          />
-        </GallerySummaryImageButton>,
-      );
-    }
-  } else {
-    const mostAvailableNumberOfImages = images.length - 4;
-    for (let index = 0; index < 4; index++) {
-      gallerySummaryImages.push(
-        <GallerySummaryImageButton
-          key={index}
-          testID={`gallery_summary_image_button_${index}_id`}
-          onPress={() => pressSummaryImageFromGallery(images[index])}
-        >
-          {index === 3 && mostAvailableNumberOfImages > 0 && (
-            <>
-              <WrapperMostAvailableNumberOfImages>
-                <MostAvailableNumberOfImages testID="most_available_number_of_images_id">
-                  {`+${mostAvailableNumberOfImages + 1}`}
-                </MostAvailableNumberOfImages>
-              </WrapperMostAvailableNumberOfImages>
-              <GallerySummaryImageBackground
-                testID={`gallery_summary_image_background_${index}_id`}
-              />
-            </>
-          )}
-
-          <GallerySummaryImage
-            key={index}
-            testID={`gallery_summary_image_${index}_id`}
-            source={{ uri: images[index] }}
-          />
-        </GallerySummaryImageButton>,
-      );
-    }
-  }
-
-  return gallerySummaryImages;
 };
 
 const PlaceDetails = ({
@@ -217,10 +59,10 @@ const PlaceDetails = ({
         />
         <GallerySummaryImagesWrapper>
           <BlurOfGallerySummaryImages style={{ borderRadius: 20 }} />
-          {renderGallerySummaryImages(
-            gallerySummaryImages,
-            pressSummaryImageFromGallery,
-          )}
+          <GallerySummaryImages
+            images={gallerySummaryImages}
+            press={pressSummaryImageFromGallery}
+          />
         </GallerySummaryImagesWrapper>
       </ImagesWrapper>
       <ContentContainer>
