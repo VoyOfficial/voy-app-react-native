@@ -15,8 +15,9 @@ const GallerySummaryImages = ({
   press: (image: string) => void;
 }) => {
   const gallerySummaryImages = [];
+  const showMinimalGallerySummary = images.length <= 3;
 
-  if (images.length <= 3) {
+  if (showMinimalGallerySummary) {
     for (let index = 0; index < images.length; index++) {
       gallerySummaryImages.push(
         <GallerySummaryImageButton
@@ -31,8 +32,13 @@ const GallerySummaryImages = ({
         </GallerySummaryImageButton>,
       );
     }
-  } else {
+  }
+
+  if (!showMinimalGallerySummary) {
     const mostAvailableNumberOfImages = images.length - 4;
+    const showMostAvailableNumberOfImages = (index: number) =>
+      index === 3 && mostAvailableNumberOfImages > 0;
+
     for (let index = 0; index < 4; index++) {
       gallerySummaryImages.push(
         <GallerySummaryImageButton
@@ -40,7 +46,7 @@ const GallerySummaryImages = ({
           testID={`gallery_summary_image_button_${index}_id`}
           onPress={() => press(images[index])}
         >
-          {index === 3 && mostAvailableNumberOfImages > 0 && (
+          {showMostAvailableNumberOfImages(index) && (
             <>
               <WrapperMostAvailableNumberOfImages>
                 <MostAvailableNumberOfImages testID="most_available_number_of_images_id">
