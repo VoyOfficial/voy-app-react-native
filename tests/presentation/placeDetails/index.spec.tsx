@@ -328,7 +328,7 @@ describe('Presentation: PlaceDetails', () => {
 
   test('should show the last image of gallery with background color black', () => {
     const gallerySummary = [];
-    for (let index = 0; index < 4; index++) {
+    for (let index = 0; index < 5; index++) {
       gallerySummary.push(faker.image.city());
     }
     const backgroundImage = faker.image.city();
