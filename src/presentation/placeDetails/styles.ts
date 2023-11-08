@@ -237,11 +237,10 @@ export const GallerySummaryImageBackground = styled.View`
   position: absolute;
   background-color: #000000;
   right: 0;
-  z-index: 2;
-  margin-right: 15px;
-  margin-top: 15px;
+  z-index: 1;
   border-radius: 10px;
   opacity: 0.5;
+  margin-right: 5px;
 `;
 
 export const GallerySummaryImage = styled.Image.attrs({
@@ -285,21 +284,21 @@ export const BlurOfGallerySummaryImages = styled(BlurView).attrs({
   right: 0;
 `;
 
-export const ButtonShowAllImagesOfGallery = styled.TouchableOpacity`
-  justify-content: center;
-  position: absolute;
-  right: 0;
-  align-self: center;
-  margin-right: 16px;
-  z-index: 2;
-  width: 56px;
-  height: 54px;
-  align-items: center;
-`;
-
 export const MostAvailableNumberOfImages = styled(Text)`
   color: #ffffff;
   font-weight: 400;
   line-height: 21.25px;
   font-size: 17px;
 `;
+
+export const WrapperMostAvailableNumberOfImages = styled.View`
+  position: absolute;
+  z-index: 2;
+  width: 56px;
+  height: 54px;
+  justify-content: center;
+  align-items: center;
+  padding-left: 4px;
+`;
+
+export const GallerySummaryImageButton = styled.TouchableOpacity``;

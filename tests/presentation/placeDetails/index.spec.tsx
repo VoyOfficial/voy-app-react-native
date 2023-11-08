@@ -353,14 +353,14 @@ describe('Presentation: PlaceDetails', () => {
     expect(getByTestId('gallery_summary_image_background_3_id')).toBeTruthy();
   });
 
-  test('should press the last image of gallery with success', () => {
-    const showAllImagesOfGallery = jest.fn();
+  test('should press all images of gallery with success', () => {
+    const pressSummaryImageFromGallery = jest.fn();
     const gallerySummary = [];
     for (let index = 0; index < 8; index++) {
       gallerySummary.push(faker.image.city());
     }
     const backgroundImage = faker.image.city();
-    const { getByTestId } = makeSut(
+    const { getByTestId, queryByTestId } = makeSut(
       '',
       '',
       '',
@@ -373,13 +373,25 @@ describe('Presentation: PlaceDetails', () => {
       [''],
       backgroundImage,
       gallerySummary,
-      showAllImagesOfGallery,
+      pressSummaryImageFromGallery,
     );
 
-    fireEvent.press(getByTestId('button_show_all_images_of_gallery_id'));
+    for (let index = 0; index < gallerySummary.length; index++) {
+      if (index <= 3) {
+        fireEvent.press(
+          getByTestId(`gallery_summary_image_button_${index}_id`),
+        );
 
-    expect(showAllImagesOfGallery).toHaveBeenCalledTimes(1);
-    expect(showAllImagesOfGallery).toHaveBeenCalledWith();
+        expect(pressSummaryImageFromGallery).toHaveBeenCalled();
+        expect(pressSummaryImageFromGallery).toHaveBeenCalledWith(
+          gallerySummary[index],
+        );
+      } else {
+        expect(
+          queryByTestId(`gallery_summary_image_button_${index}_id`),
+        ).not.toBeTruthy();
+      }
+    }
   });
 });
 
@@ -396,7 +408,7 @@ const makeSut = (
   photoOfReviewProfiles = [''],
   backgroundImage = '',
   gallerySummaryImages = [''],
-  showAllImagesOfGallery = () => {},
+  pressSummaryImageFromGallery = () => {},
 ) => {
   return render(
     <PlaceDetails
@@ -412,7 +424,7 @@ const makeSut = (
       photoOfReviewProfiles={photoOfReviewProfiles}
       backgroundImage={backgroundImage}
       gallerySummaryImages={gallerySummaryImages}
-      showAllImagesOfGallery={showAllImagesOfGallery}
+      pressSummaryImageFromGallery={pressSummaryImageFromGallery}
     />,
   );
 };

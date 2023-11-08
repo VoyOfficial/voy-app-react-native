@@ -7,7 +7,6 @@ import {
   BusinessHourIconWrapper,
   BusinessHours,
   BusinessHoursSummaryContainer,
-  ButtonShowAllImagesOfGallery,
   ClockOutlineIcon,
   ContentContainer,
   Description,
@@ -19,6 +18,7 @@ import {
   FullLocationIconWrapper,
   GallerySummaryImage,
   GallerySummaryImageBackground,
+  GallerySummaryImageButton,
   GallerySummaryImagesWrapper,
   ImagesWrapper,
   Location,
@@ -39,6 +39,7 @@ import {
   StarIcon,
   Title,
   WalkingIcon,
+  WrapperMostAvailableNumberOfImages,
 } from './styles';
 
 export const getStyleOfPhotoOfReviewProfile = (index: number) => {
@@ -67,7 +68,7 @@ type Props = {
   photoOfReviewProfiles: Array<string>;
   backgroundImage: string;
   gallerySummaryImages: Array<string>;
-  showAllImagesOfGallery: () => void;
+  pressSummaryImageFromGallery: () => void;
 };
 
 const Reviews = ({
@@ -135,34 +136,55 @@ const MoreDetails = ({
   </>
 );
 
-const renderGallerySummaryImages = (images: Array<string>) => {
+const renderGallerySummaryImages = (
+  images: Array<string>,
+  pressSummaryImageFromGallery: (image: string) => void,
+) => {
   const gallerySummaryImages = [];
 
   if (images.length <= 3) {
     for (let index = 0; index < images.length; index++) {
       gallerySummaryImages.push(
-        <GallerySummaryImage
-          key={index}
-          testID={`gallery_summary_image_${index}_id`}
-          source={{ uri: images[index] }}
-        />,
+        <GallerySummaryImageButton
+          testID={`gallery_summary_image_button_${index}_id`}
+          onPress={() => pressSummaryImageFromGallery(images[index])}
+        >
+          <GallerySummaryImage
+            key={index}
+            testID={`gallery_summary_image_${index}_id`}
+            source={{ uri: images[index] }}
+          />
+        </GallerySummaryImageButton>,
       );
     }
   } else {
+    const mostAvailableNumberOfImages = images.length - 4;
     for (let index = 0; index < 4; index++) {
       gallerySummaryImages.push(
-        <>
+        <GallerySummaryImageButton
+          testID={`gallery_summary_image_button_${index}_id`}
+          onPress={() => pressSummaryImageFromGallery(images[index])}
+        >
           {index === 3 && (
-            <GallerySummaryImageBackground
-              testID={`gallery_summary_image_background_${index}_id`}
-            />
+            <>
+              {mostAvailableNumberOfImages > 0 && (
+                <WrapperMostAvailableNumberOfImages>
+                  <MostAvailableNumberOfImages testID="most_available_number_of_images_id">
+                    {`+${mostAvailableNumberOfImages + 1}`}
+                  </MostAvailableNumberOfImages>
+                </WrapperMostAvailableNumberOfImages>
+              )}
+              <GallerySummaryImageBackground
+                testID={`gallery_summary_image_background_${index}_id`}
+              />
+            </>
           )}
           <GallerySummaryImage
             key={index}
             testID={`gallery_summary_image_${index}_id`}
             source={{ uri: images[index] }}
           />
-        </>,
+        </GallerySummaryImageButton>,
       );
     }
   }
@@ -183,10 +205,8 @@ const PlaceDetails = ({
   photoOfReviewProfiles,
   backgroundImage,
   gallerySummaryImages,
-  showAllImagesOfGallery,
+  pressSummaryImageFromGallery,
 }: Props) => {
-  const mostAvailableNumberOfImages = gallerySummaryImages.length - 4;
-
   return (
     <ScrollContainer>
       <ImagesWrapper>
@@ -197,16 +217,9 @@ const PlaceDetails = ({
         />
         <GallerySummaryImagesWrapper>
           <BlurOfGallerySummaryImages style={{ borderRadius: 20 }} />
-          {renderGallerySummaryImages(gallerySummaryImages)}
-          {mostAvailableNumberOfImages > 0 && (
-            <ButtonShowAllImagesOfGallery
-              testID="button_show_all_images_of_gallery_id"
-              onPress={showAllImagesOfGallery}
-            >
-              <MostAvailableNumberOfImages testID="most_available_number_of_images_id">
-                {`+${mostAvailableNumberOfImages + 1}`}
-              </MostAvailableNumberOfImages>
-            </ButtonShowAllImagesOfGallery>
+          {renderGallerySummaryImages(
+            gallerySummaryImages,
+            pressSummaryImageFromGallery,
           )}
         </GallerySummaryImagesWrapper>
       </ImagesWrapper>
