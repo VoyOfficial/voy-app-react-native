@@ -1,9 +1,8 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
-import PlaceDetails, {
-  getStyleOfPhotoOfReviewProfile,
-} from '../../../src/presentation/placeDetails';
+import { getStyleOfPhotoOfReviewProfile } from '../../../src/presentation/placeDetails/components/reviews';
+import PlaceDetails from '../../../src/presentation/placeDetails';
 
 describe('PlaceDetails: getStyleOfPhotoOfReviewProfile', () => {
   test('should get style of photo of review profile when index equals 0', () => {
@@ -188,6 +187,211 @@ describe('Presentation: PlaceDetails', () => {
 
     expect(getByTestId('phone_icon_id')).toBeTruthy();
   });
+
+  test('should show background image correctly', () => {
+    const backgroundImage = faker.image.city();
+    const { getByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+    );
+
+    expect(getByTestId('background_image_id').props.source).toEqual({
+      uri: backgroundImage,
+    });
+  });
+
+  test('should show gallery summary images with correct images', () => {
+    const gallerySummary: Array<string> = [];
+    for (let index = 0; index < 6; index++) {
+      gallerySummary.push(faker.image.city());
+    }
+    const backgroundImage = faker.image.city();
+    const { getByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+      gallerySummary,
+    );
+
+    for (let index = 0; index < 4; index++) {
+      expect(
+        getByTestId(`gallery_summary_image_${index}_id`).props.source,
+      ).toEqual({
+        uri: gallerySummary[index],
+      });
+    }
+  });
+
+  test('should show gallery summary images with correct images when the gallerySummary is less than 4', () => {
+    const gallerySummary: Array<string> = [];
+    for (let index = 0; index < 3; index++) {
+      gallerySummary.push(faker.image.city());
+    }
+    const backgroundImage = faker.image.city();
+    const { queryByTestId, getByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+      gallerySummary,
+    );
+
+    for (let index = 0; index < gallerySummary.length; index++) {
+      if (index !== 3) {
+        expect(
+          getByTestId(`gallery_summary_image_${index}_id`).props.source,
+        ).toEqual({
+          uri: gallerySummary[index],
+        });
+      } else {
+        expect(
+          queryByTestId(`gallery_summary_image_${index}_id`),
+        ).not.toBeTruthy();
+      }
+    }
+  });
+
+  test('should show the most available number of images in the gallery correctly', () => {
+    const gallerySummary = [];
+    for (let index = 0; index < 8; index++) {
+      gallerySummary.push(faker.image.city());
+    }
+    const backgroundImage = faker.image.city();
+    const { getByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+      gallerySummary,
+    );
+    expect(
+      getByTestId('most_available_number_of_images_id').props.children,
+    ).toEqual('+5');
+  });
+
+  test('should not show the most available number of images in the gallery', () => {
+    const gallerySummary = [];
+    for (let index = 0; index < 4; index++) {
+      gallerySummary.push(faker.image.city());
+    }
+    const backgroundImage = faker.image.city();
+    const { queryByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+      gallerySummary,
+    );
+    expect(
+      queryByTestId('most_available_number_of_images_id'),
+    ).not.toBeTruthy();
+  });
+
+  test('should show the last image of gallery with background color black', () => {
+    const gallerySummary = [];
+    for (let index = 0; index < 5; index++) {
+      gallerySummary.push(faker.image.city());
+    }
+    const backgroundImage = faker.image.city();
+    const { getByTestId, queryByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+      gallerySummary,
+    );
+
+    expect(
+      queryByTestId('gallery_summary_image_background_2_id'),
+    ).not.toBeTruthy();
+    expect(getByTestId('gallery_summary_image_background_3_id')).toBeTruthy();
+  });
+
+  test('should press all images of gallery with success', () => {
+    const pressSummaryImageFromGallery = jest.fn();
+    const gallerySummary = [];
+    for (let index = 0; index < 8; index++) {
+      gallerySummary.push(faker.image.city());
+    }
+    const backgroundImage = faker.image.city();
+    const { getByTestId, queryByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      [''],
+      backgroundImage,
+      gallerySummary,
+      pressSummaryImageFromGallery,
+    );
+
+    for (let index = 0; index < gallerySummary.length; index++) {
+      if (index <= 3) {
+        fireEvent.press(
+          getByTestId(`gallery_summary_image_button_${index}_id`),
+        );
+
+        expect(pressSummaryImageFromGallery).toHaveBeenCalled();
+        expect(pressSummaryImageFromGallery).toHaveBeenCalledWith(
+          gallerySummary[index],
+        );
+      } else {
+        expect(
+          queryByTestId(`gallery_summary_image_button_${index}_id`),
+        ).not.toBeTruthy();
+      }
+    }
+  });
 });
 
 const makeSut = (
@@ -201,6 +405,9 @@ const makeSut = (
   contact = '',
   title = '',
   photoOfReviewProfiles = [''],
+  backgroundImage = '',
+  gallerySummaryImages = [''],
+  pressSummaryImageFromGallery = () => {},
 ) => {
   return render(
     <PlaceDetails
@@ -214,6 +421,9 @@ const makeSut = (
       fullLocation={fullLocation}
       contact={contact}
       photoOfReviewProfiles={photoOfReviewProfiles}
+      backgroundImage={backgroundImage}
+      gallerySummaryImages={gallerySummaryImages}
+      pressSummaryImageFromGallery={pressSummaryImageFromGallery}
     />,
   );
 };
