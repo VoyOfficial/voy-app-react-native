@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import placeListFactory from '../../../helpers/placeListFactory';
-import { ListRecommendation } from '../../../../../src/presentation/recommentation/components';
+import { ListRecommendation } from '../../../../../src/presentation/recommendation/components';
 placeListFactory;
 describe('Components: ListRecommendation', () => {
   test('should render list of recommendations', () => {

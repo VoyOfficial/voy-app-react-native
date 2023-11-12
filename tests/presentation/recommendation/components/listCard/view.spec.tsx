@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
-import { ListCard } from '../../../../../src/presentation/recommentation/components';
+import { ListCard } from '../../../../../src/presentation/recommendation/components';
 
 describe('Components: CardList', () => {
   test('should show title with success', () => {
