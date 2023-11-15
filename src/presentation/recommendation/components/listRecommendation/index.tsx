@@ -10,7 +10,7 @@ import {
   Wrapper,
 } from './styles';
 
-type RecommendationProps = {
+export type RecommendationProps = {
   imageUrl: string;
   title: string;
   location: string;
