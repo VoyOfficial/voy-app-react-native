@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
 import { renderHook, waitFor } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
 import { ListRecommendations } from '~/domain/useCases';
 import { RecommendationModel } from '~/domain/models';
-import { RecommendationProps } from '../../../src/presentation/recommendation/components/listRecommendation';
+import useHome from '../../../src/presentation/home/useHome';
 
 export const recommendationModelFake = (): RecommendationModel => {
   return {
@@ -60,35 +59,3 @@ describe('Presentation: useHome', () => {
     });
   });
 });
-
-type HomeViewModel = {
-  onSeeAll: () => void;
-  recommendations: Array<RecommendationProps>;
-};
-
-type GenericObject = { [key: string]: any };
-
-type Props = {
-  navigate: (routeName: string, params?: GenericObject | undefined) => void;
-  listRecommendations: ListRecommendations;
-};
-
-const useHome = ({ navigate, listRecommendations }: Props): HomeViewModel => {
-  const [recommendations, setRecommendations] = useState<
-    Array<RecommendationProps>
-  >([]);
-
-  useEffect(() => {
-    getRecommendations();
-  }, []);
-
-  const onSeeAll = () => {
-    navigate('PlaceDetails');
-  };
-
-  const getRecommendations = async () => {
-    const response = await listRecommendations.list();
-    setRecommendations(response);
-  };
-  return { onSeeAll, recommendations };
-};
