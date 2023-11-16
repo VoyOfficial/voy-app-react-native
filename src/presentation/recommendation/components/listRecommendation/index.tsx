@@ -48,6 +48,7 @@ const ListRecommendation = ({ recommendations, onSeeAll }: Props) => {
               title={item.title}
               myDistanceOfLocal={item.myDistanceOfLocal}
               onSaveLocation={() => handleSaveLocation(item)}
+              showMoreDetails={() => {}}
             />
           )}
         />

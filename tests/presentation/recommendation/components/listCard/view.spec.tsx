@@ -81,6 +81,21 @@ describe('Components: CardList', () => {
 
     expect(onSave).toBeCalled();
   });
+
+  test('should call showMoreDetails function when press the component', async () => {
+    const showMoreDetails = jest.fn();
+    const onSave = () => {};
+    const { getByTestId } = makeSut({
+      onSaveLocation: onSave,
+      showMoreDetails,
+    });
+
+    const component = getByTestId('list_card_id');
+
+    fireEvent.press(component);
+
+    expect(showMoreDetails).toHaveBeenCalledTimes(1);
+  });
 });
 
 const makeSut = ({
@@ -90,6 +105,7 @@ const makeSut = ({
   rating = '',
   imageUrl = '',
   onSaveLocation = () => {},
+  showMoreDetails = () => {},
 }) => {
   return render(
     <ListCard
@@ -99,6 +115,7 @@ const makeSut = ({
       myDistanceOfLocal={myDistanceOfLocal}
       rating={rating}
       onSaveLocation={onSaveLocation}
+      showMoreDetails={showMoreDetails}
     />,
   );
 };

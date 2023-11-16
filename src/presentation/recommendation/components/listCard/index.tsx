@@ -6,6 +6,7 @@ import {
   DistanceOfLocal,
   IconStartWrapper,
   IconWrapper,
+  ImageButton,
   ImageContent,
   Location,
   Rating,
@@ -24,6 +25,7 @@ type Props = {
   myDistanceOfLocal: string;
   rating: string;
   onSaveLocation: () => void;
+  showMoreDetails: () => void;
 };
 
 const ListCard = ({
@@ -33,16 +35,19 @@ const ListCard = ({
   rating,
   imageUrl,
   onSaveLocation,
+  showMoreDetails,
 }: Props) => {
   return (
     <Container>
-      <ImageContent
-        testID="image_of_place_id"
-        accessibilityLabel={title}
-        source={{
-          uri: imageUrl,
-        }}
-      />
+      <ImageButton testID="list_card_id" onPress={showMoreDetails}>
+        <ImageContent
+          testID="image_of_place_id"
+          accessibilityLabel={title}
+          source={{
+            uri: imageUrl,
+          }}
+        />
+      </ImageButton>
       <Wrapper>
         <ContentWrapper>
           <WrapperTitle>
