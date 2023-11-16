@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { ListRecommendations } from '~/domain/useCases';
 import { RecommendationProps } from '../recommendation/components/listRecommendation';
+import { Place } from '../components/cardList';
 
 export type HomeViewModel = {
   onSeeAll: () => void;
+  favorite: () => void;
+  placeList: Array<Place>;
   recommendations: Array<RecommendationProps>;
 };
 

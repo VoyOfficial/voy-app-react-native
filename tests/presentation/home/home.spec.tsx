@@ -1,7 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
+import CardList from '../../../src/presentation/components/cardList';
 import { Home } from '../../../src/presentation/home';
 import { ListRecommendation } from '../../../src/presentation/recommendation/components';
+import placeListFactory from '../helpers/placeListFactory';
 import { recommendationModelFake } from './useHome.spec';
 
 describe('Presentation: Home', () => {
@@ -9,11 +11,41 @@ describe('Presentation: Home', () => {
     const onSeeAll = () => {};
     const recommendations = [recommendationModelFake()];
     const { UNSAFE_getByType } = render(
-      <Home recommendations={recommendations} onSeeAll={onSeeAll} />,
+      <Home
+        recommendations={recommendations}
+        onSeeAll={onSeeAll}
+        favorite={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        placeList={[]}
+      />,
     );
 
     const listRecommendation = UNSAFE_getByType(ListRecommendation);
 
     expect(listRecommendation.props).toEqual({ recommendations, onSeeAll });
+  });
+
+  test('should show CardList component with correct props', () => {
+    const onSeeAll = () => {};
+    const favorite = () => {};
+    const placeList = placeListFactory(5);
+    const { UNSAFE_getByType } = render(
+      <Home
+        recommendations={[]}
+        onSeeAll={onSeeAll}
+        favorite={favorite}
+        placeList={placeList}
+      />,
+    );
+
+    const cardList = UNSAFE_getByType(CardList);
+
+    expect(cardList.props).toEqual({
+      placeList,
+      seeAll: onSeeAll,
+      favorite,
+      title: 'Descobrir',
+    });
   });
 });

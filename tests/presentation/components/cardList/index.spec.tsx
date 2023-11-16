@@ -1,8 +1,10 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import { GetByQuery } from '@testing-library/react-native/build/queries/makeQueries';
-import { TextMatch } from '@testing-library/react-native/build/matches';
-import { TextMatchOptions } from '@testing-library/react-native/build/queries/text';
+import {
+  TextMatch,
+  TextMatchOptions,
+} from '@testing-library/react-native/build/matches';
 import CardList from '../../../../src/presentation/components/cardList';
 import placeListFactory from '../../../presentation/helpers/placeListFactory';
 import { makeTitle } from '../../../presentation/helpers/testFactories';
