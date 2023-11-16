@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ListRecommendations } from '~/domain/useCases';
 import { RecommendationProps } from '../recommendation/components/listRecommendation';
 
-type HomeViewModel = {
+export type HomeViewModel = {
   onSeeAll: () => void;
   recommendations: Array<RecommendationProps>;
 };
