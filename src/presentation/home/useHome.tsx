@@ -37,6 +37,10 @@ const useHome = ({
     navigate('PlaceDetails');
   };
 
+  const favorite = () => {
+    navigate('');
+  };
+
   const getRecommendations = async () => {
     const response = await listRecommendations.list();
     setRecommendations(response);
@@ -50,7 +54,7 @@ const useHome = ({
     setPlaceList(response);
   };
 
-  return { onSeeAll, recommendations, favorite: () => {}, placeList };
+  return { onSeeAll, recommendations, favorite, placeList };
 };
 
 export default useHome;

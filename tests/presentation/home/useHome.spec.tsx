@@ -53,6 +53,7 @@ describe('Presentation: useHome', () => {
 
     await waitFor(() => {
       expect(result.current.recommendations).not.toEqual([]);
+      expect(result.current.placeList).not.toEqual([]);
     });
 
     result.current.onSeeAll();
@@ -95,5 +96,26 @@ describe('Presentation: useHome', () => {
     await waitFor(() => {
       expect(result.current.placeList).toEqual(places);
     });
+  });
+
+  test('should call navigate function correctly when call favorite function', async () => {
+    const navigate = jest.fn();
+    const { result } = renderHook(() =>
+      useHome({
+        navigate,
+        listRecommendations: new ListRecommendationsFake(),
+        listPlaces: new ListPlacesFake(),
+      }),
+    );
+
+    await waitFor(() => {
+      expect(result.current.recommendations).not.toEqual([]);
+      expect(result.current.placeList).not.toEqual([]);
+    });
+
+    result.current.favorite();
+
+    expect(navigate).toHaveBeenCalledTimes(1);
+    expect(navigate).toHaveBeenCalledWith('');
   });
 });
