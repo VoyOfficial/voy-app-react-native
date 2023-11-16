@@ -1,8 +1,9 @@
 import { renderHook, waitFor } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
-import { ListRecommendations } from '~/domain/useCases';
-import { RecommendationModel } from '~/domain/models';
+import { ListPlaces, ListRecommendations } from '~/domain/useCases';
+import { PlaceModel, RecommendationModel } from '~/domain/models';
 import useHome from '../../../src/presentation/home/useHome';
+import placeListFactory from '../helpers/placeListFactory';
 
 export const recommendationModelFake = (): RecommendationModel => {
   return {
@@ -27,11 +28,27 @@ class ListRecommendationsFake implements ListRecommendations {
   }
 }
 
+class ListPlacesFake implements ListPlaces {
+  constructor(readonly places: Array<PlaceModel> = placeListFactory(5)) {}
+  async list(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    location: { long: string; lat: string },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    nextPageToken?: string | undefined,
+  ): Promise<PlaceModel[]> {
+    return this.places;
+  }
+}
+
 describe('Presentation: useHome', () => {
   test('should call navigate function correctly when call onSeeAll function', async () => {
     const navigate = jest.fn();
     const { result } = renderHook(() =>
-      useHome({ navigate, listRecommendations: new ListRecommendationsFake() }),
+      useHome({
+        navigate,
+        listRecommendations: new ListRecommendationsFake(),
+        listPlaces: new ListPlacesFake(),
+      }),
     );
 
     await waitFor(() => {
@@ -51,11 +68,32 @@ describe('Presentation: useHome', () => {
       recommendationsFake,
     );
     const { result } = renderHook(() =>
-      useHome({ navigate, listRecommendations }),
+      useHome({
+        navigate,
+        listRecommendations,
+        listPlaces: new ListPlacesFake(),
+      }),
     );
 
     await waitFor(() => {
       expect(result.current.recommendations).toEqual(recommendationsFake);
+    });
+  });
+
+  test('should get the placeList through of ListPlaces when initialize', async () => {
+    const navigate = jest.fn();
+    const places = placeListFactory(5);
+    const listPlaces = new ListPlacesFake(places);
+    const { result } = renderHook(() =>
+      useHome({
+        navigate,
+        listRecommendations: new ListRecommendationsFake(),
+        listPlaces,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(result.current.placeList).toEqual(places);
     });
   });
 });

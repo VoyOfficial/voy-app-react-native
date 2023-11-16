@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ListRecommendations } from '~/domain/useCases';
+import { ListPlaces, ListRecommendations } from '~/domain/useCases';
 import { RecommendationProps } from '../recommendation/components/listRecommendation';
 import { Place } from '../components/cardList';
 
@@ -15,15 +15,22 @@ type GenericObject = { [key: string]: any };
 type Props = {
   navigate: (routeName: string, params?: GenericObject | undefined) => void;
   listRecommendations: ListRecommendations;
+  listPlaces: ListPlaces;
 };
 
-const useHome = ({ navigate, listRecommendations }: Props): HomeViewModel => {
+const useHome = ({
+  navigate,
+  listRecommendations,
+  listPlaces,
+}: Props): HomeViewModel => {
   const [recommendations, setRecommendations] = useState<
     Array<RecommendationProps>
   >([]);
+  const [placeList, setPlaceList] = useState<Array<Place>>([]);
 
   useEffect(() => {
     getRecommendations();
+    getPlaces();
   }, []);
 
   const onSeeAll = () => {
@@ -34,7 +41,16 @@ const useHome = ({ navigate, listRecommendations }: Props): HomeViewModel => {
     const response = await listRecommendations.list();
     setRecommendations(response);
   };
-  return { onSeeAll, recommendations };
+
+  const getPlaces = async () => {
+    const response = await listPlaces.list(
+      { lat: '0', long: '0' },
+      'nextPageToken',
+    );
+    setPlaceList(response);
+  };
+
+  return { onSeeAll, recommendations, favorite: () => {}, placeList };
 };
 
 export default useHome;
