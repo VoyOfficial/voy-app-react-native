@@ -78,7 +78,7 @@ export const FavoriteWrapper = styled.View`
   margin: 12px;
 `;
 
-export const PlaceWithContentWrapper = styled.View`
+export const PlaceButtonWithContent = styled.TouchableOpacity`
   flex: 1;
   flex-direction: row;
 `;

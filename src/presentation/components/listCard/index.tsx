@@ -11,7 +11,7 @@ import {
   ImagePlace,
   LineWrapper,
   Location,
-  PlaceWithContentWrapper,
+  PlaceButtonWithContent,
   Rating,
   Title,
 } from './styles';
@@ -25,6 +25,7 @@ type Props = {
   amountOfReviews: string;
   rating: string;
   favorite: () => void;
+  showMoreDetails: () => void;
 };
 
 const ListCard = ({
@@ -36,10 +37,14 @@ const ListCard = ({
   amountOfReviews,
   rating,
   favorite,
+  showMoreDetails,
 }: Props) => {
   return (
     <Container>
-      <PlaceWithContentWrapper>
+      <PlaceButtonWithContent
+        testID={`list_card_${index}_id`}
+        onPress={showMoreDetails}
+      >
         <ImagePlace
           testID={`image_of_place_${index}_id`}
           source={{ uri: imageUrl }}
@@ -70,7 +75,7 @@ const ListCard = ({
             </AmountOfReviews>
           </LineWrapper>
         </ContentWrapper>
-      </PlaceWithContentWrapper>
+      </PlaceButtonWithContent>
       <FavoriteWrapper>
         <FavoriteButton testID={`save_button_${index}_id`} onPress={favorite}>
           <Icon name="save" testID="save_icon_id" size={19} color="#C5CACC" />

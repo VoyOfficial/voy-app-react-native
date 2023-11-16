@@ -53,6 +53,7 @@ const factoryListCard = (index: number, place: Place, favorite: () => void) => {
       amountOfReviews={place.amountOfReviews}
       rating={place.rating}
       favorite={favorite}
+      showMoreDetails={() => {}}
     />
   );
 };
