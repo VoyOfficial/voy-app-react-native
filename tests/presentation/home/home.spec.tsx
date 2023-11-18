@@ -9,6 +9,7 @@ import { recommendationModelFake } from './useHome.spec';
 describe('Presentation: Home', () => {
   test('should show ListRecommendation component with correct props', () => {
     const onSeeAll = () => {};
+    const showMoreDetails = () => {};
     const recommendations = [recommendationModelFake()];
     const { UNSAFE_getByType } = render(
       <Home
@@ -18,13 +19,17 @@ describe('Presentation: Home', () => {
           throw new Error('Function not implemented.');
         }}
         placeList={[]}
-        showMoreDetails={() => {}}
+        showMoreDetails={showMoreDetails}
       />,
     );
 
     const listRecommendation = UNSAFE_getByType(ListRecommendation);
 
-    expect(listRecommendation.props).toEqual({ recommendations, onSeeAll });
+    expect(listRecommendation.props).toEqual({
+      recommendations,
+      onSeeAll,
+      showMoreDetails,
+    });
   });
 
   test('should show CardList component with correct props', () => {

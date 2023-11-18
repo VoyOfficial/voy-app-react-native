@@ -6,7 +6,7 @@ import { Place } from '../components/cardList';
 export type HomeViewModel = {
   onSeeAll: () => void;
   favorite: () => void;
-  showMoreDetails: (place: Place) => void;
+  showMoreDetails: (place: Place | RecommendationProps) => void;
   placeList: Array<Place>;
   recommendations: Array<RecommendationProps>;
 };
@@ -55,7 +55,7 @@ const useHome = ({
     setPlaceList(response);
   };
 
-  const showMoreDetails = (place: Place) => {
+  const showMoreDetails = (place: Place | RecommendationProps) => {
     navigate('PlaceDetails', { place });
   };
 

@@ -14,6 +14,7 @@ const Home = ({
   return (
     <View>
       <ListRecommendation
+        showMoreDetails={showMoreDetails}
         recommendations={recommendations}
         onSeeAll={onSeeAll}
       />
