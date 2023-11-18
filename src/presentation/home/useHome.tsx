@@ -55,7 +55,9 @@ const useHome = ({
     setPlaceList(response);
   };
 
-  const showMoreDetails = () => {};
+  const showMoreDetails = (place: Place) => {
+    navigate('PlaceDetails', { place });
+  };
 
   return { onSeeAll, recommendations, favorite, showMoreDetails, placeList };
 };

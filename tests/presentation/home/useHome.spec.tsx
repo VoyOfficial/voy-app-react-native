@@ -118,4 +118,28 @@ describe('Presentation: useHome', () => {
     expect(navigate).toHaveBeenCalledTimes(1);
     expect(navigate).toHaveBeenCalledWith('');
   });
+
+  test('should call navigate function correctly when call showMoreDetails function', async () => {
+    const navigate = jest.fn();
+    const listPlaces = new ListPlacesFake();
+    const { result } = renderHook(() =>
+      useHome({
+        navigate,
+        listRecommendations: new ListRecommendationsFake(),
+        listPlaces,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(result.current.recommendations).not.toEqual([]);
+      expect(result.current.placeList).not.toEqual([]);
+    });
+
+    result.current.showMoreDetails(listPlaces.places[0]);
+
+    expect(navigate).toHaveBeenCalledTimes(1);
+    expect(navigate).toHaveBeenCalledWith('PlaceDetails', {
+      place: listPlaces.places[0],
+    });
+  });
 });
