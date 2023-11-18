@@ -19,7 +19,7 @@ const StackNavigation: React.FC<StackNavigationParams> = ({
       screenOptions={{
         headerTransparent: false,
         headerBackTitleVisible: false,
-        headerTintColor: '#FFFFFF',
+        headerTintColor: '#000000',
         title: '',
         headerShadowVisible: false,
       }}
