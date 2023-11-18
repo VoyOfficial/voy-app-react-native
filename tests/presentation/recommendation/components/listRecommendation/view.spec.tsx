@@ -34,16 +34,30 @@ describe('Components: ListRecommendation', () => {
     expect(handleSeeAll).toBeCalled();
   });
 
-  const makeSut = ({ onSeeAll = jest.fn() }) => {
+  test('should call showMoreDetails function when press the ListCard specific component', async () => {
+    const { sut, showMoreDetailsSpy } = makeSut({
+      onSeeAll: () => {},
+    });
+
+    const component = sut.getByTestId('list_card_1_id');
+
+    fireEvent.press(component);
+
+    expect(showMoreDetailsSpy).toHaveBeenCalledTimes(1);
+  });
+
+  const makeSut = ({ onSeeAll = () => {} }) => {
     const recommendations = placeListFactory(3);
+    const showMoreDetails = jest.fn();
 
     const sut = render(
       <ListRecommendation
         onSeeAll={onSeeAll}
         recommendations={recommendations}
+        showMoreDetails={showMoreDetails}
       />,
     );
 
-    return { sut, recommendations };
+    return { sut, recommendations, showMoreDetailsSpy: showMoreDetails };
   };
 });

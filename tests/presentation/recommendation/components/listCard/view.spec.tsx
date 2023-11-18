@@ -90,7 +90,7 @@ describe('Components: CardList', () => {
       showMoreDetails,
     });
 
-    const component = getByTestId('list_card_id');
+    const component = getByTestId('list_card_1_id');
 
     fireEvent.press(component);
 
@@ -116,6 +116,7 @@ const makeSut = ({
       rating={rating}
       onSaveLocation={onSaveLocation}
       showMoreDetails={showMoreDetails}
+      index={1}
     />,
   );
 };

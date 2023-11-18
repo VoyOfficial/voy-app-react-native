@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '../../../assets/fonts/Voy';
+import { RecommendationProps } from '../listRecommendation';
 import {
   Container,
   ContentWrapper,
@@ -19,16 +20,18 @@ import {
 } from './styles';
 
 type Props = {
+  index: number;
   imageUrl: string;
   title: string;
   location: string;
   myDistanceOfLocal: string;
   rating: string;
   onSaveLocation: () => void;
-  showMoreDetails: () => void;
+  showMoreDetails: (place: RecommendationProps) => void;
 };
 
 const ListCard = ({
+  index,
   title,
   location,
   myDistanceOfLocal,
@@ -39,7 +42,18 @@ const ListCard = ({
 }: Props) => {
   return (
     <Container>
-      <ImageButton testID="list_card_id" onPress={showMoreDetails}>
+      <ImageButton
+        testID={`list_card_${index}_id`}
+        onPress={() =>
+          showMoreDetails({
+            imageUrl,
+            location,
+            myDistanceOfLocal,
+            rating,
+            title,
+          })
+        }
+      >
         <ImageContent
           testID="image_of_place_id"
           accessibilityLabel={title}

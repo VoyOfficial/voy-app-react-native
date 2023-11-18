@@ -20,10 +20,15 @@ export type RecommendationProps = {
 
 type Props = {
   recommendations: RecommendationProps[];
+  showMoreDetails: (place: RecommendationProps) => void;
   onSeeAll: () => void;
 };
 
-const ListRecommendation = ({ recommendations, onSeeAll }: Props) => {
+const ListRecommendation = ({
+  recommendations,
+  onSeeAll,
+  showMoreDetails,
+}: Props) => {
   const handleSaveLocation = (location: RecommendationProps) => {
     console.log(location);
   };
@@ -40,15 +45,16 @@ const ListRecommendation = ({ recommendations, onSeeAll }: Props) => {
         <List
           testID="recommendation-list"
           data={recommendations}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <ListCard
+              index={index}
               imageUrl={item.imageUrl}
               location={item.location}
               rating={item.rating}
               title={item.title}
               myDistanceOfLocal={item.myDistanceOfLocal}
               onSaveLocation={() => handleSaveLocation(item)}
-              showMoreDetails={() => {}}
+              showMoreDetails={showMoreDetails}
             />
           )}
         />
