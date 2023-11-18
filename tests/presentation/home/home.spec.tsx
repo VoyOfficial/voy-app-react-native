@@ -18,6 +18,7 @@ describe('Presentation: Home', () => {
           throw new Error('Function not implemented.');
         }}
         placeList={[]}
+        showMoreDetails={() => {}}
       />,
     );
 
@@ -29,6 +30,7 @@ describe('Presentation: Home', () => {
   test('should show CardList component with correct props', () => {
     const onSeeAll = () => {};
     const favorite = () => {};
+    const showMoreDetails = () => {};
     const placeList = placeListFactory(5);
     const { UNSAFE_getByType } = render(
       <Home
@@ -36,6 +38,7 @@ describe('Presentation: Home', () => {
         onSeeAll={onSeeAll}
         favorite={favorite}
         placeList={placeList}
+        showMoreDetails={showMoreDetails}
       />,
     );
 
@@ -46,6 +49,7 @@ describe('Presentation: Home', () => {
       seeAll: onSeeAll,
       favorite,
       title: 'Descobrir',
+      showMoreDetails,
     });
   });
 });

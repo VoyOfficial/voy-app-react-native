@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '../../assets/fonts/Voy';
+import { Place } from '../cardList';
 import {
   AmountOfReviews,
   Container,
@@ -25,7 +26,7 @@ type Props = {
   amountOfReviews: string;
   rating: string;
   favorite: () => void;
-  showMoreDetails: () => void;
+  showMoreDetails: (place: Place) => void;
 };
 
 const ListCard = ({
@@ -43,7 +44,16 @@ const ListCard = ({
     <Container>
       <PlaceButtonWithContent
         testID={`list_card_${index}_id`}
-        onPress={showMoreDetails}
+        onPress={() =>
+          showMoreDetails({
+            title,
+            amountOfReviews,
+            imageUrl,
+            location,
+            myDistanceOfLocal,
+            rating,
+          })
+        }
       >
         <ImagePlace
           testID={`image_of_place_${index}_id`}

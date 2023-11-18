@@ -23,9 +23,16 @@ type Props = {
   seeAll: () => void;
   placeList: Array<Place>;
   favorite: () => void;
+  showMoreDetails: (place: Place) => void;
 };
 
-const CardList = ({ title, seeAll, placeList, favorite }: Props) => {
+const CardList = ({
+  title,
+  seeAll,
+  placeList,
+  favorite,
+  showMoreDetails,
+}: Props) => {
   return (
     <Container>
       <HeaderWrapper>
@@ -36,13 +43,20 @@ const CardList = ({ title, seeAll, placeList, favorite }: Props) => {
       </HeaderWrapper>
       <List
         data={placeList}
-        renderItem={({ item, index }) => factoryListCard(index, item, favorite)}
+        renderItem={({ item, index }) =>
+          factoryListCard(index, item, favorite, showMoreDetails)
+        }
       />
     </Container>
   );
 };
 
-const factoryListCard = (index: number, place: Place, favorite: () => void) => {
+const factoryListCard = (
+  index: number,
+  place: Place,
+  favorite: () => void,
+  showMoreDetails: (place: Place) => void,
+) => {
   return (
     <ListCard
       index={index}
@@ -53,7 +67,7 @@ const factoryListCard = (index: number, place: Place, favorite: () => void) => {
       amountOfReviews={place.amountOfReviews}
       rating={place.rating}
       favorite={favorite}
-      showMoreDetails={() => {}}
+      showMoreDetails={showMoreDetails}
     />
   );
 };

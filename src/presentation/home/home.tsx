@@ -9,6 +9,7 @@ const Home = ({
   recommendations,
   favorite,
   placeList,
+  showMoreDetails,
 }: HomeViewModel) => {
   return (
     <View>
@@ -21,6 +22,7 @@ const Home = ({
         placeList={placeList}
         seeAll={onSeeAll}
         title="Descobrir"
+        showMoreDetails={showMoreDetails}
       />
     </View>
   );
