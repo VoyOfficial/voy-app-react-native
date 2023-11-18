@@ -1,10 +1,16 @@
 import React from 'react';
-import { RouteProp } from '@react-navigation/native';
+import { CommonActions, RouteProp } from '@react-navigation/native';
 import { ListPlaces, ListRecommendations } from '~/domain/useCases';
 import { PlaceModel, RecommendationModel } from '~/domain/models';
-import { Routes } from '../../../../src/main/navigation';
+import { Routes, navigator } from '../../../../src/main/navigation';
 import { Home, useHome } from '../../../presentation/home';
 import { StackParams } from '../../../../src/main/navigation/navigation';
+
+const navigate = (routeName: string, params: any) => {
+  navigator.dispatch(
+    CommonActions.navigate({ name: routeName, params: params }),
+  );
+};
 
 class ListRecommendationsDAO implements ListRecommendations {
   async list(): Promise<RecommendationModel[]> {
@@ -48,7 +54,7 @@ type Props = {
 
 const HomeFactory = ({}: Props) => {
   const viewModel = useHome({
-    navigate: () => {},
+    navigate: navigate,
     listRecommendations: new ListRecommendationsDAO(),
     listPlaces: new ListPlacesDAO(),
   });
