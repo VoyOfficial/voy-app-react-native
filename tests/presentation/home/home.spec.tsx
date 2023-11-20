@@ -8,20 +8,12 @@ import { recommendationModelFake } from './useHome.spec';
 
 describe('Presentation: Home', () => {
   test('should show ListRecommendation component with correct props', () => {
-    const onSeeAll = () => {};
-    const showMoreDetails = () => {};
-    const recommendations = [recommendationModelFake()];
-    const { UNSAFE_getByType } = render(
-      <Home
-        recommendations={recommendations}
-        onSeeAll={onSeeAll}
-        favorite={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        placeList={[]}
-        showMoreDetails={showMoreDetails}
-      />,
-    );
+    const {
+      sut: { UNSAFE_getByType },
+      onSeeAll,
+      recommendations,
+      showMoreDetails,
+    } = makeSut();
 
     const listRecommendation = UNSAFE_getByType(ListRecommendation);
 
@@ -33,19 +25,13 @@ describe('Presentation: Home', () => {
   });
 
   test('should show CardList component with correct props', () => {
-    const onSeeAll = () => {};
-    const favorite = () => {};
-    const showMoreDetails = () => {};
-    const placeList = placeListFactory(5);
-    const { UNSAFE_getByType } = render(
-      <Home
-        recommendations={[]}
-        onSeeAll={onSeeAll}
-        favorite={favorite}
-        placeList={placeList}
-        showMoreDetails={showMoreDetails}
-      />,
-    );
+    const {
+      sut: { UNSAFE_getByType },
+      placeList,
+      favorite,
+      onSeeAll,
+      showMoreDetails,
+    } = makeSut();
 
     const cardList = UNSAFE_getByType(CardList);
 
@@ -58,3 +44,29 @@ describe('Presentation: Home', () => {
     });
   });
 });
+
+const makeSut = () => {
+  const onSeeAll = () => {};
+  const favorite = () => {};
+  const showMoreDetails = () => {};
+  const placeList = placeListFactory(5);
+  const recommendations = [recommendationModelFake()];
+  const sut = render(
+    <Home
+      recommendations={recommendations}
+      onSeeAll={onSeeAll}
+      favorite={favorite}
+      placeList={placeList}
+      showMoreDetails={showMoreDetails}
+    />,
+  );
+
+  return {
+    sut,
+    onSeeAll,
+    favorite,
+    showMoreDetails,
+    placeList,
+    recommendations,
+  };
+};
