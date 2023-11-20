@@ -14,4 +14,8 @@ export default class Actions {
       this.CommonActions.navigate({ name: routeName, params }),
     );
   };
+
+  goBack = () => {
+    this.navigator.dispatch(this.CommonActions.goBack());
+  };
 }

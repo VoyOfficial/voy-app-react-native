@@ -1,16 +1,12 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import { CommonActions } from '@react-navigation/native';
 import HomeFactory from '../../factories/presentation/homeFactory';
 import { Routes } from '../routes';
 import PlaceDetailsFactory from '../../factories/presentation/placeDetailsFactory';
 import Icon from '../../../presentation/assets/fonts/Voy';
+import Actions from '../Actions';
 import { navigator } from '../index';
 import { Stack } from './stackNavigation';
-
-const goBack = () => {
-  navigator.dispatch(CommonActions.goBack());
-};
 
 const getScreensStack = () => {
   return (
@@ -22,7 +18,7 @@ const getScreensStack = () => {
         options={{
           headerLeft: () => (
             <TouchableOpacity
-              onPress={goBack}
+              onPress={new Actions(navigator).goBack}
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
