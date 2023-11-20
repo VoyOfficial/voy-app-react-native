@@ -42,15 +42,10 @@ class ListPlacesFake implements ListPlaces {
 
 describe('Presentation: useHome', () => {
   test('should call navigate function correctly when call onSeeAll function', async () => {
-    const navigate = jest.fn();
-    const { result } = renderHook(() =>
-      useHome({
-        navigate,
-        listRecommendations: new ListRecommendationsFake(),
-        listPlaces: new ListPlacesFake(),
-      }),
-    );
-
+    const {
+      sut: { result },
+      navigateSpy,
+    } = makeSut();
     await waitFor(() => {
       expect(result.current.recommendations).not.toEqual([]);
       expect(result.current.placeList).not.toEqual([]);
@@ -58,23 +53,15 @@ describe('Presentation: useHome', () => {
 
     result.current.onSeeAll();
 
-    expect(navigate).toHaveBeenCalledTimes(1);
-    expect(navigate).toHaveBeenCalledWith('PlaceDetails');
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith('PlaceDetails');
   });
 
   test('should get the recommendations through of ListRecommendations when initialize', async () => {
-    const navigate = jest.fn();
-    const recommendationsFake = [recommendationModelFake()];
-    const listRecommendations = new ListRecommendationsFake(
+    const {
+      sut: { result },
       recommendationsFake,
-    );
-    const { result } = renderHook(() =>
-      useHome({
-        navigate,
-        listRecommendations,
-        listPlaces: new ListPlacesFake(),
-      }),
-    );
+    } = makeSut();
 
     await waitFor(() => {
       expect(result.current.recommendations).toEqual(recommendationsFake);
@@ -82,16 +69,10 @@ describe('Presentation: useHome', () => {
   });
 
   test('should get the placeList through of ListPlaces when initialize', async () => {
-    const navigate = jest.fn();
-    const places = placeListFactory(5);
-    const listPlaces = new ListPlacesFake(places);
-    const { result } = renderHook(() =>
-      useHome({
-        navigate,
-        listRecommendations: new ListRecommendationsFake(),
-        listPlaces,
-      }),
-    );
+    const {
+      sut: { result },
+      places,
+    } = makeSut();
 
     await waitFor(() => {
       expect(result.current.placeList).toEqual(places);
@@ -99,14 +80,10 @@ describe('Presentation: useHome', () => {
   });
 
   test('should call navigate function correctly when call favorite function', async () => {
-    const navigate = jest.fn();
-    const { result } = renderHook(() =>
-      useHome({
-        navigate,
-        listRecommendations: new ListRecommendationsFake(),
-        listPlaces: new ListPlacesFake(),
-      }),
-    );
+    const {
+      sut: { result },
+      navigateSpy,
+    } = makeSut();
 
     await waitFor(() => {
       expect(result.current.recommendations).not.toEqual([]);
@@ -115,31 +92,51 @@ describe('Presentation: useHome', () => {
 
     result.current.favorite();
 
-    expect(navigate).toHaveBeenCalledTimes(1);
-    expect(navigate).toHaveBeenCalledWith('');
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith('');
   });
 
   test('should call navigate function correctly when call showMoreDetails function', async () => {
-    const navigate = jest.fn();
-    const listPlaces = new ListPlacesFake();
-    const { result } = renderHook(() =>
-      useHome({
-        navigate,
-        listRecommendations: new ListRecommendationsFake(),
-        listPlaces,
-      }),
-    );
+    const {
+      sut: { result },
+      listPlacesFake,
+      navigateSpy,
+    } = makeSut();
 
     await waitFor(() => {
       expect(result.current.recommendations).not.toEqual([]);
       expect(result.current.placeList).not.toEqual([]);
     });
 
-    result.current.showMoreDetails(listPlaces.places[0]);
+    result.current.showMoreDetails(listPlacesFake.places[0]);
 
-    expect(navigate).toHaveBeenCalledTimes(1);
-    expect(navigate).toHaveBeenCalledWith('PlaceDetails', {
-      place: listPlaces.places[0],
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith('PlaceDetails', {
+      place: listPlacesFake.places[0],
     });
   });
 });
+
+const makeSut = () => {
+  const navigate = jest.fn();
+  const places = placeListFactory(5);
+  const listPlaces = new ListPlacesFake(places);
+  const recommendationsFake = [recommendationModelFake()];
+  const listRecommendations = new ListRecommendationsFake(recommendationsFake);
+  const sut = renderHook(() =>
+    useHome({
+      navigate,
+      listRecommendations,
+      listPlaces,
+    }),
+  );
+
+  return {
+    navigateSpy: navigate,
+    listPlacesFake: listPlaces,
+    sut,
+    places,
+    listRecommendationsFake: listRecommendations,
+    recommendationsFake: recommendationsFake,
+  };
+};
