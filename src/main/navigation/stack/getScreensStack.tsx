@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import styled from 'styled-components/native';
 import HomeFactory from '../../factories/presentation/homeFactory';
 import { Routes } from '../routes';
 import PlaceDetailsFactory from '../../factories/presentation/placeDetailsFactory';
@@ -17,23 +17,9 @@ const getScreensStack = () => {
       <Stack.Screen
         options={{
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={new Actions(navigator).goBack}
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: 8,
-                marginLeft: -16,
-                paddingLeft: 8,
-                backgroundColor: '#FFFFFF',
-                borderTopRightRadius: 10,
-                borderBottomRightRadius: 10,
-                paddingVertical: 6,
-                paddingRight: 6,
-              }}
-            >
+            <HeaderLeftButton onPress={new Actions(navigator).goBack}>
               <Icon name="arrow_left" size={32} />
-            </TouchableOpacity>
+            </HeaderLeftButton>
           ),
           headerTransparent: true,
           headerBackTitleVisible: false,
@@ -47,5 +33,19 @@ const getScreensStack = () => {
     </>
   );
 };
+
+const HeaderLeftButton = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+  margin-left: -16px;
+  padding-left: 8px;
+  background-color: #ffffff;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-right: 6px;
+`;
 
 export default getScreensStack;
