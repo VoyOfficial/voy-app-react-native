@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
-import { ListCard } from '../../../../../src/presentation/recommentation/components';
+import { ListCard } from '../../../../../src/presentation/recommendation/components';
 
 describe('Components: CardList', () => {
   test('should show title with success', () => {
@@ -81,6 +81,21 @@ describe('Components: CardList', () => {
 
     expect(onSave).toBeCalled();
   });
+
+  test('should call showMoreDetails function when press the component', async () => {
+    const showMoreDetails = jest.fn();
+    const onSave = () => {};
+    const { getByTestId } = makeSut({
+      onSaveLocation: onSave,
+      showMoreDetails,
+    });
+
+    const component = getByTestId('list_card_1_id');
+
+    fireEvent.press(component);
+
+    expect(showMoreDetails).toHaveBeenCalledTimes(1);
+  });
 });
 
 const makeSut = ({
@@ -90,6 +105,7 @@ const makeSut = ({
   rating = '',
   imageUrl = '',
   onSaveLocation = () => {},
+  showMoreDetails = () => {},
 }) => {
   return render(
     <ListCard
@@ -99,6 +115,8 @@ const makeSut = ({
       myDistanceOfLocal={myDistanceOfLocal}
       rating={rating}
       onSaveLocation={onSaveLocation}
+      showMoreDetails={showMoreDetails}
+      index={1}
     />,
   );
 };

@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import placeListFactory from '../../../helpers/placeListFactory';
-import { ListRecommendation } from '../../../../../src/presentation/recommentation/components';
-placeListFactory;
+import { ListRecommendation } from '../../../../../src/presentation/recommendation/components';
+
 describe('Components: ListRecommendation', () => {
   test('should render list of recommendations', () => {
     const { sut } = makeSut({});
@@ -34,16 +34,30 @@ describe('Components: ListRecommendation', () => {
     expect(handleSeeAll).toBeCalled();
   });
 
-  const makeSut = ({ onSeeAll = jest.fn() }) => {
+  test('should call showMoreDetails function when press the ListCard specific component', async () => {
+    const { sut, showMoreDetailsSpy } = makeSut({
+      onSeeAll: () => {},
+    });
+
+    const component = sut.getByTestId('list_card_1_id');
+
+    fireEvent.press(component);
+
+    expect(showMoreDetailsSpy).toHaveBeenCalledTimes(1);
+  });
+
+  const makeSut = ({ onSeeAll = () => {} }) => {
     const recommendations = placeListFactory(3);
+    const showMoreDetails = jest.fn();
 
     const sut = render(
       <ListRecommendation
         onSeeAll={onSeeAll}
         recommendations={recommendations}
+        showMoreDetails={showMoreDetails}
       />,
     );
 
-    return { sut, recommendations };
+    return { sut, recommendations, showMoreDetailsSpy: showMoreDetails };
   };
 });

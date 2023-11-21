@@ -16,7 +16,9 @@ export const ImageContent = styled.Image`
   height: 155px;
 `;
 
-export const ContentWrapper = styled.View``;
+export const ImageButton = styled.TouchableOpacity``;
+
+export const ContentWrapper = styled.TouchableOpacity``;
 
 export const WrapperTitle = styled.View`
   flex-direction: row;

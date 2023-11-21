@@ -90,6 +90,28 @@ describe('Components: ListCard', () => {
 
     expect(favorite).toHaveBeenCalledTimes(1);
   });
+
+  test('should call showMoreDetails function when press the component', () => {
+    const showMoreDetails = jest.fn();
+    const favorite = () => {};
+    const imageUrl = faker.image.imageUrl();
+    const { getByTestId } = makeSut(
+      '',
+      '',
+      '',
+      '',
+      '',
+      imageUrl,
+      favorite,
+      showMoreDetails,
+    );
+
+    const component = getByTestId(`list_card_0_id`);
+
+    fireEvent.press(component);
+
+    expect(showMoreDetails).toHaveBeenCalledTimes(1);
+  });
 });
 
 const makeSut = (
@@ -100,6 +122,7 @@ const makeSut = (
   rating = '',
   imageUrl = '',
   favorite = () => {},
+  showMoreDetails = () => {},
 ) => {
   return render(
     <ListCard
@@ -111,6 +134,7 @@ const makeSut = (
       amountOfReviews={amountOfReviews}
       rating={rating}
       favorite={favorite}
+      showMoreDetails={showMoreDetails}
     />,
   );
 };

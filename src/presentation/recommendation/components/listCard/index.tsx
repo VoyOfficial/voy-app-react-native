@@ -1,11 +1,13 @@
 import React from 'react';
 import Icon from '../../../assets/fonts/Voy';
+import { RecommendationProps } from '../listRecommendation';
 import {
   Container,
   ContentWrapper,
   DistanceOfLocal,
   IconStartWrapper,
   IconWrapper,
+  ImageButton,
   ImageContent,
   Location,
   Rating,
@@ -18,31 +20,48 @@ import {
 } from './styles';
 
 type Props = {
+  index: number;
   imageUrl: string;
   title: string;
   location: string;
   myDistanceOfLocal: string;
   rating: string;
   onSaveLocation: () => void;
+  showMoreDetails: (place: RecommendationProps) => void;
 };
 
 const ListCard = ({
+  index,
   title,
   location,
   myDistanceOfLocal,
   rating,
   imageUrl,
   onSaveLocation,
+  showMoreDetails,
 }: Props) => {
   return (
     <Container>
-      <ImageContent
-        testID="image_of_place_id"
-        accessibilityLabel={title}
-        source={{
-          uri: imageUrl,
-        }}
-      />
+      <ImageButton
+        testID={`list_card_${index}_id`}
+        onPress={() =>
+          showMoreDetails({
+            imageUrl,
+            location,
+            myDistanceOfLocal,
+            rating,
+            title,
+          })
+        }
+      >
+        <ImageContent
+          testID="image_of_place_id"
+          accessibilityLabel={title}
+          source={{
+            uri: imageUrl,
+          }}
+        />
+      </ImageButton>
       <Wrapper>
         <ContentWrapper>
           <WrapperTitle>

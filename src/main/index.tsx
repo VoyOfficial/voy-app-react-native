@@ -1,30 +1,35 @@
 import React from 'react';
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'react-native';
+import styled from 'styled-components/native';
+import { NavigationContainerRef } from '@react-navigation/native';
+import Navigation, { StackParams } from './navigation/navigation';
+import { Routes, getScreensStack, setTopLevelNavigator } from './navigation';
 
-const Main: React.FC = () => {
+type Props = {
+  initialRouteName?: keyof StackParams;
+  screensStack?: any;
+};
+
+const Main: React.FC<Props> = ({
+  initialRouteName = Routes.HOME,
+  screensStack = getScreensStack(),
+}) => {
   return (
-    <View style={styles.sectionContainer}>
+    <WrapperScreen>
       <StatusBar barStyle={'dark-content'} />
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Voy!</Text>
-      </View>
-    </View>
+      <Navigation
+        setNavigationTop={(navigationRef: NavigationContainerRef<any>) =>
+          setTopLevelNavigator(navigationRef)
+        }
+        initialRouteName={initialRouteName}
+        screensStack={screensStack}
+      />
+    </WrapperScreen>
   );
 };
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    flex: 1,
-  },
-  titleContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
-});
+const WrapperScreen = styled.View`
+  flex: 1;
+`;
 
 export default Main;

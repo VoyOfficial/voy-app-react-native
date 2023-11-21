@@ -1,8 +1,10 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import { GetByQuery } from '@testing-library/react-native/build/queries/makeQueries';
-import { TextMatch } from '@testing-library/react-native/build/matches';
-import { TextMatchOptions } from '@testing-library/react-native/build/queries/text';
+import {
+  TextMatch,
+  TextMatchOptions,
+} from '@testing-library/react-native/build/matches';
 import CardList from '../../../../src/presentation/components/cardList';
 import placeListFactory from '../../../presentation/helpers/placeListFactory';
 import { makeTitle } from '../../../presentation/helpers/testFactories';
@@ -71,12 +73,26 @@ describe('Components: CardList', () => {
       expect(amountOfReviews).toEqual(` (${place.amountOfReviews})`);
     });
   });
+
+  test('should call showMoreDetails function when press the ListCard specific component', () => {
+    const {
+      sut: { getByTestId },
+      showMoreDetailsSpy,
+      placeList,
+    } = makeSut();
+
+    fireEvent.press(getByTestId('list_card_1_id'));
+
+    expect(showMoreDetailsSpy).toHaveBeenCalledTimes(1);
+    expect(showMoreDetailsSpy).toHaveBeenCalledWith(placeList[1]);
+  });
 });
 
 const makeSut = (title = '') => {
   const placeList = placeListFactory(5);
   const seeAll = jest.fn();
   const favorite = jest.fn();
+  const showMoreDetails = jest.fn();
 
   const sut = render(
     <CardList
@@ -84,10 +100,17 @@ const makeSut = (title = '') => {
       title={title}
       seeAll={seeAll}
       favorite={favorite}
+      showMoreDetails={showMoreDetails}
     />,
   );
 
-  return { sut, placeList, seeAllSpy: seeAll, favoriteSpy: favorite };
+  return {
+    sut,
+    placeList,
+    seeAllSpy: seeAll,
+    favoriteSpy: favorite,
+    showMoreDetailsSpy: showMoreDetails,
+  };
 };
 
 const getPlaceDetails = (

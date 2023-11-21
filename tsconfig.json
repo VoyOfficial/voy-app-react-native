@@ -45,7 +45,10 @@
       ],
       "~/presentation/components": [
         "src/presentation/components"
-      ]
+      ],
+      "~/main/navigation": [
+        "src/main/navigation"
+      ],
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
