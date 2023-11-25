@@ -28,6 +28,13 @@ describe('Presentation: PlaceList', () => {
       expect(amountOfReviews).toEqual(` (${place.amountOfReviews})`);
     });
   });
+
+  test('should not show title', () => {
+    const list = placeListFactory(5);
+    const { getByTestId } = render(<PlaceList list={list} />);
+
+    expect(getByTestId('title_id').props.children).toEqual('');
+  });
 });
 
 type Props = {
