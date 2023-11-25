@@ -113,7 +113,7 @@ const makeSut = (title = '') => {
   };
 };
 
-const getPlaceDetails = (
+export const getPlaceDetails = (
   index: number,
   getByTestId: GetByQuery<TextMatch, TextMatchOptions>,
 ) => {
