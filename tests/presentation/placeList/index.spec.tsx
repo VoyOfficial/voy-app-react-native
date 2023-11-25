@@ -9,7 +9,7 @@ describe('Presentation: PlaceList', () => {
   test('should list places correctly', () => {
     const list = placeListFactory(5);
     const { getByTestId } = render(
-      <PlaceList list={list} favorite={() => {}} />,
+      <PlaceList list={list} favorite={() => {}} showMoreDetails={() => {}} />,
     );
 
     list.forEach((place, index) => {
@@ -34,7 +34,7 @@ describe('Presentation: PlaceList', () => {
   test('should not show title', () => {
     const list = placeListFactory(5);
     const { getByTestId } = render(
-      <PlaceList list={list} favorite={() => {}} />,
+      <PlaceList list={list} favorite={() => {}} showMoreDetails={() => {}} />,
     );
 
     expect(getByTestId('title_id').props.children).toEqual('');
@@ -43,7 +43,7 @@ describe('Presentation: PlaceList', () => {
   test('should not show see all button', () => {
     const list = placeListFactory(5);
     const { queryByTestId } = render(
-      <PlaceList list={list} favorite={() => {}} />,
+      <PlaceList list={list} favorite={() => {}} showMoreDetails={() => {}} />,
     );
 
     expect(queryByTestId('see_all_button_id')).not.toBeTruthy();
@@ -53,21 +53,43 @@ describe('Presentation: PlaceList', () => {
     const favoriteSpy = jest.fn();
     const list = placeListFactory(5);
     const { getByTestId } = render(
-      <PlaceList list={list} favorite={favoriteSpy} />,
+      <PlaceList
+        list={list}
+        favorite={favoriteSpy}
+        showMoreDetails={() => {}}
+      />,
     );
 
     fireEvent.press(getByTestId('save_button_1_id'));
 
     expect(favoriteSpy).toHaveBeenCalledTimes(1);
   });
+
+  test('should call showMoreDetails function correctly when press the show more details button', () => {
+    const showMoreDetails = jest.fn();
+    const list = placeListFactory(5);
+    const { getByTestId } = render(
+      <PlaceList
+        list={list}
+        favorite={() => {}}
+        showMoreDetails={showMoreDetails}
+      />,
+    );
+
+    fireEvent.press(getByTestId('list_card_1_id'));
+
+    expect(showMoreDetails).toHaveBeenCalledTimes(1);
+    expect(showMoreDetails).toHaveBeenCalledWith(list[1]);
+  });
 });
 
 type Props = {
   list: Array<Place>;
   favorite: () => void;
+  showMoreDetails: (place: Place) => void;
 };
 
-const PlaceList = ({ list, favorite }: Props) => {
+const PlaceList = ({ list, favorite, showMoreDetails }: Props) => {
   return (
     <View>
       <CardList
@@ -76,10 +98,7 @@ const PlaceList = ({ list, favorite }: Props) => {
         seeAll={() => {}}
         placeList={list}
         favorite={favorite}
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        showMoreDetails={function (place: Place): void {
-          throw new Error('Function not implemented.');
-        }}
+        showMoreDetails={showMoreDetails}
       />
     </View>
   );
