@@ -23,6 +23,7 @@ type Props = {
   seeAll: () => void;
   placeList: Array<Place>;
   favorite: () => void;
+  showSeeAllButton: boolean;
   showMoreDetails: (place: Place) => void;
 };
 
@@ -31,15 +32,18 @@ const CardList = ({
   seeAll,
   placeList,
   favorite,
+  showSeeAllButton,
   showMoreDetails,
 }: Props) => {
   return (
     <Container>
       <HeaderWrapper>
         <Title testID="title_id">{title}</Title>
-        <SeeAllButton testID="see_all_button_id" onPress={seeAll}>
-          <SeeAll testID="see_all_id">{'Ver todos'}</SeeAll>
-        </SeeAllButton>
+        {showSeeAllButton && (
+          <SeeAllButton testID="see_all_button_id" onPress={seeAll}>
+            <SeeAll testID="see_all_id">{'Ver todos'}</SeeAll>
+          </SeeAllButton>
+        )}
       </HeaderWrapper>
       <List
         data={placeList}

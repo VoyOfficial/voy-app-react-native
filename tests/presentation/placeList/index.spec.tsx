@@ -35,6 +35,13 @@ describe('Presentation: PlaceList', () => {
 
     expect(getByTestId('title_id').props.children).toEqual('');
   });
+
+  test('should not show see all button', () => {
+    const list = placeListFactory(5);
+    const { queryByTestId } = render(<PlaceList list={list} />);
+
+    expect(queryByTestId('see_all_button_id')).not.toBeTruthy();
+  });
 });
 
 type Props = {
@@ -46,6 +53,7 @@ const PlaceList = ({ list }: Props) => {
     <View>
       <CardList
         title={''}
+        showSeeAllButton={false}
         seeAll={function (): void {
           throw new Error('Function not implemented.');
         }}

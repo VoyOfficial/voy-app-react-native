@@ -86,9 +86,18 @@ describe('Components: CardList', () => {
     expect(showMoreDetailsSpy).toHaveBeenCalledTimes(1);
     expect(showMoreDetailsSpy).toHaveBeenCalledWith(placeList[1]);
   });
+
+  test('should not show see all button when showSeeAllButton is false', () => {
+    const showSeeAllButton = false;
+    const {
+      sut: { queryByTestId },
+    } = makeSut('', showSeeAllButton);
+
+    expect(queryByTestId('see_all_button_id')).not.toBeTruthy();
+  });
 });
 
-const makeSut = (title = '') => {
+const makeSut = (title = '', showSeeAllButton = true) => {
   const placeList = placeListFactory(5);
   const seeAll = jest.fn();
   const favorite = jest.fn();
@@ -101,6 +110,7 @@ const makeSut = (title = '') => {
       seeAll={seeAll}
       favorite={favorite}
       showMoreDetails={showMoreDetails}
+      showSeeAllButton={showSeeAllButton}
     />,
   );
 
