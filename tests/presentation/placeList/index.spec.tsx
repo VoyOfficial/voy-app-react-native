@@ -1,9 +1,8 @@
 import React from 'react';
-import { View } from 'react-native';
 import { fireEvent, render } from '@testing-library/react-native';
-import CardList, { Place } from '../../../src/presentation/components/cardList';
 import { getPlaceDetails } from '../components/cardList/index.spec';
 import placeListFactory from '../helpers/placeListFactory';
+import PlaceList from '../../../src/presentation/placeList';
 
 describe('Presentation: PlaceList', () => {
   test('should list places correctly', () => {
@@ -82,24 +81,3 @@ describe('Presentation: PlaceList', () => {
     expect(showMoreDetails).toHaveBeenCalledWith(list[1]);
   });
 });
-
-type Props = {
-  list: Array<Place>;
-  favorite: () => void;
-  showMoreDetails: (place: Place) => void;
-};
-
-const PlaceList = ({ list, favorite, showMoreDetails }: Props) => {
-  return (
-    <View>
-      <CardList
-        title={''}
-        showSeeAllButton={false}
-        seeAll={() => {}}
-        placeList={list}
-        favorite={favorite}
-        showMoreDetails={showMoreDetails}
-      />
-    </View>
-  );
-};
