@@ -4,7 +4,8 @@ import { RecommendationProps } from '../recommendation/components/listRecommenda
 import { Place } from '../components/cardList';
 
 export type HomeViewModel = {
-  onSeeAll: () => void;
+  seeAllBy: string;
+  onSeeAll: (by: string) => void;
   favorite: () => void;
   showMoreDetails: (place: Place | RecommendationProps) => void;
   placeList: Array<Place>;
@@ -34,8 +35,8 @@ const useHome = ({
     getPlaces();
   }, []);
 
-  const onSeeAll = () => {
-    navigate('PlaceDetails');
+  const onSeeAll = (by: string) => {
+    navigate('PlaceList', { by });
   };
 
   const favorite = () => {
@@ -59,7 +60,14 @@ const useHome = ({
     navigate('PlaceDetails', { place });
   };
 
-  return { onSeeAll, recommendations, favorite, showMoreDetails, placeList };
+  return {
+    onSeeAll,
+    recommendations,
+    favorite,
+    showMoreDetails,
+    placeList,
+    seeAllBy: '',
+  };
 };
 
 export default useHome;

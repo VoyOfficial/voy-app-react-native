@@ -10,6 +10,7 @@ const Home = ({
   favorite,
   placeList,
   showMoreDetails,
+  seeAllBy,
 }: HomeViewModel) => {
   return (
     <View>
@@ -17,13 +18,16 @@ const Home = ({
         showMoreDetails={showMoreDetails}
         recommendations={recommendations}
         onSeeAll={onSeeAll}
+        seeAllBy={seeAllBy}
       />
       <CardList
+        showSeeAllButton
         favorite={favorite}
         placeList={placeList}
         seeAll={onSeeAll}
         title="Descobrir"
         showMoreDetails={showMoreDetails}
+        seeAllBy={seeAllBy}
       />
     </View>
   );

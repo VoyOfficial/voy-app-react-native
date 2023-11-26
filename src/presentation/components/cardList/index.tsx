@@ -20,7 +20,8 @@ export type Place = {
 
 type Props = {
   title: string;
-  seeAll: () => void;
+  seeAllBy: string;
+  seeAll: (by: string) => void;
   placeList: Array<Place>;
   favorite: () => void;
   showSeeAllButton: boolean;
@@ -29,6 +30,7 @@ type Props = {
 
 const CardList = ({
   title,
+  seeAllBy,
   seeAll,
   placeList,
   favorite,
@@ -40,7 +42,10 @@ const CardList = ({
       <HeaderWrapper>
         <Title testID="title_id">{title}</Title>
         {showSeeAllButton && (
-          <SeeAllButton testID="see_all_button_id" onPress={seeAll}>
+          <SeeAllButton
+            testID="see_all_button_id"
+            onPress={() => seeAll(seeAllBy)}
+          >
             <SeeAll testID="see_all_id">{'Ver todos'}</SeeAll>
           </SeeAllButton>
         )}

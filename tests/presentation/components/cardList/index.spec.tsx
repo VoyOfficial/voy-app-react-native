@@ -28,14 +28,16 @@ describe('Components: CardList', () => {
   });
 
   test('should press button "Ver todos" with success', () => {
+    const seeAllBy = 'Discover';
     const {
       sut: { getByTestId },
       seeAllSpy,
-    } = makeSut();
+    } = makeSut('', true, seeAllBy);
 
     fireEvent.press(getByTestId('see_all_button_id'));
 
     expect(seeAllSpy).toHaveBeenCalledTimes(1);
+    expect(seeAllSpy).toHaveBeenCalledWith(seeAllBy);
   });
 
   test('should call favorite function when press the save button', () => {
@@ -97,7 +99,7 @@ describe('Components: CardList', () => {
   });
 });
 
-const makeSut = (title = '', showSeeAllButton = true) => {
+const makeSut = (title = '', showSeeAllButton = true, seeAllBy = '') => {
   const placeList = placeListFactory(5);
   const seeAll = jest.fn();
   const favorite = jest.fn();
@@ -111,6 +113,7 @@ const makeSut = (title = '', showSeeAllButton = true) => {
       favorite={favorite}
       showMoreDetails={showMoreDetails}
       showSeeAllButton={showSeeAllButton}
+      seeAllBy={seeAllBy}
     />,
   );
 

@@ -41,7 +41,7 @@ class ListPlacesFake implements ListPlaces {
 }
 
 describe('Presentation: useHome', () => {
-  test('should call navigate function correctly when call onSeeAll function', async () => {
+  test('should call navigate function correctly when call onSeeAll function with Discover param', async () => {
     const {
       sut: { result },
       navigateSpy,
@@ -51,10 +51,10 @@ describe('Presentation: useHome', () => {
       expect(result.current.placeList).not.toEqual([]);
     });
 
-    result.current.onSeeAll();
+    result.current.onSeeAll('Discover');
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
-    expect(navigateSpy).toHaveBeenCalledWith('PlaceDetails');
+    expect(navigateSpy).toHaveBeenCalledWith('PlaceList', { by: 'Discover' });
   });
 
   test('should get the recommendations through of ListRecommendations when initialize', async () => {
