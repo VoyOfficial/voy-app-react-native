@@ -1,14 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
-import CardList, { Place } from '../components/cardList';
+import CardList from '../components/cardList';
+import { PlaceListViewModel } from './usePlaceList';
 
-type Props = {
-  list: Array<Place>;
-  favorite: () => void;
-  showMoreDetails: (place: Place) => void;
-};
-
-const PlaceList = ({ list, favorite, showMoreDetails }: Props) => {
+const PlaceList = ({ list, favorite, showMoreDetails }: PlaceListViewModel) => {
   return (
     <View>
       <CardList
@@ -18,6 +13,7 @@ const PlaceList = ({ list, favorite, showMoreDetails }: Props) => {
         placeList={list}
         favorite={favorite}
         showMoreDetails={showMoreDetails}
+        seeAllBy=""
       />
     </View>
   );

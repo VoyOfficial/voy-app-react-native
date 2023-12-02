@@ -1,9 +1,25 @@
 import React from 'react';
 import { RouteProp } from '@react-navigation/native';
 import { Routes } from '~/main/navigation';
+import { ListRecommendations } from '~/domain/useCases';
+import { RecommendationModel } from '~/domain/models';
 import { StackParams } from '../../navigation/navigation';
-import { Place } from '../../../../src/presentation/components/cardList';
 import PlaceList from '../../../../src/presentation/placeList';
+import usePlaceList from '../../../../src/presentation/placeList/usePlaceList';
+
+class ListRecommendationsDAO implements ListRecommendations {
+  async list(): Promise<RecommendationModel[]> {
+    return [
+      {
+        imageUrl: '',
+        location: '',
+        myDistanceOfLocal: '',
+        rating: '',
+        title: '',
+      },
+    ];
+  }
+}
 
 type Props = {
   route: RouteProp<StackParams, Routes>;
@@ -11,18 +27,11 @@ type Props = {
 };
 
 const PlaceListFactory = ({}: Props) => {
-  const viewModel = usePlaceList();
+  const viewModel = usePlaceList({
+    by: 'Recommendations',
+    listRecommendations: new ListRecommendationsDAO(),
+  });
   return <PlaceList {...viewModel} />;
-};
-
-type PlaceListViewModel = {
-  list: Array<Place>;
-  favorite: () => void;
-  showMoreDetails: (place: Place) => void;
-};
-
-const usePlaceList = (): PlaceListViewModel => {
-  return { favorite: () => {}, list: [], showMoreDetails: () => {} };
 };
 
 export default PlaceListFactory;
