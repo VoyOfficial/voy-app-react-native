@@ -56,7 +56,7 @@ const getScreensStack = () => {
 const HeaderLeftButtonBack = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
-  margin-top: 8px;
+  margin-bottom: 8px;
   margin-left: -16px;
   padding-left: 8px;
   padding-top: 6px;
