@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { ListPlaces, ListRecommendations } from '~/domain/useCases';
+import { Routes } from '~/main/navigation';
 import { Place } from '../components/cardList';
 import { RecommendationProps } from '../recommendation/components/listRecommendation';
+import { GenericObject } from '../../main/types/genericObject';
 
 export class RecommendationsMapper {
   constructor(private readonly recommendations: RecommendationProps[]) {}
@@ -31,6 +33,7 @@ type Props = {
   listRecommendations: ListRecommendations;
   listPlaces: ListPlaces;
   location?: { lat: string; long: string };
+  navigate: (routeName: string, params?: GenericObject | undefined) => void;
 };
 
 export enum Origin {
@@ -43,6 +46,7 @@ const usePlaceList = ({
   listRecommendations,
   listPlaces,
   location,
+  navigate,
 }: Props): PlaceListViewModel => {
   const [list, setList] = useState<Array<Place>>([]);
 
@@ -65,7 +69,11 @@ const usePlaceList = ({
     }
   };
 
-  return { favorite: () => {}, list, showMoreDetails: () => {} };
+  const showMoreDetails = (place: Place) => {
+    navigate(Routes.PLACE_DETAILS, { place });
+  };
+
+  return { favorite: () => {}, list, showMoreDetails };
 };
 
 export default usePlaceList;

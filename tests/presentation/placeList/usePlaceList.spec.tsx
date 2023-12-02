@@ -41,6 +41,7 @@ describe('Presentation: usePlaceList', () => {
         by,
         listRecommendations: new ListRecommendationsFake(recommendations),
         listPlaces: new ListPlacesFake(),
+        navigate: () => {},
       }),
     );
 
@@ -62,11 +63,38 @@ describe('Presentation: usePlaceList', () => {
         listRecommendations: new ListRecommendationsFake(),
         listPlaces: new ListPlacesFake(places),
         location: { lat: 'any_lat', long: 'any_long' },
+        navigate: () => {},
       }),
     );
 
     await waitFor(() => {
       expect(result.current.list).toEqual(places);
+    });
+  });
+
+  test('should call navigate function correctly when call showMoreDetails function', async () => {
+    const navigateSpy = jest.fn();
+    const places = placeListFactory(5);
+    const by = Origin.Places;
+    const { result } = renderHook(() =>
+      usePlaceList({
+        by,
+        listRecommendations: new ListRecommendationsFake(),
+        listPlaces: new ListPlacesFake(places),
+        location: { lat: 'any_lat', long: 'any_long' },
+        navigate: navigateSpy,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(result.current.list).toEqual(places);
+    });
+
+    result.current.showMoreDetails(places[0]);
+
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith('PlaceDetails', {
+      place: places[0],
     });
   });
 
