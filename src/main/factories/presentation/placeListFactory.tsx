@@ -5,7 +5,9 @@ import { ListRecommendations } from '~/domain/useCases';
 import { RecommendationModel } from '~/domain/models';
 import { StackParams } from '../../navigation/navigation';
 import PlaceList from '../../../../src/presentation/placeList';
-import usePlaceList from '../../../../src/presentation/placeList/usePlaceList';
+import usePlaceList, {
+  Origin,
+} from '../../../../src/presentation/placeList/usePlaceList';
 
 class ListRecommendationsDAO implements ListRecommendations {
   async list(): Promise<RecommendationModel[]> {
@@ -28,7 +30,7 @@ type Props = {
 
 const PlaceListFactory = ({}: Props) => {
   const viewModel = usePlaceList({
-    by: 'Recommendations',
+    by: Origin.Recommendations,
     listRecommendations: new ListRecommendationsDAO(),
   });
   return <PlaceList {...viewModel} />;

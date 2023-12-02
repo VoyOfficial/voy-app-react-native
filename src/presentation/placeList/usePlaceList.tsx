@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ListRecommendations } from '~/domain/useCases';
+import { ListPlaces, ListRecommendations } from '~/domain/useCases';
 import { Place } from '../components/cardList';
 import { RecommendationProps } from '../recommendation/components/listRecommendation';
 
@@ -27,13 +27,22 @@ export type PlaceListViewModel = {
 };
 
 type Props = {
-  by: string;
+  by: Origin;
   listRecommendations: ListRecommendations;
+  listPlaces: ListPlaces;
+  location?: { lat: string; long: string };
 };
+
+export enum Origin {
+  Recommendations = 'recommendations',
+  Places = 'places',
+}
 
 const usePlaceList = ({
   by,
   listRecommendations,
+  listPlaces,
+  location,
 }: Props): PlaceListViewModel => {
   const [list, setList] = useState<Array<Place>>([]);
 
@@ -42,10 +51,17 @@ const usePlaceList = ({
   }, []);
 
   const getList = async () => {
-    if (by === 'Recommendations') {
+    if (by === Origin.Recommendations) {
       const response = await listRecommendations.list();
       const places = new RecommendationsMapper(response).toPlaces();
       setList(places);
+    }
+
+    if (by === Origin.Places) {
+      if (location) {
+        const response = await listPlaces.list(location);
+        setList(response);
+      }
     }
   };
 

@@ -28,7 +28,7 @@ class ListRecommendationsFake implements ListRecommendations {
   }
 }
 
-class ListPlacesFake implements ListPlaces {
+export class ListPlacesFake implements ListPlaces {
   constructor(readonly places: Array<PlaceModel> = placeListFactory(5)) {}
   async list(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

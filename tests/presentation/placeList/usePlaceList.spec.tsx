@@ -3,8 +3,11 @@ import { faker } from '@faker-js/faker';
 import { ListRecommendations } from '~/domain/useCases';
 import { RecommendationModel } from '~/domain/models';
 import usePlaceList, {
+  Origin,
   RecommendationsMapper,
 } from '../../../src/presentation/placeList/usePlaceList';
+import placeListFactory from '../helpers/placeListFactory';
+import { ListPlacesFake } from '../home/useHome.spec';
 
 export const recommendationModelFake = (): RecommendationModel => {
   return {
@@ -32,11 +35,12 @@ class ListRecommendationsFake implements ListRecommendations {
 describe('Presentation: usePlaceList', () => {
   test('should get the list through of ListRecommendations when initialize', async () => {
     const recommendations = [recommendationModelFake()];
-    const by = 'Recommendations';
+    const by = Origin.Recommendations;
     const { result } = renderHook(() =>
       usePlaceList({
         by,
         listRecommendations: new ListRecommendationsFake(recommendations),
+        listPlaces: new ListPlacesFake(),
       }),
     );
 
@@ -46,6 +50,23 @@ describe('Presentation: usePlaceList', () => {
           return { ...recommendation, amountOfReviews: '' };
         }),
       );
+    });
+  });
+
+  test('should get the list through of ListPlaces when initialize', async () => {
+    const places = placeListFactory(5);
+    const by = Origin.Places;
+    const { result } = renderHook(() =>
+      usePlaceList({
+        by,
+        listRecommendations: new ListRecommendationsFake(),
+        listPlaces: new ListPlacesFake(places),
+        location: { lat: 'any_lat', long: 'any_long' },
+      }),
+    );
+
+    await waitFor(() => {
+      expect(result.current.list).toEqual(places);
     });
   });
 
