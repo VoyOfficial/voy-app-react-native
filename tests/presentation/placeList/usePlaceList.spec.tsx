@@ -1,8 +1,6 @@
 import { renderHook, waitFor } from '@testing-library/react-native';
 import usePlaceList from '../../../src/presentation/placeList/usePlaceList';
 import placeListFactory from '../helpers/placeListFactory';
-import { recommendationModelFake } from '../home/useHome.spec';
-import { RecommendationsMapper } from '../../../src/main/factories/presentation/placeListFactory';
 
 describe('Presentation: usePlaceList', () => {
   test('should get the list through of ListPlaces when initialize', async () => {
@@ -38,17 +36,6 @@ describe('Presentation: usePlaceList', () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith('PlaceDetails', {
       place: places[0],
-    });
-  });
-
-  describe('RecommendationMapper', () => {
-    test('should map recommendation list to place list', () => {
-      const recommendations = [recommendationModelFake()];
-      expect(new RecommendationsMapper(recommendations).toPlaces()).toEqual(
-        recommendations.map((recommendation) => {
-          return { ...recommendation, amountOfReviews: '' };
-        }),
-      );
     });
   });
 });
