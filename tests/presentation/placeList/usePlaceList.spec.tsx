@@ -4,13 +4,10 @@ import placeListFactory from '../helpers/placeListFactory';
 
 describe('Presentation: usePlaceList', () => {
   test('should get the list through of ListPlaces when initialize', async () => {
-    const places = placeListFactory(5);
-    const { result } = renderHook(() =>
-      usePlaceList({
-        navigate: () => {},
-        places,
-      }),
-    );
+    const {
+      sut: { result },
+      places,
+    } = makeSut();
 
     await waitFor(() => {
       expect(result.current.list).toEqual(places);
@@ -18,14 +15,11 @@ describe('Presentation: usePlaceList', () => {
   });
 
   test('should call navigate function correctly when call showMoreDetails function', async () => {
-    const navigateSpy = jest.fn();
-    const places = placeListFactory(5);
-    const { result } = renderHook(() =>
-      usePlaceList({
-        navigate: navigateSpy,
-        places,
-      }),
-    );
+    const {
+      sut: { result },
+      places,
+      navigateSpy,
+    } = makeSut();
 
     await waitFor(() => {
       expect(result.current.list).toEqual(places);
@@ -39,3 +33,16 @@ describe('Presentation: usePlaceList', () => {
     });
   });
 });
+
+const makeSut = () => {
+  const navigateSpy = jest.fn();
+  const places = placeListFactory(5);
+  const sut = renderHook(() =>
+    usePlaceList({
+      navigate: navigateSpy,
+      places,
+    }),
+  );
+
+  return { sut, places, navigateSpy };
+};
