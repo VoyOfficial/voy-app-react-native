@@ -21,23 +21,23 @@ export type RecommendationProps = {
 type Props = {
   recommendations: RecommendationProps[];
   showMoreDetails: (place: RecommendationProps) => void;
-  onSeeAll: () => void;
+  onSeeAll: (by: string) => void;
+  seeAllBy: string;
+  handleSaveLocation: (location: RecommendationProps) => void;
 };
 
 const ListRecommendation = ({
   recommendations,
   onSeeAll,
   showMoreDetails,
+  seeAllBy,
+  handleSaveLocation,
 }: Props) => {
-  const handleSaveLocation = (location: RecommendationProps) => {
-    console.log(location);
-  };
-
   return (
     <Container>
       <Wrapper>
         <Title>Recomendações</Title>
-        <Button onPress={onSeeAll} testID="onpress-see-all">
+        <Button onPress={() => onSeeAll(seeAllBy)} testID="onpress-see-all">
           <TextButton>Ver todos</TextButton>
         </Button>
       </Wrapper>

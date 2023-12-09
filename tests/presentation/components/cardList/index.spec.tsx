@@ -28,14 +28,16 @@ describe('Components: CardList', () => {
   });
 
   test('should press button "Ver todos" with success', () => {
+    const seeAllBy = 'Discover';
     const {
       sut: { getByTestId },
       seeAllSpy,
-    } = makeSut();
+    } = makeSut('', true, seeAllBy);
 
     fireEvent.press(getByTestId('see_all_button_id'));
 
     expect(seeAllSpy).toHaveBeenCalledTimes(1);
+    expect(seeAllSpy).toHaveBeenCalledWith(seeAllBy);
   });
 
   test('should call favorite function when press the save button', () => {
@@ -86,9 +88,18 @@ describe('Components: CardList', () => {
     expect(showMoreDetailsSpy).toHaveBeenCalledTimes(1);
     expect(showMoreDetailsSpy).toHaveBeenCalledWith(placeList[1]);
   });
+
+  test('should not show see all button when showSeeAllButton is false', () => {
+    const showSeeAllButton = false;
+    const {
+      sut: { queryByTestId },
+    } = makeSut('', showSeeAllButton);
+
+    expect(queryByTestId('see_all_button_id')).not.toBeTruthy();
+  });
 });
 
-const makeSut = (title = '') => {
+const makeSut = (title = '', showSeeAllButton = true, seeAllBy = '') => {
   const placeList = placeListFactory(5);
   const seeAll = jest.fn();
   const favorite = jest.fn();
@@ -101,6 +112,8 @@ const makeSut = (title = '') => {
       seeAll={seeAll}
       favorite={favorite}
       showMoreDetails={showMoreDetails}
+      showSeeAllButton={showSeeAllButton}
+      seeAllBy={seeAllBy}
     />,
   );
 
@@ -113,7 +126,7 @@ const makeSut = (title = '') => {
   };
 };
 
-const getPlaceDetails = (
+export const getPlaceDetails = (
   index: number,
   getByTestId: GetByQuery<TextMatch, TextMatchOptions>,
 ) => {

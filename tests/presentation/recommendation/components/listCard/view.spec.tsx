@@ -73,7 +73,7 @@ describe('Components: CardList', () => {
     const onSave = jest.fn();
     const { getByTestId } = makeSut({ onSaveLocation: onSave });
 
-    const saveBtn = getByTestId('save_location_id');
+    const saveBtn = getByTestId('save_location_1_id');
 
     expect(saveBtn).toBeTruthy();
 

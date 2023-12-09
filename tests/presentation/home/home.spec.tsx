@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
+import { Origin } from '../../../src/presentation/placeList/usePlaceList';
 import CardList from '../../../src/presentation/components/cardList';
 import { Home } from '../../../src/presentation/home';
 import { ListRecommendation } from '../../../src/presentation/recommendation/components';
@@ -21,6 +22,7 @@ describe('Presentation: Home', () => {
       recommendations,
       onSeeAll,
       showMoreDetails,
+      seeAllBy: Origin.Recommendations,
     });
   });
 
@@ -41,6 +43,8 @@ describe('Presentation: Home', () => {
       favorite,
       title: 'Descobrir',
       showMoreDetails,
+      showSeeAllButton: true,
+      seeAllBy: Origin.Places,
     });
   });
 });

@@ -22,9 +22,11 @@ describe('Components: ListRecommendation', () => {
   });
 
   test('should call see all recommendations function', async () => {
+    const seeAllBy = 'Recommendation';
     const handleSeeAll = jest.fn();
     const { sut } = makeSut({
       onSeeAll: handleSeeAll,
+      seeAllBy: seeAllBy,
     });
 
     const seeAllBtn = sut.getByTestId('onpress-see-all');
@@ -32,6 +34,7 @@ describe('Components: ListRecommendation', () => {
     waitFor(() => fireEvent.press(seeAllBtn));
 
     expect(handleSeeAll).toBeCalled();
+    expect(handleSeeAll).toHaveBeenCalledWith(seeAllBy);
   });
 
   test('should call showMoreDetails function when press the ListCard specific component', async () => {
@@ -46,18 +49,38 @@ describe('Components: ListRecommendation', () => {
     expect(showMoreDetailsSpy).toHaveBeenCalledTimes(1);
   });
 
-  const makeSut = ({ onSeeAll = () => {} }) => {
+  test('should call handleSaveLocation function when press save button of ListCard component', async () => {
+    const { sut, handleSaveLocationSpy } = makeSut({
+      onSeeAll: () => {},
+    });
+
+    const component = sut.getByTestId('save_location_1_id');
+
+    fireEvent.press(component);
+
+    expect(handleSaveLocationSpy).toHaveBeenCalledTimes(1);
+  });
+
+  const makeSut = ({ onSeeAll = () => {}, seeAllBy = '' }) => {
     const recommendations = placeListFactory(3);
     const showMoreDetails = jest.fn();
+    const handleSaveLocation = jest.fn();
 
     const sut = render(
       <ListRecommendation
         onSeeAll={onSeeAll}
         recommendations={recommendations}
         showMoreDetails={showMoreDetails}
+        seeAllBy={seeAllBy}
+        handleSaveLocation={handleSaveLocation}
       />,
     );
 
-    return { sut, recommendations, showMoreDetailsSpy: showMoreDetails };
+    return {
+      sut,
+      recommendations,
+      showMoreDetailsSpy: showMoreDetails,
+      handleSaveLocationSpy: handleSaveLocation,
+    };
   };
 });
