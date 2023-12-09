@@ -9,7 +9,7 @@ import { Routes } from './routes';
 export type StackParams = {
   [Routes.HOME]: undefined;
   [Routes.PLACE_DETAILS]: undefined;
-  [Routes.PLACE_LIST]: undefined;
+  [Routes.PLACE_LIST]: { by: string };
 };
 
 type Props = {

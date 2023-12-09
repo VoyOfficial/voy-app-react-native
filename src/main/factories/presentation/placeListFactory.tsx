@@ -51,12 +51,12 @@ type Props = {
   navigation: any;
 };
 
-const PlaceListFactory = ({}: Props) => {
+const PlaceListFactory = ({ route: { params } }: Props) => {
   const [places, setPlaces] = useState<Place[]>([]);
 
   const getPlaces = async () => {
     const response = await getPlacesByOrigin(
-      Origin.Places,
+      params?.by as Origin,
       new ListRecommendationsDAO(),
       new ListPlacesDAO(),
       { lat: '', long: '' },

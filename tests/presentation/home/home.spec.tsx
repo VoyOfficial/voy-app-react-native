@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
+import { Origin } from '../../../src/presentation/placeList/usePlaceList';
 import CardList from '../../../src/presentation/components/cardList';
 import { Home } from '../../../src/presentation/home';
 import { ListRecommendation } from '../../../src/presentation/recommendation/components';
@@ -13,7 +14,6 @@ describe('Presentation: Home', () => {
       onSeeAll,
       recommendations,
       showMoreDetails,
-      seeAllBy,
     } = makeSut();
 
     const listRecommendation = UNSAFE_getByType(ListRecommendation);
@@ -22,7 +22,7 @@ describe('Presentation: Home', () => {
       recommendations,
       onSeeAll,
       showMoreDetails,
-      seeAllBy,
+      seeAllBy: Origin.Recommendations,
     });
   });
 
@@ -33,7 +33,6 @@ describe('Presentation: Home', () => {
       favorite,
       onSeeAll,
       showMoreDetails,
-      seeAllBy,
     } = makeSut();
 
     const cardList = UNSAFE_getByType(CardList);
@@ -45,7 +44,7 @@ describe('Presentation: Home', () => {
       title: 'Descobrir',
       showMoreDetails,
       showSeeAllButton: true,
-      seeAllBy,
+      seeAllBy: Origin.Places,
     });
   });
 });
@@ -54,7 +53,6 @@ const makeSut = () => {
   const onSeeAll = () => {};
   const favorite = () => {};
   const showMoreDetails = () => {};
-  const seeAllBy = 'Discover';
   const placeList = placeListFactory(5);
   const recommendations = [recommendationModelFake()];
   const sut = render(
@@ -64,7 +62,6 @@ const makeSut = () => {
       favorite={favorite}
       placeList={placeList}
       showMoreDetails={showMoreDetails}
-      seeAllBy={seeAllBy}
     />,
   );
 
@@ -75,6 +72,5 @@ const makeSut = () => {
     showMoreDetails,
     placeList,
     recommendations,
-    seeAllBy,
   };
 };

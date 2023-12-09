@@ -2,6 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { ListRecommendation } from '../recommendation/components';
 import CardList from '../components/cardList';
+import { Origin } from '../placeList/usePlaceList';
 import { HomeViewModel } from './useHome';
 
 const Home = ({
@@ -10,7 +11,6 @@ const Home = ({
   favorite,
   placeList,
   showMoreDetails,
-  seeAllBy,
 }: HomeViewModel) => {
   return (
     <View>
@@ -18,7 +18,7 @@ const Home = ({
         showMoreDetails={showMoreDetails}
         recommendations={recommendations}
         onSeeAll={onSeeAll}
-        seeAllBy={seeAllBy}
+        seeAllBy={Origin.Recommendations}
       />
       <CardList
         showSeeAllButton
@@ -27,7 +27,7 @@ const Home = ({
         seeAll={onSeeAll}
         title="Descobrir"
         showMoreDetails={showMoreDetails}
-        seeAllBy={seeAllBy}
+        seeAllBy={Origin.Places}
       />
     </View>
   );
