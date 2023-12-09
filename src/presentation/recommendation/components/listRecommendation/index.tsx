@@ -23,6 +23,7 @@ type Props = {
   showMoreDetails: (place: RecommendationProps) => void;
   onSeeAll: (by: string) => void;
   seeAllBy: string;
+  handleSaveLocation: (location: RecommendationProps) => void;
 };
 
 const ListRecommendation = ({
@@ -30,11 +31,8 @@ const ListRecommendation = ({
   onSeeAll,
   showMoreDetails,
   seeAllBy,
+  handleSaveLocation,
 }: Props) => {
-  const handleSaveLocation = (location: RecommendationProps) => {
-    console.log(location);
-  };
-
   return (
     <Container>
       <Wrapper>

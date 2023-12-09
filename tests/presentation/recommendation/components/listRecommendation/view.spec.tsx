@@ -49,9 +49,22 @@ describe('Components: ListRecommendation', () => {
     expect(showMoreDetailsSpy).toHaveBeenCalledTimes(1);
   });
 
+  test('should call handleSaveLocation function when press save button of ListCard component', async () => {
+    const { sut, handleSaveLocationSpy } = makeSut({
+      onSeeAll: () => {},
+    });
+
+    const component = sut.getByTestId('save_location_1_id');
+
+    fireEvent.press(component);
+
+    expect(handleSaveLocationSpy).toHaveBeenCalledTimes(1);
+  });
+
   const makeSut = ({ onSeeAll = () => {}, seeAllBy = '' }) => {
     const recommendations = placeListFactory(3);
     const showMoreDetails = jest.fn();
+    const handleSaveLocation = jest.fn();
 
     const sut = render(
       <ListRecommendation
@@ -59,9 +72,15 @@ describe('Components: ListRecommendation', () => {
         recommendations={recommendations}
         showMoreDetails={showMoreDetails}
         seeAllBy={seeAllBy}
+        handleSaveLocation={handleSaveLocation}
       />,
     );
 
-    return { sut, recommendations, showMoreDetailsSpy: showMoreDetails };
+    return {
+      sut,
+      recommendations,
+      showMoreDetailsSpy: showMoreDetails,
+      handleSaveLocationSpy: handleSaveLocation,
+    };
   };
 });

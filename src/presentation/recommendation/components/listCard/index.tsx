@@ -86,7 +86,7 @@ const ListCard = ({
             <Rating testID="rating_id">{rating}</Rating>
           </WrapperLine>
         </ContentWrapper>
-        <SaveBtn testID="save_location_id" onPress={onSaveLocation}>
+        <SaveBtn testID={`save_location_${index}_id`} onPress={onSaveLocation}>
           <Save name="save" testID="save_icon_id" />
         </SaveBtn>
       </Wrapper>
