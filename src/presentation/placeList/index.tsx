@@ -1,11 +1,11 @@
 import React from 'react';
-import { View } from 'react-native';
+import styled from 'styled-components/native';
 import CardList from '../components/cardList';
 import { PlaceListViewModel } from './usePlaceList';
 
 const PlaceList = ({ list, favorite, showMoreDetails }: PlaceListViewModel) => {
   return (
-    <View>
+    <Wrapper>
       <CardList
         title={''}
         showSeeAllButton={false}
@@ -15,8 +15,12 @@ const PlaceList = ({ list, favorite, showMoreDetails }: PlaceListViewModel) => {
         showMoreDetails={showMoreDetails}
         seeAllBy=""
       />
-    </View>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.View`
+  margin: 40px 20px 0 20px;
+`;
 
 export default PlaceList;

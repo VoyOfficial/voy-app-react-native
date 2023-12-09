@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { RouteProp } from '@react-navigation/native';
 import { Actions, Routes, navigator } from '~/main/navigation';
 import { ListPlaces, ListRecommendations } from '~/domain/useCases';
@@ -51,8 +51,19 @@ type Props = {
   navigation: any;
 };
 
-const PlaceListFactory = ({ route: { params } }: Props) => {
+const PlaceListFactory = ({ route: { params }, navigation }: Props) => {
   const [places, setPlaces] = useState<Place[]>([]);
+
+  const setTitle = () => {
+    const origin = params?.by as Origin;
+    if (origin === Origin.Places) {
+      navigation.setOptions({ title: 'Descobrir' });
+    }
+
+    if (origin === Origin.Recommendations) {
+      navigation.setOptions({ title: 'Todas as recomendações' });
+    }
+  };
 
   const getPlaces = async () => {
     const response = await getPlacesByOrigin(
@@ -64,6 +75,10 @@ const PlaceListFactory = ({ route: { params } }: Props) => {
 
     setPlaces(response);
   };
+
+  useLayoutEffect(() => {
+    setTitle();
+  }, []);
 
   useEffect(() => {
     getPlaces();
