@@ -5,26 +5,34 @@ import { fireEvent, render } from '@testing-library/react-native';
 describe('Presentation: Search', () => {
   test('should show input of search with success', () => {
     const { getByTestId } = render(
-      <Search search="" changeSearch={() => {}} />,
+      <Search searchValue="" changeSearch={() => {}} searchTo={() => {}} />,
     );
 
     expect(getByTestId('search_input_id')).toBeTruthy();
   });
 
   test('should show the search input value successfully', () => {
-    const search = 'Cafeteria';
+    const searchValue = 'Cafeteria';
     const { getByTestId } = render(
-      <Search search={search} changeSearch={() => {}} />,
+      <Search
+        searchValue={searchValue}
+        changeSearch={() => {}}
+        searchTo={() => {}}
+      />,
     );
 
     expect(getByTestId('search_input_id').props.value).toEqual('Cafeteria');
   });
 
   test('should change search input value with success', () => {
-    const search = 'Cafeteria';
+    const searchValue = 'Cafeteria';
     const changeSearch = jest.fn();
     const { getByTestId } = render(
-      <Search search={search} changeSearch={changeSearch} />,
+      <Search
+        searchValue={searchValue}
+        changeSearch={changeSearch}
+        searchTo={() => {}}
+      />,
     );
 
     fireEvent.changeText(getByTestId('search_input_id'), 'Restaurante');
@@ -32,20 +40,40 @@ describe('Presentation: Search', () => {
     expect(changeSearch).toHaveBeenCalledTimes(1);
     expect(changeSearch).toHaveBeenCalledWith('Restaurante');
   });
+
+  test('should search with success', () => {
+    const searchValue = 'Cafeteria';
+    const changeSearch = jest.fn();
+    const searchTo = jest.fn();
+    const { getByTestId } = render(
+      <Search
+        searchValue={searchValue}
+        changeSearch={changeSearch}
+        searchTo={searchTo}
+      />,
+    );
+
+    fireEvent(getByTestId('search_input_id'), 'onSubmitEditing');
+
+    expect(searchTo).toHaveBeenCalledTimes(1);
+    expect(searchTo).toHaveBeenCalledWith('Cafeteria');
+  });
 });
 
 type Props = {
-  search: string;
-  changeSearch: (text: string) => void;
+  searchValue: string;
+  changeSearch: (value: string) => void;
+  searchTo: (value: string) => void;
 };
 
-const Search = ({ search, changeSearch }: Props) => {
+const Search = ({ searchValue, changeSearch, searchTo }: Props) => {
   return (
     <View>
       <TextInput
         testID="search_input_id"
-        value={search}
+        value={searchValue}
         onChangeText={changeSearch}
+        onSubmitEditing={() => searchTo(searchValue)}
       />
     </View>
   );
