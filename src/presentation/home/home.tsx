@@ -19,6 +19,7 @@ const Home = ({
         recommendations={recommendations}
         onSeeAll={onSeeAll}
         seeAllBy={Origin.Recommendations}
+        handleSaveLocation={() => {}}
       />
       <CardList
         showSeeAllButton
