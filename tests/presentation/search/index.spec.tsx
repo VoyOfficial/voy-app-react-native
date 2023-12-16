@@ -11,6 +11,16 @@ describe('Presentation: Search', () => {
     expect(getByTestId('search_input_id')).toBeTruthy();
   });
 
+  test('should show input of search with correct placeholder', () => {
+    const { getByTestId } = render(
+      <Search searchValue="" changeSearch={() => {}} searchTo={() => {}} />,
+    );
+
+    expect(getByTestId('search_input_id').props.placeholder).toEqual(
+      'Pesquisar lugares...',
+    );
+  });
+
   test('should show the search input value successfully', () => {
     const searchValue = 'Cafeteria';
     const { getByTestId } = render(
@@ -71,6 +81,7 @@ const Search = ({ searchValue, changeSearch, searchTo }: Props) => {
     <View>
       <TextInput
         testID="search_input_id"
+        placeholder="Pesquisar lugares..."
         value={searchValue}
         onChangeText={changeSearch}
         onSubmitEditing={() => searchTo(searchValue)}
