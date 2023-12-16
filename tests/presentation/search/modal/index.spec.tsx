@@ -9,6 +9,9 @@ describe('Search: Modal', () => {
         label: 'Ordenar por',
         selected: { id: 0, label: 'Mais avaliados' },
       },
+      filterBy: {
+        label: 'Filtrar por',
+      },
     };
     const { getByTestId } = render(
       <FilterModal filterOptions={filterOptions} />,
@@ -19,6 +22,24 @@ describe('Search: Modal', () => {
     expect(labelOrderBy.props.children).toEqual('Ordenar por: ');
     expect(orderBySelected.props.children).toEqual('Mais avaliados');
   });
+
+  test('should show the filter label by correctly', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+      },
+      filterBy: {
+        label: 'Filtrar por',
+      },
+    };
+    const { getByTestId } = render(
+      <FilterModal filterOptions={filterOptions} />,
+    );
+
+    const labelFilterBy = getByTestId('label_filter_by_id');
+    expect(labelFilterBy.props.children).toEqual('Filtrar por: ');
+  });
 });
 
 type Props = {
@@ -26,6 +47,9 @@ type Props = {
     orderBy: {
       label: string;
       selected: { id: number; label: string };
+    };
+    filterBy: {
+      label: string;
     };
   };
 };
@@ -39,6 +63,11 @@ const FilterModal = ({ filterOptions }: Props) => {
         </Text>
         <Text testID="order_by_selected_id">
           {filterOptions.orderBy.selected.label}
+        </Text>
+      </View>
+      <View>
+        <Text testID="label_filter_by_id">
+          {filterOptions.filterBy.label + ': '}
         </Text>
       </View>
     </View>
