@@ -60,13 +60,17 @@ const useHome = ({
     navigate('PlaceDetails', { place });
   };
 
+  const search = () => {
+    navigate('Search');
+  };
+
   return {
     onSeeAll,
     recommendations,
     favorite,
     showMoreDetails,
     placeList,
-    search: () => {},
+    search,
   };
 };
 
