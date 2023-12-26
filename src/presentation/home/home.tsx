@@ -16,9 +16,26 @@ const Home = ({
 }: HomeViewModel) => {
   return (
     <View>
-      <View>
-        <TouchableOpacity testID="search_button_id" onPress={search}>
-          <Icon testID="search_id" name="search" size={22.5} />
+      <View
+        style={{
+          height: 100,
+          width: '100%',
+          justifyContent: 'flex-end',
+          alignItems: 'flex-end',
+          marginBottom: 20,
+        }}
+      >
+        <TouchableOpacity
+          testID="search_button_id"
+          style={{
+            backgroundColor: '#FFFFFF',
+            paddingVertical: 8,
+            paddingHorizontal: 17,
+            borderRadius: 10,
+          }}
+          onPress={search}
+        >
+          <Icon testID="search_id" name="search" size={22.5} color="#B3B3B3" />
         </TouchableOpacity>
       </View>
       <ListRecommendation
