@@ -16,7 +16,11 @@ describe('Search: Modal', () => {
       },
     };
     const { getByTestId } = render(
-      <FilterModal filterOptions={filterOptions} selectOrder={() => {}} />,
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+      />,
     );
 
     const labelOrderBy = getByTestId('label_order_by_id');
@@ -38,7 +42,11 @@ describe('Search: Modal', () => {
       },
     };
     const { getByTestId } = render(
-      <FilterModal filterOptions={filterOptions} selectOrder={() => {}} />,
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+      />,
     );
 
     const labelFilterBy = getByTestId('label_filter_by_id');
@@ -62,7 +70,11 @@ describe('Search: Modal', () => {
       },
     };
     const { getByTestId } = render(
-      <FilterModal filterOptions={filterOptions} selectOrder={() => {}} />,
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+      />,
     );
 
     filterOptions.orderBy.list.forEach((order) => {
@@ -86,16 +98,20 @@ describe('Search: Modal', () => {
       filterBy: {
         label: 'Filtrar por',
         list: [
-          { id: 0, label: 'Restaurantes' },
-          { id: 1, label: 'Cafeterias' },
-          { id: 2, label: 'Entretenimento' },
-          { id: 3, label: 'Hotéis' },
-          { id: 4, label: 'Lazer' },
+          { id: 0, label: 'Restaurantes', selected: false },
+          { id: 1, label: 'Cafeterias', selected: false },
+          { id: 2, label: 'Entretenimento', selected: false },
+          { id: 3, label: 'Hotéis', selected: false },
+          { id: 4, label: 'Lazer', selected: false },
         ],
       },
     };
     const { getByTestId } = render(
-      <FilterModal filterOptions={filterOptions} selectOrder={() => {}} />,
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+      />,
     );
 
     filterOptions.filterBy.list.forEach((filter) => {
@@ -119,11 +135,11 @@ describe('Search: Modal', () => {
       filterBy: {
         label: 'Filtrar por',
         list: [
-          { id: 0, label: 'Restaurantes' },
-          { id: 1, label: 'Cafeterias' },
-          { id: 2, label: 'Entretenimento' },
-          { id: 3, label: 'Hotéis' },
-          { id: 4, label: 'Lazer' },
+          { id: 0, label: 'Restaurantes', selected: false },
+          { id: 1, label: 'Cafeterias', selected: false },
+          { id: 2, label: 'Entretenimento', selected: false },
+          { id: 3, label: 'Hotéis', selected: false },
+          { id: 4, label: 'Lazer', selected: false },
         ],
       },
     };
@@ -132,7 +148,11 @@ describe('Search: Modal', () => {
       filterOptions.orderBy.selected = order;
     };
     const { getByTestId } = render(
-      <FilterModal filterOptions={filterOptions} selectOrder={selectOrder} />,
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={selectOrder}
+        selectFilter={() => {}}
+      />,
     );
 
     expect(getByTestId('order_by_selected_id').props.children).toEqual(
@@ -145,6 +165,57 @@ describe('Search: Modal', () => {
       filterOptions.orderBy.selected.label,
     );
   });
+
+  test('should update filters selected when press more of one filter', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [
+          { id: 0, label: 'Mais avaliados' },
+          { id: 1, label: 'Mais comentados' },
+          { id: 2, label: 'Distância' },
+        ],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [
+          { id: 0, label: 'Restaurantes', selected: false },
+          { id: 1, label: 'Cafeterias', selected: false },
+          { id: 2, label: 'Entretenimento', selected: false },
+          { id: 3, label: 'Hotéis', selected: false },
+          { id: 4, label: 'Lazer', selected: false },
+        ],
+      },
+    };
+
+    const selectFilter = (filterSelected: {
+      id: number;
+      label: string;
+      selected: boolean;
+    }) => {
+      filterOptions.filterBy.list.forEach((filter) => {
+        if (filter.id === filterSelected.id) {
+          filter.selected = true;
+        }
+      });
+    };
+    const { getByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={selectFilter}
+      />,
+    );
+
+    fireEvent.press(getByTestId('filter_button_1_id'));
+    fireEvent.press(getByTestId('filter_button_2_id'));
+    fireEvent.press(getByTestId('filter_button_4_id'));
+
+    expect(filterOptions.filterBy.list[1].selected).toEqual(true);
+    expect(filterOptions.filterBy.list[2].selected).toEqual(true);
+    expect(filterOptions.filterBy.list[4].selected).toEqual(true);
+  });
 });
 
 type Props = {
@@ -156,13 +227,18 @@ type Props = {
     };
     filterBy: {
       label: string;
-      list: Array<{ id: number; label: string }>;
+      list: Array<{ id: number; label: string; selected: boolean }>;
     };
   };
   selectOrder: (order: { id: number; label: string }) => void;
+  selectFilter: (filter: {
+    id: number;
+    label: string;
+    selected: boolean;
+  }) => void;
 };
 
-const FilterModal = ({ filterOptions, selectOrder }: Props) => {
+const FilterModal = ({ filterOptions, selectOrder, selectFilter }: Props) => {
   return (
     <View>
       <View>
@@ -191,9 +267,13 @@ const FilterModal = ({ filterOptions, selectOrder }: Props) => {
       </View>
       <View>
         {filterOptions.filterBy.list.map((filter) => (
-          <Text key={filter.id} testID={`filter_${filter.id}_id`}>
-            {filter.label}
-          </Text>
+          <TouchableOpacity
+            key={filter.id}
+            testID={`filter_button_${filter.id}_id`}
+            onPress={() => selectFilter(filter)}
+          >
+            <Text testID={`filter_${filter.id}_id`}>{filter.label}</Text>
+          </TouchableOpacity>
         ))}
       </View>
     </View>
