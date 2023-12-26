@@ -12,6 +12,7 @@ describe('Search: Modal', () => {
       },
       filterBy: {
         label: 'Filtrar por',
+        list: [],
       },
     };
     const { getByTestId } = render(
@@ -33,6 +34,7 @@ describe('Search: Modal', () => {
       },
       filterBy: {
         label: 'Filtrar por',
+        list: [],
       },
     };
     const { getByTestId } = render(
@@ -56,6 +58,7 @@ describe('Search: Modal', () => {
       },
       filterBy: {
         label: 'Filtrar por',
+        list: [],
       },
     };
     const { getByTestId } = render(
@@ -65,6 +68,39 @@ describe('Search: Modal', () => {
     filterOptions.orderBy.list.forEach((order) => {
       expect(getByTestId(`order_${order.id}_id`).props.children).toEqual(
         order.label,
+      );
+    });
+  });
+
+  test('should show filter list correctly', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [
+          { id: 0, label: 'Mais avaliados' },
+          { id: 1, label: 'Mais comentados' },
+          { id: 2, label: 'Distância' },
+        ],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [
+          { id: 0, label: 'Restaurantes' },
+          { id: 1, label: 'Cafeterias' },
+          { id: 2, label: 'Entretenimento' },
+          { id: 3, label: 'Hotéis' },
+          { id: 4, label: 'Lazer' },
+        ],
+      },
+    };
+    const { getByTestId } = render(
+      <FilterModal filterOptions={filterOptions} />,
+    );
+
+    filterOptions.filterBy.list.forEach((filter) => {
+      expect(getByTestId(`filter_${filter.id}_id`).props.children).toEqual(
+        filter.label,
       );
     });
   });
@@ -79,6 +115,7 @@ type Props = {
     };
     filterBy: {
       label: string;
+      list: Array<{ id: number; label: string }>;
     };
   };
 };
@@ -105,6 +142,13 @@ const FilterModal = ({ filterOptions }: Props) => {
         <Text testID="label_filter_by_id">
           {filterOptions.filterBy.label + ': '}
         </Text>
+      </View>
+      <View>
+        {filterOptions.filterBy.list.map((filter) => (
+          <Text key={filter.id} testID={`filter_${filter.id}_id`}>
+            {filter.label}
+          </Text>
+        ))}
       </View>
     </View>
   );
