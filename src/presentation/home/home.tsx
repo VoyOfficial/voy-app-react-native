@@ -12,11 +12,12 @@ const Home = ({
   favorite,
   placeList,
   showMoreDetails,
+  search,
 }: HomeViewModel) => {
   return (
     <View>
       <View>
-        <TouchableOpacity testID="search_button_id">
+        <TouchableOpacity testID="search_button_id" onPress={search}>
           <Icon testID="search_id" name="search" size={22.5} />
         </TouchableOpacity>
       </View>

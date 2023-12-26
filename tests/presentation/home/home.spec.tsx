@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import { Origin } from '../../../src/presentation/placeList/usePlaceList';
 import CardList from '../../../src/presentation/components/cardList';
 import { Home } from '../../../src/presentation/home';
@@ -54,15 +54,29 @@ describe('Presentation: Home', () => {
       sut: { getByTestId },
     } = makeSut();
 
-    const search = getByTestId('search_button_id');
-    const searchButton = getByTestId('search_id');
+    const searchButton = getByTestId('search_button_id');
+    const search = getByTestId('search_id');
 
     expect(search).toBeTruthy();
     expect(searchButton).toBeTruthy();
   });
+
+  test('should call search function when press search button', () => {
+    const {
+      sut: { getByTestId },
+      search,
+    } = makeSut();
+
+    const searchButton = getByTestId('search_button_id');
+
+    fireEvent.press(searchButton);
+
+    expect(search).toHaveBeenCalledTimes(1);
+  });
 });
 
 const makeSut = () => {
+  const search = jest.fn();
   const onSeeAll = () => {};
   const favorite = () => {};
   const showMoreDetails = () => {};
@@ -75,6 +89,7 @@ const makeSut = () => {
       favorite={favorite}
       placeList={placeList}
       showMoreDetails={showMoreDetails}
+      search={search}
     />,
   );
 
@@ -83,6 +98,7 @@ const makeSut = () => {
     onSeeAll,
     favorite,
     showMoreDetails,
+    search,
     placeList,
     recommendations,
   };

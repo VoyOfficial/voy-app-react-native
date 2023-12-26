@@ -7,6 +7,7 @@ export type HomeViewModel = {
   onSeeAll: (by: string) => void;
   favorite: () => void;
   showMoreDetails: (place: Place | RecommendationProps) => void;
+  search: () => void;
   placeList: Array<Place>;
   recommendations: Array<RecommendationProps>;
 };
@@ -65,6 +66,7 @@ const useHome = ({
     favorite,
     showMoreDetails,
     placeList,
+    search: () => {},
   };
 };
 
