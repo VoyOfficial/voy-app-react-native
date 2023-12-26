@@ -23,6 +23,7 @@ describe('Presentation: Home', () => {
       onSeeAll,
       showMoreDetails,
       seeAllBy: Origin.Recommendations,
+      handleSaveLocation: expect.anything(),
     });
   });
 
