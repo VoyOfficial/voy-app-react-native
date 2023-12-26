@@ -48,6 +48,18 @@ describe('Presentation: Home', () => {
       seeAllBy: Origin.Places,
     });
   });
+
+  test('should show search button with success', () => {
+    const {
+      sut: { getByTestId },
+    } = makeSut();
+
+    const search = getByTestId('search_button_id');
+    const searchButton = getByTestId('search_id');
+
+    expect(search).toBeTruthy();
+    expect(searchButton).toBeTruthy();
+  });
 });
 
 const makeSut = () => {
