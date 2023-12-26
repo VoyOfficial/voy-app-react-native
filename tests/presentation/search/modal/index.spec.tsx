@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, View } from 'react-native';
-import { render } from '@testing-library/react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 
 describe('Search: Modal', () => {
   test('should show order by selected correctly', () => {
@@ -16,7 +16,7 @@ describe('Search: Modal', () => {
       },
     };
     const { getByTestId } = render(
-      <FilterModal filterOptions={filterOptions} />,
+      <FilterModal filterOptions={filterOptions} selectOrder={() => {}} />,
     );
 
     const labelOrderBy = getByTestId('label_order_by_id');
@@ -38,7 +38,7 @@ describe('Search: Modal', () => {
       },
     };
     const { getByTestId } = render(
-      <FilterModal filterOptions={filterOptions} />,
+      <FilterModal filterOptions={filterOptions} selectOrder={() => {}} />,
     );
 
     const labelFilterBy = getByTestId('label_filter_by_id');
@@ -62,7 +62,7 @@ describe('Search: Modal', () => {
       },
     };
     const { getByTestId } = render(
-      <FilterModal filterOptions={filterOptions} />,
+      <FilterModal filterOptions={filterOptions} selectOrder={() => {}} />,
     );
 
     filterOptions.orderBy.list.forEach((order) => {
@@ -95,7 +95,7 @@ describe('Search: Modal', () => {
       },
     };
     const { getByTestId } = render(
-      <FilterModal filterOptions={filterOptions} />,
+      <FilterModal filterOptions={filterOptions} selectOrder={() => {}} />,
     );
 
     filterOptions.filterBy.list.forEach((filter) => {
@@ -103,6 +103,47 @@ describe('Search: Modal', () => {
         filter.label,
       );
     });
+  });
+
+  test('should update order selected when press a new order', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [
+          { id: 0, label: 'Mais avaliados' },
+          { id: 1, label: 'Mais comentados' },
+          { id: 2, label: 'Distância' },
+        ],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [
+          { id: 0, label: 'Restaurantes' },
+          { id: 1, label: 'Cafeterias' },
+          { id: 2, label: 'Entretenimento' },
+          { id: 3, label: 'Hotéis' },
+          { id: 4, label: 'Lazer' },
+        ],
+      },
+    };
+
+    const selectOrder = (order: { id: number; label: string }) => {
+      filterOptions.orderBy.selected = order;
+    };
+    const { getByTestId } = render(
+      <FilterModal filterOptions={filterOptions} selectOrder={selectOrder} />,
+    );
+
+    expect(getByTestId('order_by_selected_id').props.children).toEqual(
+      filterOptions.orderBy.selected.label,
+    );
+
+    fireEvent.press(getByTestId('order_button_1_id'));
+
+    expect(getByTestId('order_by_selected_id').props.children).not.toEqual(
+      filterOptions.orderBy.selected.label,
+    );
   });
 });
 
@@ -118,9 +159,10 @@ type Props = {
       list: Array<{ id: number; label: string }>;
     };
   };
+  selectOrder: (order: { id: number; label: string }) => void;
 };
 
-const FilterModal = ({ filterOptions }: Props) => {
+const FilterModal = ({ filterOptions, selectOrder }: Props) => {
   return (
     <View>
       <View>
@@ -133,9 +175,13 @@ const FilterModal = ({ filterOptions }: Props) => {
       </View>
       <View>
         {filterOptions.orderBy.list.map((order) => (
-          <Text key={order.id} testID={`order_${order.id}_id`}>
-            {order.label}
-          </Text>
+          <TouchableOpacity
+            key={order.id}
+            testID={`order_button_${order.id}_id`}
+            onPress={() => selectOrder(order)}
+          >
+            <Text testID={`order_${order.id}_id`}>{order.label}</Text>
+          </TouchableOpacity>
         ))}
       </View>
       <View>
