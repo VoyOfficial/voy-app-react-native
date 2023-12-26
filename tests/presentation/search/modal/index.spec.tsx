@@ -8,6 +8,7 @@ describe('Search: Modal', () => {
       orderBy: {
         label: 'Ordenar por',
         selected: { id: 0, label: 'Mais avaliados' },
+        list: [],
       },
       filterBy: {
         label: 'Filtrar por',
@@ -28,6 +29,7 @@ describe('Search: Modal', () => {
       orderBy: {
         label: 'Ordenar por',
         selected: { id: 0, label: 'Mais avaliados' },
+        list: [],
       },
       filterBy: {
         label: 'Filtrar por',
@@ -40,6 +42,32 @@ describe('Search: Modal', () => {
     const labelFilterBy = getByTestId('label_filter_by_id');
     expect(labelFilterBy.props.children).toEqual('Filtrar por: ');
   });
+
+  test('should show order list correctly', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [
+          { id: 0, label: 'Mais avaliados' },
+          { id: 1, label: 'Mais comentados' },
+          { id: 2, label: 'Distância' },
+        ],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+      },
+    };
+    const { getByTestId } = render(
+      <FilterModal filterOptions={filterOptions} />,
+    );
+
+    filterOptions.orderBy.list.forEach((order) => {
+      expect(getByTestId(`order_${order.id}_id`).props.children).toEqual(
+        order.label,
+      );
+    });
+  });
 });
 
 type Props = {
@@ -47,6 +75,7 @@ type Props = {
     orderBy: {
       label: string;
       selected: { id: number; label: string };
+      list: Array<{ id: number; label: string }>;
     };
     filterBy: {
       label: string;
@@ -64,6 +93,13 @@ const FilterModal = ({ filterOptions }: Props) => {
         <Text testID="order_by_selected_id">
           {filterOptions.orderBy.selected.label}
         </Text>
+      </View>
+      <View>
+        {filterOptions.orderBy.list.map((order) => (
+          <Text key={order.id} testID={`order_${order.id}_id`}>
+            {order.label}
+          </Text>
+        ))}
       </View>
       <View>
         <Text testID="label_filter_by_id">
