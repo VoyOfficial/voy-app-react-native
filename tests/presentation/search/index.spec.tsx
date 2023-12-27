@@ -78,4 +78,16 @@ describe('Presentation: Search', () => {
 
     expect(search).toBeTruthy();
   });
+
+  test('should show filter button with success', () => {
+    const { getByTestId } = render(
+      <Search searchValue={''} changeSearch={() => {}} searchTo={() => {}} />,
+    );
+
+    const filter = getByTestId('filter_id');
+    const filterButton = getByTestId('filter_button_id');
+
+    expect(filter).toBeTruthy();
+    expect(filterButton).toBeTruthy();
+  });
 });
