@@ -10,6 +10,7 @@ export type StackParams = {
   [Routes.HOME]: undefined;
   [Routes.PLACE_DETAILS]: undefined;
   [Routes.PLACE_LIST]: { by: string };
+  [Routes.SEARCH]: undefined;
 };
 
 type Props = {
