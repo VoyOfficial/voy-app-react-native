@@ -68,4 +68,14 @@ describe('Presentation: Search', () => {
     expect(searchTo).toHaveBeenCalledTimes(1);
     expect(searchTo).toHaveBeenCalledWith('Cafeteria');
   });
+
+  test('should show search button with success', () => {
+    const { getByTestId } = render(
+      <Search searchValue={''} changeSearch={() => {}} searchTo={() => {}} />,
+    );
+
+    const search = getByTestId('search_id');
+
+    expect(search).toBeTruthy();
+  });
 });
