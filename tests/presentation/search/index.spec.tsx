@@ -5,7 +5,14 @@ import Search from '../../../src/presentation/search';
 describe('Presentation: Search', () => {
   test('should show input of search with success', () => {
     const { getByTestId } = render(
-      <Search searchValue="" changeSearch={() => {}} searchTo={() => {}} />,
+      <Search
+        searchValue=""
+        changeSearch={() => {}}
+        searchTo={() => {}}
+        filter={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+      />,
     );
 
     expect(getByTestId('search_input_id')).toBeTruthy();
@@ -13,7 +20,14 @@ describe('Presentation: Search', () => {
 
   test('should show input of search with correct placeholder', () => {
     const { getByTestId } = render(
-      <Search searchValue="" changeSearch={() => {}} searchTo={() => {}} />,
+      <Search
+        searchValue=""
+        changeSearch={() => {}}
+        searchTo={() => {}}
+        filter={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+      />,
     );
 
     expect(getByTestId('search_input_id').props.placeholder).toEqual(
@@ -28,6 +42,9 @@ describe('Presentation: Search', () => {
         searchValue={searchValue}
         changeSearch={() => {}}
         searchTo={() => {}}
+        filter={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -42,6 +59,9 @@ describe('Presentation: Search', () => {
         searchValue={searchValue}
         changeSearch={changeSearch}
         searchTo={() => {}}
+        filter={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -60,6 +80,9 @@ describe('Presentation: Search', () => {
         searchValue={searchValue}
         changeSearch={changeSearch}
         searchTo={searchTo}
+        filter={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -71,7 +94,14 @@ describe('Presentation: Search', () => {
 
   test('should show search button with success', () => {
     const { getByTestId } = render(
-      <Search searchValue={''} changeSearch={() => {}} searchTo={() => {}} />,
+      <Search
+        searchValue={''}
+        changeSearch={() => {}}
+        searchTo={() => {}}
+        filter={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+      />,
     );
 
     const search = getByTestId('search_id');
@@ -81,7 +111,14 @@ describe('Presentation: Search', () => {
 
   test('should show filter button with success', () => {
     const { getByTestId } = render(
-      <Search searchValue={''} changeSearch={() => {}} searchTo={() => {}} />,
+      <Search
+        searchValue={''}
+        changeSearch={() => {}}
+        searchTo={() => {}}
+        filter={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+      />,
     );
 
     const filter = getByTestId('filter_id');
@@ -89,5 +126,21 @@ describe('Presentation: Search', () => {
 
     expect(filter).toBeTruthy();
     expect(filterButton).toBeTruthy();
+  });
+
+  test('should call filter function when press filter button', () => {
+    const filter = jest.fn();
+    const { getByTestId } = render(
+      <Search
+        searchValue={''}
+        changeSearch={() => {}}
+        searchTo={() => {}}
+        filter={filter}
+      />,
+    );
+
+    fireEvent.press(getByTestId('filter_button_id'));
+
+    expect(filter).toHaveBeenCalledTimes(1);
   });
 });

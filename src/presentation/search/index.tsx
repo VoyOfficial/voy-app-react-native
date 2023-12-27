@@ -6,9 +6,10 @@ type Props = {
   searchValue: string;
   changeSearch: (value: string) => void;
   searchTo: (value: string) => void;
+  filter: () => void;
 };
 
-const Search = ({ searchValue, changeSearch, searchTo }: Props) => {
+const Search = ({ searchValue, changeSearch, searchTo, filter }: Props) => {
   return (
     <View style={{ paddingTop: 80 }}>
       <View
@@ -21,7 +22,7 @@ const Search = ({ searchValue, changeSearch, searchTo }: Props) => {
         }}
       >
         <View style={{ paddingRight: 21 }}>
-          <TouchableOpacity testID="filter_button_id">
+          <TouchableOpacity testID="filter_button_id" onPress={filter}>
             <Icon
               testID="filter_id"
               name="filter"

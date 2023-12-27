@@ -11,7 +11,12 @@ type Props = {
 
 const SearchFactory = ({}: Props) => {
   return (
-    <Search searchValue={''} changeSearch={() => {}} searchTo={() => {}} />
+    <Search
+      searchValue={''}
+      changeSearch={() => {}}
+      searchTo={() => {}}
+      filter={() => {}}
+    />
   );
 };
 
