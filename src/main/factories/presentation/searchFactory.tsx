@@ -16,6 +16,7 @@ const SearchFactory = ({}: Props) => {
       changeSearch={() => {}}
       searchTo={() => {}}
       filter={() => {}}
+      showFilterOptions={false}
     />
   );
 };

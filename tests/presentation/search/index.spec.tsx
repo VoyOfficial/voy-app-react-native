@@ -12,6 +12,7 @@ describe('Presentation: Search', () => {
         filter={function (): void {
           throw new Error('Function not implemented.');
         }}
+        showFilterOptions={false}
       />,
     );
 
@@ -27,6 +28,7 @@ describe('Presentation: Search', () => {
         filter={function (): void {
           throw new Error('Function not implemented.');
         }}
+        showFilterOptions={false}
       />,
     );
 
@@ -45,6 +47,7 @@ describe('Presentation: Search', () => {
         filter={function (): void {
           throw new Error('Function not implemented.');
         }}
+        showFilterOptions={false}
       />,
     );
 
@@ -62,6 +65,7 @@ describe('Presentation: Search', () => {
         filter={function (): void {
           throw new Error('Function not implemented.');
         }}
+        showFilterOptions={false}
       />,
     );
 
@@ -83,6 +87,7 @@ describe('Presentation: Search', () => {
         filter={function (): void {
           throw new Error('Function not implemented.');
         }}
+        showFilterOptions={false}
       />,
     );
 
@@ -101,6 +106,7 @@ describe('Presentation: Search', () => {
         filter={function (): void {
           throw new Error('Function not implemented.');
         }}
+        showFilterOptions={false}
       />,
     );
 
@@ -118,6 +124,7 @@ describe('Presentation: Search', () => {
         filter={function (): void {
           throw new Error('Function not implemented.');
         }}
+        showFilterOptions={false}
       />,
     );
 
@@ -136,11 +143,44 @@ describe('Presentation: Search', () => {
         changeSearch={() => {}}
         searchTo={() => {}}
         filter={filter}
+        showFilterOptions={false}
       />,
     );
 
     fireEvent.press(getByTestId('filter_button_id'));
 
     expect(filter).toHaveBeenCalledTimes(1);
+  });
+
+  test('should call filter function when press filter button', () => {
+    const filter = jest.fn();
+    const { getByTestId } = render(
+      <Search
+        searchValue={''}
+        changeSearch={() => {}}
+        searchTo={() => {}}
+        filter={filter}
+        showFilterOptions={false}
+      />,
+    );
+
+    fireEvent.press(getByTestId('filter_button_id'));
+
+    expect(filter).toHaveBeenCalledTimes(1);
+  });
+
+  test('should show filter modal when showFilterOptions is true', () => {
+    const showFilterOptions = true;
+    const { getByTestId } = render(
+      <Search
+        searchValue={''}
+        changeSearch={() => {}}
+        searchTo={() => {}}
+        filter={() => {}}
+        showFilterOptions={showFilterOptions}
+      />,
+    );
+
+    expect(getByTestId('filter_modal_id')).toBeTruthy();
   });
 });

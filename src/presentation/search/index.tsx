@@ -1,15 +1,23 @@
 import React from 'react';
 import { TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from '../assets/fonts/Voy';
+import FilterModal from './modal';
 
 type Props = {
   searchValue: string;
   changeSearch: (value: string) => void;
   searchTo: (value: string) => void;
   filter: () => void;
+  showFilterOptions: boolean;
 };
 
-const Search = ({ searchValue, changeSearch, searchTo, filter }: Props) => {
+const Search = ({
+  searchValue,
+  showFilterOptions,
+  changeSearch,
+  searchTo,
+  filter,
+}: Props) => {
   return (
     <View style={{ paddingTop: 80 }}>
       <View
@@ -65,6 +73,16 @@ const Search = ({ searchValue, changeSearch, searchTo, filter }: Props) => {
           </View>
         </View>
       </View>
+      {showFilterOptions && (
+        <FilterModal
+          filterOptions={{
+            filterBy: { label: '', list: [] },
+            orderBy: { label: '', list: [], selected: { id: 0, label: '' } },
+          }}
+          selectFilter={() => {}}
+          selectOrder={() => {}}
+        />
+      )}
     </View>
   );
 };
