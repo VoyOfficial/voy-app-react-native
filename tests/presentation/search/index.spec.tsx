@@ -1,6 +1,6 @@
 import React from 'react';
-import { TextInput, View } from 'react-native';
 import { fireEvent, render } from '@testing-library/react-native';
+import Search from '../../../src/presentation/search';
 
 describe('Presentation: Search', () => {
   test('should show input of search with success', () => {
@@ -69,23 +69,3 @@ describe('Presentation: Search', () => {
     expect(searchTo).toHaveBeenCalledWith('Cafeteria');
   });
 });
-
-type Props = {
-  searchValue: string;
-  changeSearch: (value: string) => void;
-  searchTo: (value: string) => void;
-};
-
-const Search = ({ searchValue, changeSearch, searchTo }: Props) => {
-  return (
-    <View>
-      <TextInput
-        testID="search_input_id"
-        placeholder="Pesquisar lugares..."
-        value={searchValue}
-        onChangeText={changeSearch}
-        onSubmitEditing={() => searchTo(searchValue)}
-      />
-    </View>
-  );
-};
