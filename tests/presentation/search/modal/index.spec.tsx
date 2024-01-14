@@ -20,6 +20,7 @@ describe('Search: Modal', () => {
         filterOptions={filterOptions}
         selectOrder={() => {}}
         selectFilter={() => {}}
+        showOrderList={false}
       />,
     );
 
@@ -46,10 +47,35 @@ describe('Search: Modal', () => {
         filterOptions={filterOptions}
         selectOrder={() => {}}
         selectFilter={() => {}}
+        showOrderList={false}
       />,
     );
 
     expect(getByTestId('order_down_arrow_icon_id')).toBeTruthy();
+  });
+
+  test('should not show down arrow icon if showOrderList is true', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [],
+      },
+    };
+    const { queryByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+        showOrderList={true}
+      />,
+    );
+
+    expect(queryByTestId('order_down_arrow_icon_id')).not.toBeTruthy();
   });
 
   test('should show up arrow icon to hide order options', () => {
@@ -69,10 +95,35 @@ describe('Search: Modal', () => {
         filterOptions={filterOptions}
         selectOrder={() => {}}
         selectFilter={() => {}}
+        showOrderList={true}
       />,
     );
 
     expect(getByTestId('order_up_arrow_icon_id')).toBeTruthy();
+  });
+
+  test('should not show up arrow icon if showOrderList is false', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [],
+      },
+    };
+    const { queryByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+        showOrderList={false}
+      />,
+    );
+
+    expect(queryByTestId('order_up_arrow_icon_id')).not.toBeTruthy();
   });
 
   test('should show the filter label by correctly', () => {
@@ -92,6 +143,7 @@ describe('Search: Modal', () => {
         filterOptions={filterOptions}
         selectOrder={() => {}}
         selectFilter={() => {}}
+        showOrderList={false}
       />,
     );
 
@@ -120,6 +172,7 @@ describe('Search: Modal', () => {
         filterOptions={filterOptions}
         selectOrder={() => {}}
         selectFilter={() => {}}
+        showOrderList={true}
       />,
     );
 
@@ -128,6 +181,34 @@ describe('Search: Modal', () => {
         order.label,
       );
     });
+  });
+
+  test('should not show order list if showOrderList is false', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [
+          { id: 0, label: 'Mais avaliados' },
+          { id: 1, label: 'Mais comentados' },
+          { id: 2, label: 'Distância' },
+        ],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [],
+      },
+    };
+    const { queryByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+        showOrderList={false}
+      />,
+    );
+
+    expect(queryByTestId('order_options_id')).not.toBeTruthy();
   });
 
   test('should show filter list correctly', () => {
@@ -157,6 +238,7 @@ describe('Search: Modal', () => {
         filterOptions={filterOptions}
         selectOrder={() => {}}
         selectFilter={() => {}}
+        showOrderList={false}
       />,
     );
 
@@ -198,6 +280,7 @@ describe('Search: Modal', () => {
         filterOptions={filterOptions}
         selectOrder={selectOrder}
         selectFilter={() => {}}
+        showOrderList={true}
       />,
     );
 
@@ -251,6 +334,7 @@ describe('Search: Modal', () => {
         filterOptions={filterOptions}
         selectOrder={() => {}}
         selectFilter={selectFilter}
+        showOrderList={false}
       />,
     );
 

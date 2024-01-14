@@ -20,6 +20,7 @@ type Props = {
     label: string;
     selected?: boolean;
   }) => void;
+  showOrderList: boolean;
 };
 
 const Options = ({
@@ -56,7 +57,12 @@ const Options = ({
     </TouchableOpacity>
   ));
 
-const FilterModal = ({ filterOptions, selectOrder, selectFilter }: Props) => {
+const FilterModal = ({
+  filterOptions,
+  selectOrder,
+  selectFilter,
+  showOrderList,
+}: Props) => {
   return (
     <View
       style={{ backgroundColor: '#FFFFFF', borderRadius: 10 }}
@@ -95,16 +101,23 @@ const FilterModal = ({ filterOptions, selectOrder, selectFilter }: Props) => {
             {filterOptions.orderBy.selected.label}
           </Text>
         </View>
-        <Icon testID="order_down_arrow_icon_id" name="arrow_down" size={24} />
-        <Icon testID="order_up_arrow_icon_id" name="arrow_down" size={24} />
+        {!showOrderList && (
+          <Icon testID="order_down_arrow_icon_id" name="arrow_down" size={24} />
+        )}
+        {showOrderList && (
+          <Icon testID="order_up_arrow_icon_id" name="arrow_up" size={24} />
+        )}
       </View>
-      <View>
-        <Options
-          list={filterOptions.orderBy.list}
-          select={selectOrder}
-          type="order"
-        />
-      </View>
+      {showOrderList && (
+        <View testID="order_options_id">
+          <Options
+            list={filterOptions.orderBy.list}
+            select={selectOrder}
+            type="order"
+          />
+        </View>
+      )}
+
       <View
         style={{
           paddingVertical: 19,
