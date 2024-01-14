@@ -29,6 +29,52 @@ describe('Search: Modal', () => {
     expect(orderBySelected.props.children).toEqual('Mais avaliados');
   });
 
+  test('should show down arrow icon to show order options', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [],
+      },
+    };
+    const { getByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+      />,
+    );
+
+    expect(getByTestId('order_down_arrow_icon_id')).toBeTruthy();
+  });
+
+  test('should show up arrow icon to hide order options', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [],
+      },
+    };
+    const { getByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+      />,
+    );
+
+    expect(getByTestId('order_up_arrow_icon_id')).toBeTruthy();
+  });
+
   test('should show the filter label by correctly', () => {
     const filterOptions = {
       orderBy: {
@@ -192,7 +238,7 @@ describe('Search: Modal', () => {
     const selectFilter = (filterSelected: {
       id: number;
       label: string;
-      selected: boolean;
+      selected?: boolean;
     }) => {
       filterOptions.filterBy.list.forEach((filter) => {
         if (filter.id === filterSelected.id) {

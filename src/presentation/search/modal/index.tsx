@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import Icon from '../../assets/fonts/Voy';
 
 type Props = {
   filterOptions: {
@@ -68,28 +69,34 @@ const FilterModal = ({ filterOptions, selectOrder, selectFilter }: Props) => {
           borderBottomWidth: 1,
           borderColor: '#E6E6E6',
           paddingLeft: 22,
+          paddingRight: 16,
+          justifyContent: 'space-between',
         }}
       >
-        <Text
-          testID="label_order_by_id"
-          style={{
-            color: '#212121',
-            fontSize: 15,
-            fontFamily: 'LexendDeca-Regular',
-          }}
-        >
-          {filterOptions.orderBy.label + ': '}
-        </Text>
-        <Text
-          testID="order_by_selected_id"
-          style={{
-            color: '#5452F6',
-            fontSize: 15,
-            fontFamily: 'LexendDeca-Regular',
-          }}
-        >
-          {filterOptions.orderBy.selected.label}
-        </Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text
+            testID="label_order_by_id"
+            style={{
+              color: '#212121',
+              fontSize: 15,
+              fontFamily: 'LexendDeca-Regular',
+            }}
+          >
+            {filterOptions.orderBy.label + ': '}
+          </Text>
+          <Text
+            testID="order_by_selected_id"
+            style={{
+              color: '#5452F6',
+              fontSize: 15,
+              fontFamily: 'LexendDeca-Regular',
+            }}
+          >
+            {filterOptions.orderBy.selected.label}
+          </Text>
+        </View>
+        <Icon testID="order_down_arrow_icon_id" name="arrow_down" size={24} />
+        <Icon testID="order_up_arrow_icon_id" name="arrow_down" size={24} />
       </View>
       <View>
         <Options
