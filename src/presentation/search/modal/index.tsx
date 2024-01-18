@@ -79,6 +79,7 @@ const FilterModal = ({
           paddingLeft: 22,
           paddingRight: 16,
           justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <View style={{ flexDirection: 'row' }}>
@@ -126,6 +127,10 @@ const FilterModal = ({
           borderBottomWidth: 1,
           borderColor: '#E6E6E6',
           paddingLeft: 22,
+          paddingRight: 16,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <Text
