@@ -23,6 +23,7 @@ type Props = {
   showOrderList: boolean;
   showFilterList: boolean;
   changeShowOfOrderList: () => void;
+  changeShowOfFilterList: () => void;
 };
 
 const Options = ({
@@ -64,6 +65,7 @@ const FilterModal = ({
   selectOrder,
   selectFilter,
   changeShowOfOrderList,
+  changeShowOfFilterList,
   showOrderList,
   showFilterList,
 }: Props) => {
@@ -124,8 +126,8 @@ const FilterModal = ({
           />
         </View>
       )}
-
-      <View
+      <TouchableOpacity
+        testID="filter_by_button_id"
         style={{
           paddingVertical: 19,
           borderBottomWidth: 1,
@@ -136,6 +138,7 @@ const FilterModal = ({
           justifyContent: 'space-between',
           alignItems: 'center',
         }}
+        onPress={changeShowOfFilterList}
       >
         <Text
           testID="label_filter_by_id"
@@ -157,7 +160,7 @@ const FilterModal = ({
             size={24}
           />
         )}
-      </View>
+      </TouchableOpacity>
       {showFilterList && (
         <View testID="filter_options_id">
           <Options
