@@ -141,7 +141,13 @@ const FilterModal = ({
         {showFilterList && (
           <Icon testID="filter_up_arrow_icon_id" name="arrow_up" size={24} />
         )}
-        <Icon testID="filter_down_arrow_icon_id" name="arrow_down" size={24} />
+        {!showFilterList && (
+          <Icon
+            testID="filter_down_arrow_icon_id"
+            name="arrow_down"
+            size={24}
+          />
+        )}
       </View>
       <View>
         <Options
