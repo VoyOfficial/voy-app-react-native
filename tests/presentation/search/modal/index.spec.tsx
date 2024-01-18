@@ -102,6 +102,54 @@ describe('Search: Modal', () => {
     expect(getByTestId('order_up_arrow_icon_id')).toBeTruthy();
   });
 
+  test('should show up arrow icon to hide filter options', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [],
+      },
+    };
+    const { getByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+        showOrderList={true}
+      />,
+    );
+
+    expect(getByTestId('filter_up_arrow_icon_id')).toBeTruthy();
+  });
+
+  test('should show down arrow icon to show filter options', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [],
+      },
+    };
+    const { getByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+        showOrderList={true}
+      />,
+    );
+
+    expect(getByTestId('filter_down_arrow_icon_id')).toBeTruthy();
+  });
+
   test('should not show up arrow icon if showOrderList is false', () => {
     const filterOptions = {
       orderBy: {
