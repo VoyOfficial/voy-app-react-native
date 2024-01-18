@@ -154,13 +154,15 @@ const FilterModal = ({
           />
         )}
       </View>
-      <View>
-        <Options
-          list={filterOptions.filterBy.list}
-          select={selectFilter}
-          type="filter"
-        />
-      </View>
+      {showFilterList && (
+        <View testID="filter_options_id">
+          <Options
+            list={filterOptions.filterBy.list}
+            select={selectFilter}
+            type="filter"
+          />
+        </View>
+      )}
     </View>
   );
 };

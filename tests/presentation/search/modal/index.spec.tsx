@@ -319,6 +319,41 @@ describe('Search: Modal', () => {
     expect(queryByTestId('order_options_id')).not.toBeTruthy();
   });
 
+  test('should not show filter list if showFilterList is false', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [
+          { id: 0, label: 'Mais avaliados' },
+          { id: 1, label: 'Mais comentados' },
+          { id: 2, label: 'Distância' },
+        ],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [
+          { id: 0, label: 'Restaurantes', selected: false },
+          { id: 1, label: 'Cafeterias', selected: false },
+          { id: 2, label: 'Entretenimento', selected: false },
+          { id: 3, label: 'Hotéis', selected: false },
+          { id: 4, label: 'Lazer', selected: false },
+        ],
+      },
+    };
+    const { queryByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+        showOrderList={false}
+        showFilterList={false}
+      />,
+    );
+
+    expect(queryByTestId('filter_options_id')).not.toBeTruthy();
+  });
+
   test('should show filter list correctly', () => {
     const filterOptions = {
       orderBy: {
@@ -347,7 +382,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={() => {}}
         showOrderList={false}
-        showFilterList={false}
+        showFilterList={true}
       />,
     );
 
@@ -445,7 +480,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={selectFilter}
         showOrderList={false}
-        showFilterList={false}
+        showFilterList={true}
       />,
     );
 
