@@ -21,6 +21,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={() => {}}
         showOrderList={false}
+        showFilterList={false}
       />,
     );
 
@@ -48,6 +49,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={() => {}}
         showOrderList={false}
+        showFilterList={false}
       />,
     );
 
@@ -72,6 +74,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={() => {}}
         showOrderList={true}
+        showFilterList={false}
       />,
     );
 
@@ -96,6 +99,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={() => {}}
         showOrderList={true}
+        showFilterList={false}
       />,
     );
 
@@ -120,10 +124,36 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={() => {}}
         showOrderList={true}
+        showFilterList={true}
       />,
     );
 
     expect(getByTestId('filter_up_arrow_icon_id')).toBeTruthy();
+  });
+
+  test('should not show up arrow icon if showFilterList is false', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [],
+      },
+    };
+    const { queryByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+        showOrderList={true}
+        showFilterList={false}
+      />,
+    );
+
+    expect(queryByTestId('filter_up_arrow_icon_id')).not.toBeTruthy();
   });
 
   test('should show down arrow icon to show filter options', () => {
@@ -144,6 +174,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={() => {}}
         showOrderList={true}
+        showFilterList={false}
       />,
     );
 
@@ -168,6 +199,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={() => {}}
         showOrderList={false}
+        showFilterList={false}
       />,
     );
 
@@ -192,6 +224,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={() => {}}
         showOrderList={false}
+        showFilterList={false}
       />,
     );
 
@@ -221,6 +254,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={() => {}}
         showOrderList={true}
+        showFilterList={false}
       />,
     );
 
@@ -253,6 +287,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={() => {}}
         showOrderList={false}
+        showFilterList={false}
       />,
     );
 
@@ -287,6 +322,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={() => {}}
         showOrderList={false}
+        showFilterList={false}
       />,
     );
 
@@ -329,6 +365,7 @@ describe('Search: Modal', () => {
         selectOrder={selectOrder}
         selectFilter={() => {}}
         showOrderList={true}
+        showFilterList={false}
       />,
     );
 
@@ -383,6 +420,7 @@ describe('Search: Modal', () => {
         selectOrder={() => {}}
         selectFilter={selectFilter}
         showOrderList={false}
+        showFilterList={false}
       />,
     );
 

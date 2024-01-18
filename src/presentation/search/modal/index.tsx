@@ -21,6 +21,7 @@ type Props = {
     selected?: boolean;
   }) => void;
   showOrderList: boolean;
+  showFilterList: boolean;
 };
 
 const Options = ({
@@ -62,6 +63,7 @@ const FilterModal = ({
   selectOrder,
   selectFilter,
   showOrderList,
+  showFilterList,
 }: Props) => {
   return (
     <View
@@ -136,7 +138,9 @@ const FilterModal = ({
         >
           {filterOptions.filterBy.label + ': '}
         </Text>
-        <Icon testID="filter_up_arrow_icon_id" name="arrow_up" size={24} />
+        {showFilterList && (
+          <Icon testID="filter_up_arrow_icon_id" name="arrow_up" size={24} />
+        )}
         <Icon testID="filter_down_arrow_icon_id" name="arrow_down" size={24} />
       </View>
       <View>
