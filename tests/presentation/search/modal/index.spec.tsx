@@ -22,6 +22,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={false}
         showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -29,6 +32,36 @@ describe('Search: Modal', () => {
     const orderBySelected = getByTestId('order_by_selected_id');
     expect(labelOrderBy.props.children).toEqual('Ordenar por: ');
     expect(orderBySelected.props.children).toEqual('Mais avaliados');
+  });
+
+  test('should call changeShowOfOrderList function when press "order by" button', () => {
+    const changeShowOfOrderList = jest.fn();
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [],
+      },
+    };
+    const { getByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+        showOrderList={false}
+        showFilterList={false}
+        changeShowOfOrderList={changeShowOfOrderList}
+      />,
+    );
+
+    fireEvent.press(getByTestId('order_by_button_id'));
+
+    expect(changeShowOfOrderList).toHaveBeenCalledTimes(1);
+    expect(changeShowOfOrderList).toHaveBeenCalledWith();
   });
 
   test('should show down arrow icon to show order options', () => {
@@ -50,6 +83,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={false}
         showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -75,6 +111,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={true}
         showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -100,6 +139,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={true}
         showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -125,6 +167,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={true}
         showFilterList={true}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -150,6 +195,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={true}
         showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -175,6 +223,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={true}
         showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -200,6 +251,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={true}
         showFilterList={true}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -225,6 +279,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={false}
         showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -250,6 +307,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={false}
         showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -280,6 +340,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={true}
         showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -313,6 +376,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={false}
         showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -348,6 +414,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={false}
         showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -383,6 +452,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={false}
         showFilterList={true}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -426,6 +498,9 @@ describe('Search: Modal', () => {
         selectFilter={() => {}}
         showOrderList={true}
         showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
@@ -481,6 +556,9 @@ describe('Search: Modal', () => {
         selectFilter={selectFilter}
         showOrderList={false}
         showFilterList={true}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
       />,
     );
 
