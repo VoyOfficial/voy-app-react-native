@@ -2,6 +2,31 @@ import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import Icon from '../../assets/fonts/Voy';
 
+const toListWithSelected = (orderBy: {
+  label: string;
+  selected: { id: number; label: string };
+  list: Array<{ id: number; label: string }>;
+}) => {
+  const listWithSelected: Array<{
+    id: number;
+    label: string;
+    selected?: boolean;
+  }> = [];
+  orderBy.list.forEach((order) => {
+    listWithSelected.push({
+      id: order.id,
+      label: order.label,
+      selected:
+        orderBy.selected.id === order.id &&
+        orderBy.selected.label === order.label
+          ? true
+          : false,
+    });
+  });
+
+  return listWithSelected;
+};
+
 type Props = {
   filterOptions: {
     orderBy: {
@@ -68,7 +93,8 @@ const Options = ({
           height: 12,
           borderWidth: 1,
           borderRadius: 6,
-          borderColor: '#C5CACC',
+          borderColor: option.selected ? '#5742E0' : '#C5CACC',
+          backgroundColor: option.selected ? '#5742E0' : '#FFFFFF',
         }}
       />
     </TouchableOpacity>
@@ -134,7 +160,7 @@ const FilterModal = ({
       {showOrderList && (
         <View testID="order_options_id">
           <Options
-            list={filterOptions.orderBy.list}
+            list={toListWithSelected(filterOptions.orderBy)}
             select={selectOrder}
             type="order"
           />

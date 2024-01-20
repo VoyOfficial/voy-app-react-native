@@ -457,6 +457,53 @@ describe('Search: Modal', () => {
     });
   });
 
+  test('should update style of order option selection icon', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 1, label: 'Mais comentados' },
+        list: [
+          { id: 0, label: 'Mais avaliados' },
+          { id: 1, label: 'Mais comentados' },
+          { id: 2, label: 'Distância' },
+        ],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [],
+      },
+    };
+    const { getByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+        showOrderList={true}
+        showFilterList={false}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        changeShowOfFilterList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+      />,
+    );
+
+    expect(
+      getByTestId(`order_selection_icon_${0}_id`).props.style.borderColor,
+    ).toEqual('#C5CACC');
+    expect(
+      getByTestId(`order_selection_icon_${0}_id`).props.style.backgroundColor,
+    ).toEqual('#FFFFFF');
+
+    expect(
+      getByTestId(`order_selection_icon_${1}_id`).props.style.borderColor,
+    ).toEqual('#5742E0');
+    expect(
+      getByTestId(`order_selection_icon_${1}_id`).props.style.backgroundColor,
+    ).toEqual('#5742E0');
+  });
+
   test('should show the filter option selection icon', () => {
     const filterOptions = {
       orderBy: {
@@ -498,6 +545,65 @@ describe('Search: Modal', () => {
     filterOptions.filterBy.list.forEach((filter) => {
       expect(getByTestId(`filter_selection_icon_${filter.id}_id`)).toBeTruthy();
     });
+  });
+
+  test('should update style of filter option selection icon', () => {
+    const filterOptions = {
+      orderBy: {
+        label: 'Ordenar por',
+        selected: { id: 0, label: 'Mais avaliados' },
+        list: [
+          { id: 0, label: 'Mais avaliados' },
+          { id: 1, label: 'Mais comentados' },
+          { id: 2, label: 'Distância' },
+        ],
+      },
+      filterBy: {
+        label: 'Filtrar por',
+        list: [
+          { id: 0, label: 'Restaurantes', selected: false },
+          { id: 1, label: 'Cafeterias', selected: true },
+          { id: 2, label: 'Entretenimento', selected: true },
+          { id: 3, label: 'Hotéis', selected: false },
+          { id: 4, label: 'Lazer', selected: false },
+        ],
+      },
+    };
+    const { getByTestId } = render(
+      <FilterModal
+        filterOptions={filterOptions}
+        selectOrder={() => {}}
+        selectFilter={() => {}}
+        showOrderList={false}
+        showFilterList={true}
+        changeShowOfOrderList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+        changeShowOfFilterList={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+      />,
+    );
+
+    expect(
+      getByTestId(`filter_selection_icon_${0}_id`).props.style.borderColor,
+    ).toEqual('#C5CACC');
+    expect(
+      getByTestId(`filter_selection_icon_${0}_id`).props.style.backgroundColor,
+    ).toEqual('#FFFFFF');
+
+    expect(
+      getByTestId(`filter_selection_icon_${1}_id`).props.style.borderColor,
+    ).toEqual('#5742E0');
+    expect(
+      getByTestId(`filter_selection_icon_${1}_id`).props.style.backgroundColor,
+    ).toEqual('#5742E0');
+    expect(
+      getByTestId(`filter_selection_icon_${2}_id`).props.style.borderColor,
+    ).toEqual('#5742E0');
+    expect(
+      getByTestId(`filter_selection_icon_${2}_id`).props.style.backgroundColor,
+    ).toEqual('#5742E0');
   });
 
   test('should not show order list if showOrderList is false', () => {
