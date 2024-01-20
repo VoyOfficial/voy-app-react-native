@@ -4,33 +4,17 @@ import Search from '../../../src/presentation/search';
 
 describe('Presentation: Search', () => {
   test('should show input of search with success', () => {
-    const { getByTestId } = render(
-      <Search
-        searchValue=""
-        changeSearch={() => {}}
-        searchTo={() => {}}
-        filter={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        showFilterOptions={false}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut(true);
 
     expect(getByTestId('search_input_id')).toBeTruthy();
   });
 
   test('should show input of search with correct placeholder', () => {
-    const { getByTestId } = render(
-      <Search
-        searchValue=""
-        changeSearch={() => {}}
-        searchTo={() => {}}
-        filter={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        showFilterOptions={false}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut(true);
 
     expect(getByTestId('search_input_id').props.placeholder).toEqual(
       'Pesquisar lugares...',
@@ -39,17 +23,9 @@ describe('Presentation: Search', () => {
 
   test('should show the search input value successfully', () => {
     const searchValue = 'Cafeteria';
-    const { getByTestId } = render(
-      <Search
-        searchValue={searchValue}
-        changeSearch={() => {}}
-        searchTo={() => {}}
-        filter={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        showFilterOptions={false}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut(true, () => {}, searchValue);
 
     expect(getByTestId('search_input_id').props.value).toEqual('Cafeteria');
   });
@@ -57,17 +33,9 @@ describe('Presentation: Search', () => {
   test('should change search input value with success', () => {
     const searchValue = 'Cafeteria';
     const changeSearch = jest.fn();
-    const { getByTestId } = render(
-      <Search
-        searchValue={searchValue}
-        changeSearch={changeSearch}
-        searchTo={() => {}}
-        filter={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        showFilterOptions={false}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut(true, () => {}, searchValue, changeSearch);
 
     fireEvent.changeText(getByTestId('search_input_id'), 'Restaurante');
 
@@ -79,17 +47,9 @@ describe('Presentation: Search', () => {
     const searchValue = 'Cafeteria';
     const changeSearch = jest.fn();
     const searchTo = jest.fn();
-    const { getByTestId } = render(
-      <Search
-        searchValue={searchValue}
-        changeSearch={changeSearch}
-        searchTo={searchTo}
-        filter={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        showFilterOptions={false}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut(true, () => {}, searchValue, changeSearch, searchTo);
 
     fireEvent(getByTestId('search_input_id'), 'onSubmitEditing');
 
@@ -98,17 +58,9 @@ describe('Presentation: Search', () => {
   });
 
   test('should show search button with success', () => {
-    const { getByTestId } = render(
-      <Search
-        searchValue={''}
-        changeSearch={() => {}}
-        searchTo={() => {}}
-        filter={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        showFilterOptions={false}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut(true);
 
     const search = getByTestId('search_id');
 
@@ -116,17 +68,9 @@ describe('Presentation: Search', () => {
   });
 
   test('should show filter button with success', () => {
-    const { getByTestId } = render(
-      <Search
-        searchValue={''}
-        changeSearch={() => {}}
-        searchTo={() => {}}
-        filter={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        showFilterOptions={false}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut(true);
 
     const filter = getByTestId('filter_id');
     const filterButton = getByTestId('filter_button_id');
@@ -137,32 +81,9 @@ describe('Presentation: Search', () => {
 
   test('should call filter function when press filter button', () => {
     const filter = jest.fn();
-    const { getByTestId } = render(
-      <Search
-        searchValue={''}
-        changeSearch={() => {}}
-        searchTo={() => {}}
-        filter={filter}
-        showFilterOptions={false}
-      />,
-    );
-
-    fireEvent.press(getByTestId('filter_button_id'));
-
-    expect(filter).toHaveBeenCalledTimes(1);
-  });
-
-  test('should call filter function when press filter button', () => {
-    const filter = jest.fn();
-    const { getByTestId } = render(
-      <Search
-        searchValue={''}
-        changeSearch={() => {}}
-        searchTo={() => {}}
-        filter={filter}
-        showFilterOptions={false}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut(true, filter);
 
     fireEvent.press(getByTestId('filter_button_id'));
 
@@ -171,16 +92,30 @@ describe('Presentation: Search', () => {
 
   test('should show filter modal when showFilterOptions is true', () => {
     const showFilterOptions = true;
-    const { getByTestId } = render(
-      <Search
-        searchValue={''}
-        changeSearch={() => {}}
-        searchTo={() => {}}
-        filter={() => {}}
-        showFilterOptions={showFilterOptions}
-      />,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut(showFilterOptions);
 
     expect(getByTestId('filter_modal_id')).toBeTruthy();
   });
 });
+
+const makeSut = (
+  showFilterOptions = false,
+  filter = () => {},
+  searchValue = '',
+  changeSearch = () => {},
+  searchTo = () => {},
+) => {
+  const sut = render(
+    <Search
+      searchValue={searchValue}
+      changeSearch={changeSearch}
+      searchTo={searchTo}
+      filter={filter}
+      showFilterOptions={showFilterOptions}
+    />,
+  );
+
+  return { sut };
+};
