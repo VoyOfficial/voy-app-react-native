@@ -69,11 +69,11 @@ const Options = ({
         paddingVertical: 14,
         borderBottomWidth: 1,
         borderColor: '#E6E6E6',
-        paddingLeft: 42,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingRight: 23,
+        marginLeft: 42,
+        marginRight: 23,
       }}
     >
       <Text
