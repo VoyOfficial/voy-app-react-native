@@ -2,34 +2,44 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import FilterModal from '../../../../src/presentation/search/modal';
 
+const filterOptionsFactory = () => {
+  return {
+    orderBy: {
+      label: 'Ordenar por',
+      selected: { id: 0, label: 'Mais avaliados' },
+      list: [
+        { id: 0, label: 'Mais avaliados' },
+        { id: 1, label: 'Mais comentados' },
+        { id: 2, label: 'Distância' },
+      ],
+    },
+    filterBy: {
+      label: 'Filtrar por',
+      list: [
+        { id: 0, label: 'Restaurantes', selected: false },
+        { id: 1, label: 'Cafeterias', selected: false },
+        { id: 2, label: 'Entretenimento', selected: false },
+        { id: 3, label: 'Hotéis', selected: false },
+        { id: 4, label: 'Lazer', selected: false },
+      ],
+    },
+  };
+};
+
 describe('Search: Modal', () => {
   test('should show order by selected correctly', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={false}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     const labelOrderBy = getByTestId('label_order_by_id');
     const orderBySelected = getByTestId('order_by_selected_id');
@@ -39,30 +49,18 @@ describe('Search: Modal', () => {
 
   test('should call changeShowOfOrderList function when press "order by" button', () => {
     const changeShowOfOrderList = jest.fn();
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={false}
-        showFilterList={false}
-        changeShowOfOrderList={changeShowOfOrderList}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList,
+    });
 
     fireEvent.press(getByTestId('order_by_button_id'));
 
@@ -71,280 +69,154 @@ describe('Search: Modal', () => {
   });
 
   test('should show down arrow icon to show order options', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={false}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(getByTestId('order_down_arrow_icon_id')).toBeTruthy();
   });
 
   test('should not show down arrow icon if showOrderList is true', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { queryByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={true}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { queryByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: false,
+      showOrderList: true,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(queryByTestId('order_down_arrow_icon_id')).not.toBeTruthy();
   });
 
   test('should show up arrow icon to hide order options', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={true}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: false,
+      showOrderList: true,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(getByTestId('order_up_arrow_icon_id')).toBeTruthy();
   });
 
   test('should show up arrow icon to hide filter options', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={true}
-        showFilterList={true}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(getByTestId('filter_up_arrow_icon_id')).toBeTruthy();
   });
 
   test('should not show up arrow icon if showFilterList is false', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { queryByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={true}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { queryByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: false,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(queryByTestId('filter_up_arrow_icon_id')).not.toBeTruthy();
   });
 
   test('should show down arrow icon to show filter options', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={true}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: false,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(getByTestId('filter_down_arrow_icon_id')).toBeTruthy();
   });
 
   test('should not show down arrow icon if showFilterList is true', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { queryByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={true}
-        showFilterList={true}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { queryByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(queryByTestId('filter_down_arrow_icon_id')).not.toBeTruthy();
   });
 
   test('should not show up arrow icon if showOrderList is false', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { queryByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={false}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { queryByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(queryByTestId('order_up_arrow_icon_id')).not.toBeTruthy();
   });
 
   test('should show the filter label by correctly', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={false}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     const labelFilterBy = getByTestId('label_filter_by_id');
     expect(labelFilterBy.props.children).toEqual('Filtrar por: ');
@@ -352,28 +224,18 @@ describe('Search: Modal', () => {
 
   test('should call changeShowOfFilterList function when press "filter by" button', () => {
     const changeShowOfFilterList = jest.fn();
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={false}
-        showFilterList={false}
-        changeShowOfFilterList={changeShowOfFilterList}
-        changeShowOfOrderList={() => {}}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: false,
+      changeShowOfFilterList,
+      changeShowOfOrderList: () => {},
+    });
 
     fireEvent.press(getByTestId('filter_by_button_id'));
 
@@ -382,36 +244,18 @@ describe('Search: Modal', () => {
   });
 
   test('should show order list correctly', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [
-          { id: 0, label: 'Mais avaliados' },
-          { id: 1, label: 'Mais comentados' },
-          { id: 2, label: 'Distância' },
-        ],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={true}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: false,
+      showOrderList: true,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     filterOptions.orderBy.list.forEach((order) => {
       expect(getByTestId(`order_${order.id}_id`).props.children).toEqual(
@@ -421,36 +265,18 @@ describe('Search: Modal', () => {
   });
 
   test('should show the order option selection icon', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [
-          { id: 0, label: 'Mais avaliados' },
-          { id: 1, label: 'Mais comentados' },
-          { id: 2, label: 'Distância' },
-        ],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={true}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: false,
+      showOrderList: true,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     filterOptions.orderBy.list.forEach((order) => {
       expect(getByTestId(`order_selection_icon_${order.id}_id`)).toBeTruthy();
@@ -473,21 +299,18 @@ describe('Search: Modal', () => {
         list: [],
       },
     };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={true}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: false,
+      showOrderList: true,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(
       getByTestId(`order_selection_icon_${0}_id`).props.style.borderColor,
@@ -505,42 +328,18 @@ describe('Search: Modal', () => {
   });
 
   test('should show the filter option selection icon', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [
-          { id: 0, label: 'Mais avaliados' },
-          { id: 1, label: 'Mais comentados' },
-          { id: 2, label: 'Distância' },
-        ],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [
-          { id: 0, label: 'Restaurantes', selected: false },
-          { id: 1, label: 'Cafeterias', selected: false },
-          { id: 2, label: 'Entretenimento', selected: false },
-          { id: 3, label: 'Hotéis', selected: false },
-          { id: 4, label: 'Lazer', selected: false },
-        ],
-      },
-    };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={false}
-        showFilterList={true}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     filterOptions.filterBy.list.forEach((filter) => {
       expect(getByTestId(`filter_selection_icon_${filter.id}_id`)).toBeTruthy();
@@ -569,21 +368,18 @@ describe('Search: Modal', () => {
         ],
       },
     };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={false}
-        showFilterList={true}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(
       getByTestId(`filter_selection_icon_${0}_id`).props.style.borderColor,
@@ -607,118 +403,52 @@ describe('Search: Modal', () => {
   });
 
   test('should not show order list if showOrderList is false', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [
-          { id: 0, label: 'Mais avaliados' },
-          { id: 1, label: 'Mais comentados' },
-          { id: 2, label: 'Distância' },
-        ],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [],
-      },
-    };
-    const { queryByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={false}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { queryByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: false,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(queryByTestId('order_options_id')).not.toBeTruthy();
   });
 
   test('should not show filter list if showFilterList is false', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [
-          { id: 0, label: 'Mais avaliados' },
-          { id: 1, label: 'Mais comentados' },
-          { id: 2, label: 'Distância' },
-        ],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [
-          { id: 0, label: 'Restaurantes', selected: false },
-          { id: 1, label: 'Cafeterias', selected: false },
-          { id: 2, label: 'Entretenimento', selected: false },
-          { id: 3, label: 'Hotéis', selected: false },
-          { id: 4, label: 'Lazer', selected: false },
-        ],
-      },
-    };
-    const { queryByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={false}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { queryByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: false,
+      showOrderList: false,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(queryByTestId('filter_options_id')).not.toBeTruthy();
   });
 
   test('should show filter list correctly', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [
-          { id: 0, label: 'Mais avaliados' },
-          { id: 1, label: 'Mais comentados' },
-          { id: 2, label: 'Distância' },
-        ],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [
-          { id: 0, label: 'Restaurantes', selected: false },
-          { id: 1, label: 'Cafeterias', selected: false },
-          { id: 2, label: 'Entretenimento', selected: false },
-          { id: 3, label: 'Hotéis', selected: false },
-          { id: 4, label: 'Lazer', selected: false },
-        ],
-      },
-    };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={() => {}}
-        showOrderList={false}
-        showFilterList={true}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+    const filterOptions = filterOptionsFactory();
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: true,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     filterOptions.filterBy.list.forEach((filter) => {
       expect(getByTestId(`filter_${filter.id}_id`).props.children).toEqual(
@@ -728,46 +458,22 @@ describe('Search: Modal', () => {
   });
 
   test('should update order selected when press a new order', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [
-          { id: 0, label: 'Mais avaliados' },
-          { id: 1, label: 'Mais comentados' },
-          { id: 2, label: 'Distância' },
-        ],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [
-          { id: 0, label: 'Restaurantes', selected: false },
-          { id: 1, label: 'Cafeterias', selected: false },
-          { id: 2, label: 'Entretenimento', selected: false },
-          { id: 3, label: 'Hotéis', selected: false },
-          { id: 4, label: 'Lazer', selected: false },
-        ],
-      },
-    };
-
+    const filterOptions = filterOptionsFactory();
     const selectOrder = (order: { id: number; label: string }) => {
       filterOptions.orderBy.selected = order;
     };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={selectOrder}
-        selectFilter={() => {}}
-        showOrderList={true}
-        showFilterList={false}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter: () => {},
+      selectOrder,
+      showFilterList: false,
+      showOrderList: true,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     expect(getByTestId('order_by_selected_id').props.children).toEqual(
       filterOptions.orderBy.selected.label,
@@ -781,28 +487,7 @@ describe('Search: Modal', () => {
   });
 
   test('should update filters selected when press more of one filter', () => {
-    const filterOptions = {
-      orderBy: {
-        label: 'Ordenar por',
-        selected: { id: 0, label: 'Mais avaliados' },
-        list: [
-          { id: 0, label: 'Mais avaliados' },
-          { id: 1, label: 'Mais comentados' },
-          { id: 2, label: 'Distância' },
-        ],
-      },
-      filterBy: {
-        label: 'Filtrar por',
-        list: [
-          { id: 0, label: 'Restaurantes', selected: false },
-          { id: 1, label: 'Cafeterias', selected: false },
-          { id: 2, label: 'Entretenimento', selected: false },
-          { id: 3, label: 'Hotéis', selected: false },
-          { id: 4, label: 'Lazer', selected: false },
-        ],
-      },
-    };
-
+    const filterOptions = filterOptionsFactory();
     const selectFilter = (filterSelected: {
       id: number;
       label: string;
@@ -814,21 +499,18 @@ describe('Search: Modal', () => {
         }
       });
     };
-    const { getByTestId } = render(
-      <FilterModal
-        filterOptions={filterOptions}
-        selectOrder={() => {}}
-        selectFilter={selectFilter}
-        showOrderList={false}
-        showFilterList={true}
-        changeShowOfOrderList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-        changeShowOfFilterList={function (): void {
-          throw new Error('Function not implemented.');
-        }}
-      />,
-    );
+
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter,
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: true,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
 
     fireEvent.press(getByTestId('filter_button_1_id'));
     fireEvent.press(getByTestId('filter_button_2_id'));
@@ -839,3 +521,61 @@ describe('Search: Modal', () => {
     expect(filterOptions.filterBy.list[4].selected).toEqual(true);
   });
 });
+
+type Props = {
+  filterOptions: {
+    orderBy: {
+      label: string;
+      selected: {
+        id: number;
+        label: string;
+      };
+      list: {
+        id: number;
+        label: string;
+      }[];
+    };
+    filterBy: {
+      label: string;
+      list: {
+        id: number;
+        label: string;
+        selected: boolean;
+      }[];
+    };
+  };
+  selectFilter: (filter: {
+    id: number;
+    label: string;
+    selected?: boolean;
+  }) => void;
+  selectOrder: (order: { id: number; label: string }) => void;
+  showFilterList: boolean;
+  showOrderList: boolean;
+  changeShowOfOrderList: () => void;
+  changeShowOfFilterList: () => void;
+};
+
+const makeSut = ({
+  filterOptions,
+  selectFilter,
+  selectOrder,
+  showFilterList,
+  showOrderList,
+  changeShowOfFilterList,
+  changeShowOfOrderList,
+}: Props) => {
+  const sut = render(
+    <FilterModal
+      filterOptions={filterOptions}
+      selectOrder={selectOrder}
+      selectFilter={selectFilter}
+      showOrderList={showOrderList}
+      showFilterList={showFilterList}
+      changeShowOfOrderList={changeShowOfOrderList}
+      changeShowOfFilterList={changeShowOfFilterList}
+    />,
+  );
+
+  return { sut };
+};
