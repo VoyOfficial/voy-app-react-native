@@ -45,6 +45,10 @@ const Options = ({
         borderBottomWidth: 1,
         borderColor: '#E6E6E6',
         paddingLeft: 42,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingRight: 23,
       }}
     >
       <Text
@@ -57,6 +61,16 @@ const Options = ({
       >
         {option.label}
       </Text>
+      <View
+        testID={`${type}_selection_icon_${option.id}_id`}
+        style={{
+          width: 12,
+          height: 12,
+          borderWidth: 1,
+          borderRadius: 6,
+          borderColor: '#C5CACC',
+        }}
+      />
     </TouchableOpacity>
   ));
 
