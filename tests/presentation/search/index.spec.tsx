@@ -1,6 +1,8 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import Search from '../../../src/presentation/search';
+import placeListFactory from '../helpers/placeListFactory';
+import { Place } from '../../../src/presentation/components/cardList';
 
 describe('Presentation: Search', () => {
   test('should show input of search with success', () => {
@@ -98,6 +100,44 @@ describe('Presentation: Search', () => {
 
     expect(getByTestId('filter_modal_id')).toBeTruthy();
   });
+
+  test('should show card list correctly when searchValue is not empty', () => {
+    const placeList = placeListFactory(5);
+    const showFilterOptions = true;
+    const {
+      sut: { getByTestId },
+    } = makeSut(
+      showFilterOptions,
+      () => {},
+      'any_value',
+      () => {},
+      () => {},
+      placeList,
+    );
+
+    placeList.forEach((place, index) => {
+      expect(getByTestId(`list_card_${index}_id`)).toBeTruthy();
+    });
+  });
+
+  test('should not show card list if searchValue is empty', () => {
+    const placeList = placeListFactory(5);
+    const showFilterOptions = true;
+    const {
+      sut: { getByTestId },
+    } = makeSut(
+      showFilterOptions,
+      () => {},
+      'any_value',
+      () => {},
+      () => {},
+      placeList,
+    );
+
+    placeList.forEach((place, index) => {
+      expect(getByTestId(`list_card_${index}_id`)).toBeTruthy();
+    });
+  });
 });
 
 const makeSut = (
@@ -106,6 +146,7 @@ const makeSut = (
   searchValue = '',
   changeSearch = () => {},
   searchTo = () => {},
+  placeList: Array<Place> = [],
 ) => {
   const sut = render(
     <Search
@@ -114,6 +155,7 @@ const makeSut = (
       searchTo={searchTo}
       filter={filter}
       showFilterOptions={showFilterOptions}
+      placeList={placeList}
     />,
   );
 

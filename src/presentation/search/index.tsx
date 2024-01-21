@@ -1,10 +1,12 @@
 import React from 'react';
 import { TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from '../assets/fonts/Voy';
+import CardList, { Place } from '../components/cardList';
 import FilterModal from './modal';
 
 type Props = {
   searchValue: string;
+  placeList: Array<Place>;
   changeSearch: (value: string) => void;
   searchTo: (value: string) => void;
   filter: () => void;
@@ -14,6 +16,7 @@ type Props = {
 const Search = ({
   searchValue,
   showFilterOptions,
+  placeList,
   changeSearch,
   searchTo,
   filter,
@@ -73,8 +76,31 @@ const Search = ({
           </View>
         </View>
       </View>
+      {searchValue !== '' && (
+        <View style={{ marginHorizontal: 20 }}>
+          <CardList
+            title={''}
+            seeAllBy={''}
+            seeAll={() => {}}
+            placeList={placeList}
+            favorite={() => {}}
+            showSeeAllButton={false}
+            showMoreDetails={() => {}}
+          />
+        </View>
+      )}
       {showFilterOptions && (
-        <View style={{ marginHorizontal: 20, marginTop: 20 }}>
+        <View
+          style={{
+            marginHorizontal: 20,
+            marginTop: 20,
+            position: 'absolute',
+            top: 120,
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+        >
           <FilterModal
             filterOptions={{
               filterBy: {
@@ -101,8 +127,8 @@ const Search = ({
             }}
             selectFilter={() => {}}
             selectOrder={() => {}}
-            showOrderList={false}
-            showFilterList={false}
+            showOrderList={true}
+            showFilterList={true}
             changeShowOfOrderList={function (): void {
               throw new Error('Function not implemented.');
             }}
