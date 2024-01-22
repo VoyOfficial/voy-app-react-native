@@ -1,6 +1,19 @@
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
-import Icon from '../../assets/fonts/Voy';
+import {
+  ArrowIcon,
+  Container,
+  FilterByButton,
+  FilterByLabel,
+  FilterOptionsWrapper,
+  OptionButton,
+  OptionLabel,
+  OptionSelectionIcon,
+  OrderByButton,
+  OrderByLabel,
+  OrderByLabelWrapper,
+  OrderBySelected,
+  OrderOptionsWrapper,
+} from './styles';
 
 const toListWithSelected = (orderBy: {
   label: string;
@@ -61,43 +74,19 @@ const Options = ({
   type: string;
 }) =>
   list.map((option) => (
-    <TouchableOpacity
+    <OptionButton
       key={option.id}
       testID={`${type}_button_${option.id}_id`}
       onPress={() => select(option)}
-      style={{
-        paddingVertical: 14,
-        borderBottomWidth: 1,
-        borderColor: '#E6E6E6',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginLeft: 42,
-        marginRight: 23,
-      }}
     >
-      <Text
-        testID={`${type}_${option.id}_id`}
-        style={{
-          fontFamily: 'LexendDeca-Regular',
-          color: '#AEAEAE',
-          fontSize: 15,
-        }}
-      >
+      <OptionLabel testID={`${type}_${option.id}_id`}>
         {option.label}
-      </Text>
-      <View
+      </OptionLabel>
+      <OptionSelectionIcon
         testID={`${type}_selection_icon_${option.id}_id`}
-        style={{
-          width: 12,
-          height: 12,
-          borderWidth: 1,
-          borderRadius: 6,
-          borderColor: option.selected ? '#5742E0' : '#C5CACC',
-          backgroundColor: option.selected ? '#5742E0' : '#FFFFFF',
-        }}
+        selected={option.selected}
       />
-    </TouchableOpacity>
+    </OptionButton>
   ));
 
 const FilterModal = ({
@@ -110,107 +99,59 @@ const FilterModal = ({
   showFilterList,
 }: Props) => {
   return (
-    <View
-      style={{ backgroundColor: '#FFFFFF', borderRadius: 10 }}
-      testID="filter_modal_id"
-    >
-      <TouchableOpacity
+    <Container testID="filter_modal_id">
+      <OrderByButton
         testID="order_by_button_id"
-        style={{
-          flexDirection: 'row',
-          paddingVertical: 19,
-          borderBottomWidth: 1,
-          borderColor: '#E6E6E6',
-          paddingLeft: 22,
-          paddingRight: 16,
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
         onPress={changeShowOfOrderList}
       >
-        <View style={{ flexDirection: 'row' }}>
-          <Text
-            testID="label_order_by_id"
-            style={{
-              color: '#212121',
-              fontSize: 15,
-              fontFamily: 'LexendDeca-Regular',
-            }}
-          >
+        <OrderByLabelWrapper>
+          <OrderByLabel testID="label_order_by_id">
             {filterOptions.orderBy.label + ': '}
-          </Text>
-          <Text
-            testID="order_by_selected_id"
-            style={{
-              color: '#5452F6',
-              fontSize: 15,
-              fontFamily: 'LexendDeca-Regular',
-            }}
-          >
+          </OrderByLabel>
+          <OrderBySelected testID="order_by_selected_id">
             {filterOptions.orderBy.selected.label}
-          </Text>
-        </View>
+          </OrderBySelected>
+        </OrderByLabelWrapper>
         {!showOrderList && (
-          <Icon testID="order_down_arrow_icon_id" name="arrow_down" size={24} />
+          <ArrowIcon testID="order_down_arrow_icon_id" name="arrow_down" />
         )}
         {showOrderList && (
-          <Icon testID="order_up_arrow_icon_id" name="arrow_up" size={24} />
+          <ArrowIcon testID="order_up_arrow_icon_id" name="arrow_up" />
         )}
-      </TouchableOpacity>
+      </OrderByButton>
       {showOrderList && (
-        <View testID="order_options_id">
+        <OrderOptionsWrapper testID="order_options_id">
           <Options
             list={toListWithSelected(filterOptions.orderBy)}
             select={selectOrder}
             type="order"
           />
-        </View>
+        </OrderOptionsWrapper>
       )}
-      <TouchableOpacity
+      <FilterByButton
         testID="filter_by_button_id"
-        style={{
-          paddingVertical: 19,
-          borderBottomWidth: 1,
-          borderColor: '#E6E6E6',
-          paddingLeft: 22,
-          paddingRight: 16,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
         onPress={changeShowOfFilterList}
       >
-        <Text
-          testID="label_filter_by_id"
-          style={{
-            fontFamily: 'LexendDeca-Regular',
-            color: '#212121',
-            fontSize: 15,
-          }}
-        >
+        <FilterByLabel testID="label_filter_by_id">
           {filterOptions.filterBy.label + ': '}
-        </Text>
+        </FilterByLabel>
         {showFilterList && (
-          <Icon testID="filter_up_arrow_icon_id" name="arrow_up" size={24} />
+          <ArrowIcon testID="filter_up_arrow_icon_id" name="arrow_up" />
         )}
         {!showFilterList && (
-          <Icon
-            testID="filter_down_arrow_icon_id"
-            name="arrow_down"
-            size={24}
-          />
+          <ArrowIcon testID="filter_down_arrow_icon_id" name="arrow_down" />
         )}
-      </TouchableOpacity>
+      </FilterByButton>
       {showFilterList && (
-        <View testID="filter_options_id">
+        <FilterOptionsWrapper testID="filter_options_id">
           <Options
             list={filterOptions.filterBy.list}
             select={selectFilter}
             type="filter"
           />
-        </View>
+        </FilterOptionsWrapper>
       )}
-    </View>
+    </Container>
   );
 };
 

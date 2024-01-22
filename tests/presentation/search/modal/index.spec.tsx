@@ -313,15 +313,35 @@ describe('Search: Modal', () => {
     });
 
     expect(
-      getByTestId(`order_selection_icon_${0}_id`).props.style.borderColor,
+      getByTestId(`order_selection_icon_${0}_id`).props.style.borderBottomColor,
     ).toEqual('#C5CACC');
+    expect(
+      getByTestId(`order_selection_icon_${0}_id`).props.style.borderTopColor,
+    ).toEqual('#C5CACC');
+    expect(
+      getByTestId(`order_selection_icon_${0}_id`).props.style.borderLeftColor,
+    ).toEqual('#C5CACC');
+    expect(
+      getByTestId(`order_selection_icon_${0}_id`).props.style.borderRightColor,
+    ).toEqual('#C5CACC');
+
     expect(
       getByTestId(`order_selection_icon_${0}_id`).props.style.backgroundColor,
     ).toEqual('#FFFFFF');
 
     expect(
-      getByTestId(`order_selection_icon_${1}_id`).props.style.borderColor,
+      getByTestId(`order_selection_icon_${1}_id`).props.style.borderBottomColor,
     ).toEqual('#5742E0');
+    expect(
+      getByTestId(`order_selection_icon_${1}_id`).props.style.borderTopColor,
+    ).toEqual('#5742E0');
+    expect(
+      getByTestId(`order_selection_icon_${1}_id`).props.style.borderLeftColor,
+    ).toEqual('#5742E0');
+    expect(
+      getByTestId(`order_selection_icon_${1}_id`).props.style.borderRightColor,
+    ).toEqual('#5742E0');
+
     expect(
       getByTestId(`order_selection_icon_${1}_id`).props.style.backgroundColor,
     ).toEqual('#5742E0');
@@ -382,21 +402,55 @@ describe('Search: Modal', () => {
     });
 
     expect(
-      getByTestId(`filter_selection_icon_${0}_id`).props.style.borderColor,
+      getByTestId(`filter_selection_icon_${0}_id`).props.style
+        .borderBottomColor,
     ).toEqual('#C5CACC');
+    expect(
+      getByTestId(`filter_selection_icon_${0}_id`).props.style.borderLeftColor,
+    ).toEqual('#C5CACC');
+    expect(
+      getByTestId(`filter_selection_icon_${0}_id`).props.style.borderRightColor,
+    ).toEqual('#C5CACC');
+    expect(
+      getByTestId(`filter_selection_icon_${0}_id`).props.style.borderTopColor,
+    ).toEqual('#C5CACC');
+
     expect(
       getByTestId(`filter_selection_icon_${0}_id`).props.style.backgroundColor,
     ).toEqual('#FFFFFF');
 
     expect(
-      getByTestId(`filter_selection_icon_${1}_id`).props.style.borderColor,
+      getByTestId(`filter_selection_icon_${1}_id`).props.style.borderLeftColor,
     ).toEqual('#5742E0');
+    expect(
+      getByTestId(`filter_selection_icon_${1}_id`).props.style.borderRightColor,
+    ).toEqual('#5742E0');
+    expect(
+      getByTestId(`filter_selection_icon_${1}_id`).props.style
+        .borderBottomColor,
+    ).toEqual('#5742E0');
+    expect(
+      getByTestId(`filter_selection_icon_${1}_id`).props.style.borderTopColor,
+    ).toEqual('#5742E0');
+
     expect(
       getByTestId(`filter_selection_icon_${1}_id`).props.style.backgroundColor,
     ).toEqual('#5742E0');
+
     expect(
-      getByTestId(`filter_selection_icon_${2}_id`).props.style.borderColor,
+      getByTestId(`filter_selection_icon_${2}_id`).props.style.borderLeftColor,
     ).toEqual('#5742E0');
+    expect(
+      getByTestId(`filter_selection_icon_${2}_id`).props.style.borderRightColor,
+    ).toEqual('#5742E0');
+    expect(
+      getByTestId(`filter_selection_icon_${2}_id`).props.style
+        .borderBottomColor,
+    ).toEqual('#5742E0');
+    expect(
+      getByTestId(`filter_selection_icon_${2}_id`).props.style.borderTopColor,
+    ).toEqual('#5742E0');
+
     expect(
       getByTestId(`filter_selection_icon_${2}_id`).props.style.backgroundColor,
     ).toEqual('#5742E0');
