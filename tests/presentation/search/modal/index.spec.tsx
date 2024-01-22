@@ -1,30 +1,13 @@
 import React from 'react';
+import { ReactTestInstance } from 'react-test-renderer';
 import { fireEvent, render } from '@testing-library/react-native';
+import {
+  TextMatch,
+  TextMatchOptions,
+} from '@testing-library/react-native/build/matches';
+import { CommonQueryOptions } from '@testing-library/react-native/build/queries/options';
 import FilterModal from '../../../../src/presentation/search/modal';
-
-const filterOptionsFactory = () => {
-  return {
-    orderBy: {
-      label: 'Ordenar por',
-      selected: { id: 0, label: 'Mais avaliados' },
-      list: [
-        { id: 0, label: 'Mais avaliados' },
-        { id: 1, label: 'Mais comentados' },
-        { id: 2, label: 'Distância' },
-      ],
-    },
-    filterBy: {
-      label: 'Filtrar por',
-      list: [
-        { id: 0, label: 'Restaurantes', selected: false },
-        { id: 1, label: 'Cafeterias', selected: false },
-        { id: 2, label: 'Entretenimento', selected: false },
-        { id: 3, label: 'Hotéis', selected: false },
-        { id: 4, label: 'Lazer', selected: false },
-      ],
-    },
-  };
-};
+import filterOptionsFactory from '../helpers/filterOptionsFactory';
 
 describe('Search: Modal', () => {
   test('should show order by selected correctly', () => {
@@ -312,39 +295,25 @@ describe('Search: Modal', () => {
       changeShowOfOrderList: () => {},
     });
 
-    expect(
-      getByTestId(`order_selection_icon_${0}_id`).props.style.borderBottomColor,
-    ).toEqual('#C5CACC');
-    expect(
-      getByTestId(`order_selection_icon_${0}_id`).props.style.borderTopColor,
-    ).toEqual('#C5CACC');
-    expect(
-      getByTestId(`order_selection_icon_${0}_id`).props.style.borderLeftColor,
-    ).toEqual('#C5CACC');
-    expect(
-      getByTestId(`order_selection_icon_${0}_id`).props.style.borderRightColor,
-    ).toEqual('#C5CACC');
+    validOptionSelection(
+      'order',
+      0,
+      {
+        border: '#C5CACC',
+        background: '#FFFFFF',
+      },
+      getByTestId,
+    );
 
-    expect(
-      getByTestId(`order_selection_icon_${0}_id`).props.style.backgroundColor,
-    ).toEqual('#FFFFFF');
-
-    expect(
-      getByTestId(`order_selection_icon_${1}_id`).props.style.borderBottomColor,
-    ).toEqual('#5742E0');
-    expect(
-      getByTestId(`order_selection_icon_${1}_id`).props.style.borderTopColor,
-    ).toEqual('#5742E0');
-    expect(
-      getByTestId(`order_selection_icon_${1}_id`).props.style.borderLeftColor,
-    ).toEqual('#5742E0');
-    expect(
-      getByTestId(`order_selection_icon_${1}_id`).props.style.borderRightColor,
-    ).toEqual('#5742E0');
-
-    expect(
-      getByTestId(`order_selection_icon_${1}_id`).props.style.backgroundColor,
-    ).toEqual('#5742E0');
+    validOptionSelection(
+      'order',
+      1,
+      {
+        border: '#5742E0',
+        background: '#5742E0',
+      },
+      getByTestId,
+    );
   });
 
   test('should show the filter option selection icon', () => {
@@ -401,59 +370,35 @@ describe('Search: Modal', () => {
       changeShowOfOrderList: () => {},
     });
 
-    expect(
-      getByTestId(`filter_selection_icon_${0}_id`).props.style
-        .borderBottomColor,
-    ).toEqual('#C5CACC');
-    expect(
-      getByTestId(`filter_selection_icon_${0}_id`).props.style.borderLeftColor,
-    ).toEqual('#C5CACC');
-    expect(
-      getByTestId(`filter_selection_icon_${0}_id`).props.style.borderRightColor,
-    ).toEqual('#C5CACC');
-    expect(
-      getByTestId(`filter_selection_icon_${0}_id`).props.style.borderTopColor,
-    ).toEqual('#C5CACC');
+    validOptionSelection(
+      'filter',
+      0,
+      {
+        border: '#C5CACC',
+        background: '#FFFFFF',
+      },
+      getByTestId,
+    );
 
-    expect(
-      getByTestId(`filter_selection_icon_${0}_id`).props.style.backgroundColor,
-    ).toEqual('#FFFFFF');
+    validOptionSelection(
+      'filter',
+      1,
+      {
+        border: '#5742E0',
+        background: '#5742E0',
+      },
+      getByTestId,
+    );
 
-    expect(
-      getByTestId(`filter_selection_icon_${1}_id`).props.style.borderLeftColor,
-    ).toEqual('#5742E0');
-    expect(
-      getByTestId(`filter_selection_icon_${1}_id`).props.style.borderRightColor,
-    ).toEqual('#5742E0');
-    expect(
-      getByTestId(`filter_selection_icon_${1}_id`).props.style
-        .borderBottomColor,
-    ).toEqual('#5742E0');
-    expect(
-      getByTestId(`filter_selection_icon_${1}_id`).props.style.borderTopColor,
-    ).toEqual('#5742E0');
-
-    expect(
-      getByTestId(`filter_selection_icon_${1}_id`).props.style.backgroundColor,
-    ).toEqual('#5742E0');
-
-    expect(
-      getByTestId(`filter_selection_icon_${2}_id`).props.style.borderLeftColor,
-    ).toEqual('#5742E0');
-    expect(
-      getByTestId(`filter_selection_icon_${2}_id`).props.style.borderRightColor,
-    ).toEqual('#5742E0');
-    expect(
-      getByTestId(`filter_selection_icon_${2}_id`).props.style
-        .borderBottomColor,
-    ).toEqual('#5742E0');
-    expect(
-      getByTestId(`filter_selection_icon_${2}_id`).props.style.borderTopColor,
-    ).toEqual('#5742E0');
-
-    expect(
-      getByTestId(`filter_selection_icon_${2}_id`).props.style.backgroundColor,
-    ).toEqual('#5742E0');
+    validOptionSelection(
+      'filter',
+      2,
+      {
+        border: '#5742E0',
+        background: '#5742E0',
+      },
+      getByTestId,
+    );
   });
 
   test('should not show order list if showOrderList is false', () => {
@@ -632,4 +577,37 @@ const makeSut = ({
   );
 
   return { sut };
+};
+
+const validOptionSelection = (
+  option: string,
+  index: number,
+  colors: { border: string; background: string },
+
+  getByTestId: (
+    predicate: TextMatch,
+    options?: (CommonQueryOptions & TextMatchOptions) | undefined,
+  ) => ReactTestInstance,
+) => {
+  expect(
+    getByTestId(`${option}_selection_icon_${index}_id`).props.style
+      .borderBottomColor,
+  ).toEqual(colors.border);
+  expect(
+    getByTestId(`${option}_selection_icon_${index}_id`).props.style
+      .borderTopColor,
+  ).toEqual(colors.border);
+  expect(
+    getByTestId(`${option}_selection_icon_${index}_id`).props.style
+      .borderLeftColor,
+  ).toEqual(colors.border);
+  expect(
+    getByTestId(`${option}_selection_icon_${index}_id`).props.style
+      .borderRightColor,
+  ).toEqual(colors.border);
+
+  expect(
+    getByTestId(`${option}_selection_icon_${index}_id`).props.style
+      .backgroundColor,
+  ).toEqual(colors.background);
 };
