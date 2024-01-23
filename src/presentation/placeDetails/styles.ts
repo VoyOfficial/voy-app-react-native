@@ -1,5 +1,4 @@
 import styled from 'styled-components/native';
-import { BlurView } from '@react-native-community/blur';
 import Icon from '../assets/fonts/Voy';
 
 const Text = styled.Text`
@@ -112,11 +111,7 @@ export const GallerySummaryImagesWrapper = styled.View`
   margin-bottom: 36px;
 `;
 
-export const BlurOfGallerySummaryImages = styled(BlurView).attrs({
-  blurType: 'light',
-  blurAmount: 10,
-  reducedTransparencyFallbackColor: 'white',
-})`
+export const BlurOfGallerySummaryImages = styled.View`
   position: absolute;
   top: 0;
   left: 0;

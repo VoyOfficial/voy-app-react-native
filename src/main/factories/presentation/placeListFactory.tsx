@@ -1,8 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { RouteProp } from '@react-navigation/native';
-import { Actions, Routes, navigator } from '~/main/navigation';
-import { ListPlaces, ListRecommendations } from '~/domain/useCases';
-import { PlaceModel, RecommendationModel } from '~/domain/models';
+import { Actions, Routes, navigator } from '../../navigation';
+import { ListPlaces, ListRecommendations } from '../../../domain/useCases';
+import { PlaceModel, RecommendationModel } from '../../../domain/models';
 import { Place } from '../../../presentation/components/cardList';
 import { StackParams } from '../../navigation/navigation';
 import PlaceList from '../../../../src/presentation/placeList';

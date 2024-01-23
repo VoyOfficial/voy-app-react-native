@@ -1,9 +1,10 @@
 import React from 'react';
-import Main from './main';
+import { View } from 'react-native';
 
 const App = () => {
-  // eslint-disable-next-line react/jsx-filename-extension
-  return <Main />;
+  /* eslint-disable react/jsx-filename-extension */
+
+  return <View style={{ backgroundColor: 'black', flex: 1 }} />;
 };
 
 export default App;

@@ -1,9 +1,9 @@
 import React from 'react';
-import { View } from 'react-native';
 import { ListRecommendation } from '../recommendation/components';
 import CardList from '../components/cardList';
 import { Origin } from '../placeList/usePlaceList';
 import { HomeViewModel } from './useHome';
+import { Container, WrapperSearch } from './styles';
 
 const Home = ({
   onSeeAll,
@@ -13,23 +13,26 @@ const Home = ({
   showMoreDetails,
 }: HomeViewModel) => {
   return (
-    <View>
+    <Container>
       <ListRecommendation
         showMoreDetails={showMoreDetails}
         recommendations={recommendations}
         onSeeAll={onSeeAll}
         seeAllBy={Origin.Recommendations}
+        handleSaveLocation={() => {}}
       />
-      <CardList
-        showSeeAllButton
-        favorite={favorite}
-        placeList={placeList}
-        seeAll={onSeeAll}
-        title="Descobrir"
-        showMoreDetails={showMoreDetails}
-        seeAllBy={Origin.Places}
-      />
-    </View>
+      <WrapperSearch>
+        <CardList
+          showSeeAllButton
+          favorite={favorite}
+          placeList={placeList}
+          seeAll={onSeeAll}
+          title="Descobrir"
+          showMoreDetails={showMoreDetails}
+          seeAllBy={Origin.Places}
+        />
+      </WrapperSearch>
+    </Container>
   );
 };
 

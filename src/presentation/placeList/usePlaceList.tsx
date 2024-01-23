@@ -1,4 +1,4 @@
-import { Routes } from '~/main/navigation';
+import { Routes } from '../../main/navigation';
 import { Place } from '../components/cardList';
 import { GenericObject } from '../../main/types/genericObject';
 

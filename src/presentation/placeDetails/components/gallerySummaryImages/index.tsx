@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import {
   GallerySummaryImage,
   GallerySummaryImageBackground,
@@ -69,7 +69,7 @@ const GallerySummaryImages = ({
     }
   }
 
-  return gallerySummaryImages;
+  return gallerySummaryImages as unknown as ReactElement;
 };
 
 export default GallerySummaryImages;
