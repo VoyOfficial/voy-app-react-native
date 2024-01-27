@@ -7,6 +7,7 @@ import Icon from '../../../presentation/assets/fonts/Voy';
 import Actions from '../Actions';
 import { navigator } from '../index';
 import PlaceListFactory from '../../factories/presentation/placeListFactory';
+import SearchFactory from '../../../../src/main/factories/presentation/searchFactory';
 import { Stack } from './stackNavigation';
 
 const getScreensStack = () => {
@@ -48,6 +49,18 @@ const getScreensStack = () => {
         name={Routes.PLACE_LIST}
       >
         {(props) => <PlaceListFactory {...props} />}
+      </Stack.Screen>
+      <Stack.Screen
+        options={{
+          headerBackVisible: false,
+          headerTransparent: true,
+          headerBackTitleVisible: false,
+          title: '',
+          headerShadowVisible: false,
+        }}
+        name={Routes.SEARCH}
+      >
+        {(props) => <SearchFactory {...props} />}
       </Stack.Screen>
     </>
   );

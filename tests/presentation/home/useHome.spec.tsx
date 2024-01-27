@@ -115,6 +115,23 @@ describe('Presentation: useHome', () => {
       place: listPlacesFake.places[0],
     });
   });
+
+  test('should call navigate function correctly when call search function', async () => {
+    const {
+      sut: { result },
+      navigateSpy,
+    } = makeSut();
+
+    await waitFor(() => {
+      expect(result.current.recommendations).not.toEqual([]);
+      expect(result.current.placeList).not.toEqual([]);
+    });
+
+    result.current.search();
+
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith('Search');
+  });
 });
 
 const makeSut = () => {
