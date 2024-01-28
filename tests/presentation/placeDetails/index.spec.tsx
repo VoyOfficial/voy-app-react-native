@@ -384,6 +384,7 @@ describe('Presentation: PlaceDetails', () => {
         expect(pressSummaryImageFromGallery).toHaveBeenCalled();
         expect(pressSummaryImageFromGallery).toHaveBeenCalledWith(
           gallerySummary[index],
+          false,
         );
       } else {
         expect(

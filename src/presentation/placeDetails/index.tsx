@@ -18,7 +18,7 @@ import {
   WalkingIcon,
 } from './styles';
 
-export type Props = {
+export type PlaceDetailsViewModel = {
   title: string;
   description: string;
   location: string;
@@ -31,7 +31,7 @@ export type Props = {
   photoOfReviewProfiles: Array<string>;
   backgroundImage: string;
   gallerySummaryImages: Array<string>;
-  pressSummaryImageFromGallery: (image: string) => void;
+  pressSummaryImageFromGallery: (image: string, showInGallery: boolean) => void;
 };
 
 const PlaceDetails = ({
@@ -48,7 +48,7 @@ const PlaceDetails = ({
   backgroundImage,
   gallerySummaryImages,
   pressSummaryImageFromGallery,
-}: Props) => {
+}: PlaceDetailsViewModel) => {
   return (
     <ScrollContainer>
       <ImagesWrapper>
