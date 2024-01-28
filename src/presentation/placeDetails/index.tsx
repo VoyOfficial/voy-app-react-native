@@ -18,7 +18,7 @@ import {
   WalkingIcon,
 } from './styles';
 
-type Props = {
+export type Props = {
   title: string;
   description: string;
   location: string;
@@ -31,7 +31,7 @@ type Props = {
   photoOfReviewProfiles: Array<string>;
   backgroundImage: string;
   gallerySummaryImages: Array<string>;
-  pressSummaryImageFromGallery: () => void;
+  pressSummaryImageFromGallery: (image: string) => void;
 };
 
 const PlaceDetails = ({
