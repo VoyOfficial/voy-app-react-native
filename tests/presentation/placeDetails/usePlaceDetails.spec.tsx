@@ -1,14 +1,12 @@
-import { useState } from 'react';
 import { renderHook, waitFor } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
 import { Routes } from '~/main/navigation';
-import { PlaceDetailsViewModel } from '../../../src/presentation/placeDetails';
-import { GenericObject } from '../../../src/main/types/genericObject';
+import { usePlaceDetails } from '../../../src/presentation/placeDetails';
 
 describe('Presentation: usePlaceDetails', () => {
   test('should update the backgroundImage correctly when call pressSummaryImageFromGallery function', async () => {
     const { result } = renderHook(() =>
-      usePlaceDetails({ navigate: () => {} }),
+      usePlaceDetails({ navigate: () => {}, gallerySummaryImages: [''] }),
     );
 
     expect(result.current.backgroundImage).toEqual('');
@@ -24,7 +22,9 @@ describe('Presentation: usePlaceDetails', () => {
 
   test('should call navigate function correctly when call pressSummaryImageFromGallery with showInGallery true', async () => {
     const navigate = jest.fn();
-    const { result } = renderHook(() => usePlaceDetails({ navigate }));
+    const { result } = renderHook(() =>
+      usePlaceDetails({ navigate, gallerySummaryImages: [''] }),
+    );
 
     expect(result.current.backgroundImage).toEqual('');
 
@@ -37,42 +37,17 @@ describe('Presentation: usePlaceDetails', () => {
       images: result.current.gallerySummaryImages,
     });
   });
+
+  test('should update backgroundImage when initialize', async () => {
+    const navigate = jest.fn();
+    const backgroundImage = faker.image.imageUrl();
+    const { result } = renderHook(() =>
+      usePlaceDetails({
+        navigate,
+        gallerySummaryImages: [faker.image.imageUrl()],
+      }),
+    );
+
+    expect(result.current.backgroundImage).toEqual(backgroundImage);
+  });
 });
-
-type Props = {
-  navigate: (routeName: string, params?: GenericObject | undefined) => void;
-};
-
-const usePlaceDetails = ({ navigate }: Props): PlaceDetailsViewModel => {
-  const [backgroundImage, setBackgroundImage] = useState('');
-  const gallerySummaryImages: never[] = [];
-
-  const pressSummaryImageFromGallery = (
-    image: string,
-    showInGallery: boolean,
-  ) => {
-    if (showInGallery) {
-      navigate(Routes.GALLERY, { images: gallerySummaryImages });
-    }
-
-    if (!showInGallery) {
-      setBackgroundImage(image);
-    }
-  };
-
-  return {
-    amountOfReviews: '',
-    backgroundImage,
-    businessHoursSummary: '',
-    contact: '',
-    description: '',
-    fullLocation: '',
-    gallerySummaryImages,
-    location: '',
-    myDistanceOfLocal: '',
-    photoOfReviewProfiles: [],
-    pressSummaryImageFromGallery,
-    rating: '',
-    title: '',
-  };
-};

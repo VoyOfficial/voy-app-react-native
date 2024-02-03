@@ -59,6 +59,7 @@ export const ScrollContainer = styled.ScrollView.attrs({
   showsVerticalScrollIndicator: false,
 })`
   flex: 1;
+  background-color: #ffffff;
 `;
 
 export const ContentContainer = styled.View`

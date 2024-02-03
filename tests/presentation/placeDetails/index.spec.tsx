@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
 import { getStyleOfPhotoOfReviewProfile } from '../../../src/presentation/placeDetails/components/reviews';
-import PlaceDetails from '../../../src/presentation/placeDetails';
+import PlaceDetails from '../../../src/presentation/placeDetails/placeDetails';
 
 describe('PlaceDetails: getStyleOfPhotoOfReviewProfile', () => {
   test('should get style of photo of review profile when index equals 0', () => {
