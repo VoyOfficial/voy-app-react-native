@@ -48,6 +48,7 @@ const PlaceDetailsFactory = ({}: Props) => {
       gallerySummaryImages={viewModel.gallerySummaryImages}
       pressSummaryImageFromGallery={viewModel.pressSummaryImageFromGallery}
       isOpenImagesGallery={viewModel.isOpenImagesGallery}
+      closeImagesGallery={viewModel.closeImagesGallery}
     />
   );
 };

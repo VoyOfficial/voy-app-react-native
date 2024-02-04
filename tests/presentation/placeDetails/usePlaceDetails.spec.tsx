@@ -36,6 +36,27 @@ describe('Presentation: usePlaceDetails', () => {
     });
   });
 
+  test('should update isOpenImagesGallery to false when call closeImagesGallery', async () => {
+    const { result } = renderHook(() =>
+      usePlaceDetails({ gallerySummaryImages: [''] }),
+    );
+
+    const image = faker.image.imageUrl();
+
+    const showInGallery = true;
+    result.current.pressSummaryImageFromGallery(image, showInGallery);
+
+    await waitFor(() => {
+      expect(result.current.isOpenImagesGallery).toEqual(true);
+    });
+
+    result.current.closeImagesGallery();
+
+    await waitFor(() => {
+      expect(result.current.isOpenImagesGallery).toEqual(false);
+    });
+  });
+
   test('should update backgroundImage when initialize', async () => {
     const backgroundImage = faker.image.imageUrl();
     const { result } = renderHook(() =>

@@ -40,6 +40,7 @@ export type PlaceDetailsViewModel = {
   gallerySummaryImages: Array<string>;
   isOpenImagesGallery: boolean;
   pressSummaryImageFromGallery: (image: string, showInGallery: boolean) => void;
+  closeImagesGallery: () => void;
 };
 
 const PlaceDetails = ({
@@ -57,12 +58,14 @@ const PlaceDetails = ({
   gallerySummaryImages,
   isOpenImagesGallery,
   pressSummaryImageFromGallery,
+  closeImagesGallery,
 }: PlaceDetailsViewModel) => {
   return (
     <ScrollContainer>
       <ImagesGallery
         images={gallerySummaryImagesToImagesGallery(gallerySummaryImages)}
         isOpen={isOpenImagesGallery}
+        close={closeImagesGallery}
       />
       <ImagesWrapper>
         <BackgroundImage

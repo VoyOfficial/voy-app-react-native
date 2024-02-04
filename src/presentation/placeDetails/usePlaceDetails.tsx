@@ -28,6 +28,10 @@ const usePlaceDetails = ({
     }
   };
 
+  const closeImagesGallery = () => {
+    setIsOpenImagesGallery(false);
+  };
+
   return {
     amountOfReviews: '',
     backgroundImage,
@@ -40,6 +44,7 @@ const usePlaceDetails = ({
     myDistanceOfLocal: '',
     photoOfReviewProfiles: [],
     pressSummaryImageFromGallery,
+    closeImagesGallery,
     rating: '',
     title: '',
     isOpenImagesGallery,

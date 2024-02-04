@@ -443,6 +443,7 @@ const makeSut = (
       gallerySummaryImages={gallerySummaryImages}
       pressSummaryImageFromGallery={pressSummaryImageFromGallery}
       isOpenImagesGallery={false}
+      closeImagesGallery={() => {}}
     />,
   );
 };
