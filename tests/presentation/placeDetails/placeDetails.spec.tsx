@@ -2,7 +2,9 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
 import { getStyleOfPhotoOfReviewProfile } from '../../../src/presentation/placeDetails/components/reviews';
-import PlaceDetails from '../../../src/presentation/placeDetails/placeDetails';
+import PlaceDetails, {
+  gallerySummaryImagesToImagesGallery,
+} from '../../../src/presentation/placeDetails/placeDetails';
 
 describe('PlaceDetails: getStyleOfPhotoOfReviewProfile', () => {
   test('should get style of photo of review profile when index equals 0', () => {
@@ -24,6 +26,21 @@ describe('PlaceDetails: getStyleOfPhotoOfReviewProfile', () => {
     const style = getStyleOfPhotoOfReviewProfile(index);
 
     expect(style).toEqual({ zIndex: 3, left: -20 });
+  });
+});
+
+describe('PlaceDetails: gallerySummaryImagesToImagesGallery', () => {
+  test('should convert gallerySummaryImages to imagesGallery correctly', () => {
+    const gallerySummaryImages = [
+      faker.image.imageUrl(),
+      faker.image.imageUrl(),
+      faker.image.imageUrl(),
+    ];
+    const images = gallerySummaryImagesToImagesGallery(gallerySummaryImages);
+
+    expect(images).toEqual(
+      gallerySummaryImages.map((image, index) => ({ id: index, url: image })),
+    );
   });
 });
 
@@ -425,6 +442,7 @@ const makeSut = (
       backgroundImage={backgroundImage}
       gallerySummaryImages={gallerySummaryImages}
       pressSummaryImageFromGallery={pressSummaryImageFromGallery}
+      isOpenImagesGallery={false}
     />,
   );
 };

@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Routes } from '~/main/navigation';
-import { GenericObject } from '../../../src/main/types/genericObject';
 import { PlaceDetailsViewModel } from './placeDetails';
 
 type Props = {
-  navigate: (routeName: string, params?: GenericObject | undefined) => void;
   gallerySummaryImages: Array<string>;
 };
 
 const usePlaceDetails = ({
-  navigate,
   gallerySummaryImages,
 }: Props): PlaceDetailsViewModel => {
   const [backgroundImage, setBackgroundImage] = useState('');
+  const [isOpenImagesGallery, setIsOpenImagesGallery] = useState(false);
 
   useEffect(() => {
     setBackgroundImage(gallerySummaryImages[0]);
@@ -23,7 +20,7 @@ const usePlaceDetails = ({
     showInGallery: boolean,
   ) => {
     if (showInGallery) {
-      navigate(Routes.GALLERY, { images: gallerySummaryImages });
+      setIsOpenImagesGallery(true);
     }
 
     if (!showInGallery) {
@@ -45,6 +42,7 @@ const usePlaceDetails = ({
     pressSummaryImageFromGallery,
     rating: '',
     title: '',
+    isOpenImagesGallery,
   };
 };
 

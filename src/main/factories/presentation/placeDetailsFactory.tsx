@@ -1,7 +1,7 @@
 import React from 'react';
 import { RouteProp } from '@react-navigation/native';
 import { faker } from '@faker-js/faker';
-import { Actions, Routes, navigator } from '~/main/navigation';
+import { Routes } from '~/main/navigation';
 import {
   PlaceDetails,
   usePlaceDetails,
@@ -15,7 +15,6 @@ type Props = {
 
 const PlaceDetailsFactory = ({}: Props) => {
   const viewModel = usePlaceDetails({
-    navigate: new Actions(navigator).navigate,
     gallerySummaryImages: [
       faker.image.nature(),
       faker.image.nature(),
@@ -48,6 +47,7 @@ const PlaceDetailsFactory = ({}: Props) => {
       backgroundImage={viewModel.backgroundImage}
       gallerySummaryImages={viewModel.gallerySummaryImages}
       pressSummaryImageFromGallery={viewModel.pressSummaryImageFromGallery}
+      isOpenImagesGallery={viewModel.isOpenImagesGallery}
     />
   );
 };

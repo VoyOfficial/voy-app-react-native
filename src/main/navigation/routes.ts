@@ -3,5 +3,4 @@ export enum Routes {
   PLACE_DETAILS = 'PlaceDetails',
   PLACE_LIST = 'PlaceList',
   SEARCH = 'Search',
-  GALLERY = 'Gallery',
 }
