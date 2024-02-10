@@ -15,7 +15,7 @@ import {
   SearchInputWrapper,
 } from './styles';
 
-type Props = {
+export type Props = {
   searchValue: string;
   placeList: Array<Place>;
   changeSearch: (value: string) => void;
