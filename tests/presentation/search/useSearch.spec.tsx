@@ -1,9 +1,41 @@
 import { useState } from 'react';
 import { renderHook, waitFor } from '@testing-library/react-native';
-import { Props } from '../../../src/presentation/search';
+import { faker } from '@faker-js/faker';
+import { SearchPlaces } from '~/domain/useCases';
+import { SearchPlaceModel } from '~/domain/models';
+import { FilterParam } from '~/domain/params';
+import { Filter, Ordination } from '~/domain/enums';
+import { Props as ViewModel } from '../../../src/presentation/search';
+
+class SearchPlacesFake implements SearchPlaces {
+  public place = '';
+  public filterParam: FilterParam | undefined;
+  public nextPageToken? = '';
+  async search(
+    place: string,
+    { type, ordination }: FilterParam,
+    nextPageToken?: string | undefined,
+  ): Promise<SearchPlaceModel[]> {
+    this.place = place;
+    this.nextPageToken = nextPageToken;
+    this.filterParam = { ordination, type };
+
+    return [];
+  }
+}
+
 describe('Presentation: useSearch', () => {
   test('should update showFilterOptions to true when call filter function', async () => {
-    const { result } = renderHook(() => useSearch());
+    const { result } = renderHook(() =>
+      useSearch({
+        searchPlaces: new SearchPlacesFake(),
+        filterParam: {
+          ordination: Ordination.Closer,
+          type: Filter.CoffeeMakers,
+        },
+        nextPageToken: '',
+      }),
+    );
 
     expect(result.current.showFilterOptions).toEqual(false);
 
@@ -15,7 +47,16 @@ describe('Presentation: useSearch', () => {
   });
 
   test('should update the searchValue correctly when call changeSearch function', async () => {
-    const { result } = renderHook(() => useSearch());
+    const { result } = renderHook(() =>
+      useSearch({
+        searchPlaces: new SearchPlacesFake(),
+        filterParam: {
+          ordination: Ordination.Closer,
+          type: Filter.CoffeeMakers,
+        },
+        nextPageToken: '',
+      }),
+    );
 
     expect(result.current.searchValue).toEqual('');
 
@@ -25,9 +66,37 @@ describe('Presentation: useSearch', () => {
       expect(result.current.searchValue).toEqual('Restaurante');
     });
   });
+
+  test('should call search of SearchPlaces correctly when to call searchTo function', async () => {
+    const searchPlaces = new SearchPlacesFake();
+    const nextPageToken = faker.datatype.uuid();
+    const filterParam: FilterParam = {
+      ordination: Ordination.MostCommented,
+      type: Filter.Restaurants,
+    };
+    const { result } = renderHook(() =>
+      useSearch({ searchPlaces, nextPageToken, filterParam }),
+    );
+
+    result.current.searchTo('Malbec');
+
+    expect(searchPlaces.place).toEqual('Malbec');
+    expect(searchPlaces.nextPageToken).toEqual(nextPageToken);
+    expect(searchPlaces.filterParam).toEqual(filterParam);
+  });
 });
 
-const useSearch = (): Props => {
+type Props = {
+  searchPlaces: SearchPlaces;
+  nextPageToken: string;
+  filterParam: FilterParam;
+};
+
+const useSearch = ({
+  searchPlaces,
+  filterParam,
+  nextPageToken,
+}: Props): ViewModel => {
   const [showFilterOptions, setShowFilterOptions] = useState(false);
   const [searchValue, setSearchValue] = useState('');
 
@@ -39,11 +108,16 @@ const useSearch = (): Props => {
     setSearchValue(value);
   };
 
+  const searchTo = (value: string) => {
+    const { ordination, type } = filterParam;
+    searchPlaces.search(value, { ordination, type }, nextPageToken);
+  };
+
   return {
     changeSearch,
     filter,
     placeList: [],
-    searchTo: () => {},
+    searchTo,
     searchValue,
     showFilterOptions,
   };
