@@ -13,21 +13,38 @@ describe('Presentation: useSearch', () => {
       expect(result.current.showFilterOptions).toEqual(true);
     });
   });
+
+  test('should update the searchValue correctly when call changeSearch function', async () => {
+    const { result } = renderHook(() => useSearch());
+
+    expect(result.current.searchValue).toEqual('');
+
+    result.current.changeSearch('Restaurante');
+
+    await waitFor(() => {
+      expect(result.current.searchValue).toEqual('Restaurante');
+    });
+  });
 });
 
 const useSearch = (): Props => {
   const [showFilterOptions, setShowFilterOptions] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
 
   const filter = () => {
     setShowFilterOptions(!showFilterOptions);
   };
 
+  const changeSearch = (value: string) => {
+    setSearchValue(value);
+  };
+
   return {
-    changeSearch: () => {},
+    changeSearch,
     filter,
     placeList: [],
     searchTo: () => {},
-    searchValue: '',
+    searchValue,
     showFilterOptions,
   };
 };
