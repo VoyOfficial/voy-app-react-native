@@ -6,11 +6,14 @@ import { SearchPlaceModel } from '~/domain/models';
 import { FilterParam } from '~/domain/params';
 import { Filter, Ordination } from '~/domain/enums';
 import { Props as ViewModel } from '../../../src/presentation/search';
+import { Place } from '../../../src/presentation/components/cardList';
+import placeListFactory from '../helpers/placeListFactory';
 
 class SearchPlacesFake implements SearchPlaces {
   public place = '';
   public filterParam: FilterParam | undefined;
   public nextPageToken? = '';
+  public list: SearchPlaceModel[] = [];
   async search(
     place: string,
     { type, ordination }: FilterParam,
@@ -20,7 +23,11 @@ class SearchPlacesFake implements SearchPlaces {
     this.nextPageToken = nextPageToken;
     this.filterParam = { ordination, type };
 
-    return [];
+    this.list = placeListFactory(5).map((place) => {
+      return { ...place, isSaved: true };
+    });
+
+    return this.list;
   }
 }
 
@@ -84,6 +91,36 @@ describe('Presentation: useSearch', () => {
     expect(searchPlaces.nextPageToken).toEqual(nextPageToken);
     expect(searchPlaces.filterParam).toEqual(filterParam);
   });
+
+  test('should get the placeList through of SearchPlaces when call searchTo function', async () => {
+    const searchPlaces = new SearchPlacesFake();
+    const nextPageToken = faker.datatype.uuid();
+    const filterParam: FilterParam = {
+      ordination: Ordination.MostCommented,
+      type: Filter.Restaurants,
+    };
+    const { result } = renderHook(() =>
+      useSearch({ searchPlaces, nextPageToken, filterParam }),
+    );
+
+    await result.current.searchTo('Malbec');
+
+    const list: Array<Place> = [];
+    searchPlaces.list.forEach((place) => {
+      list.push({
+        amountOfReviews: place.amountOfReviews,
+        imageUrl: place.imageUrl,
+        location: place.location,
+        myDistanceOfLocal: place.myDistanceOfLocal,
+        rating: place.rating,
+        title: place.title,
+      });
+    });
+
+    await waitFor(() => {
+      expect(result.current.placeList).toEqual(list);
+    });
+  });
 });
 
 type Props = {
@@ -99,6 +136,7 @@ const useSearch = ({
 }: Props): ViewModel => {
   const [showFilterOptions, setShowFilterOptions] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [placeList, setPlaceList] = useState<Array<Place>>([]);
 
   const filter = () => {
     setShowFilterOptions(!showFilterOptions);
@@ -108,15 +146,33 @@ const useSearch = ({
     setSearchValue(value);
   };
 
-  const searchTo = (value: string) => {
+  const searchTo = async (value: string) => {
     const { ordination, type } = filterParam;
-    searchPlaces.search(value, { ordination, type }, nextPageToken);
+    const result = await searchPlaces.search(
+      value,
+      { ordination, type },
+      nextPageToken,
+    );
+
+    const auxPlaceList: Array<Place> = [];
+    result.forEach((place) => {
+      auxPlaceList.push({
+        amountOfReviews: place.amountOfReviews,
+        imageUrl: place.imageUrl,
+        location: place.location,
+        myDistanceOfLocal: place.myDistanceOfLocal,
+        rating: place.rating,
+        title: place.title,
+      });
+    });
+
+    setPlaceList(auxPlaceList);
   };
 
   return {
     changeSearch,
     filter,
-    placeList: [],
+    placeList,
     searchTo,
     searchValue,
     showFilterOptions,

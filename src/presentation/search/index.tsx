@@ -19,7 +19,7 @@ export type Props = {
   searchValue: string;
   placeList: Array<Place>;
   changeSearch: (value: string) => void;
-  searchTo: (value: string) => void;
+  searchTo: (value: string) => Promise<void>;
   filter: () => void;
   showFilterOptions: boolean;
 };

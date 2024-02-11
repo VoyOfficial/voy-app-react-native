@@ -1,15 +1,11 @@
-import BusinessHoursModel from './businessHoursModel';
-
 type SearchPlaceModel = {
-  name: string;
-  about: string;
-  address: string;
-  businessHours: BusinessHoursModel;
-  contact: string;
-  rating: number;
+  rating: string;
   isSaved: boolean;
-  comments: string[];
-  images: string[];
+  amountOfReviews: string;
+  imageUrl: string;
+  location: string;
+  title: string;
+  myDistanceOfLocal: string;
 };
 
 export default SearchPlaceModel;
