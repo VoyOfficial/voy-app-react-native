@@ -42,6 +42,17 @@ describe('Model: Filter', () => {
 
     expect(optionSelected.selected).toEqual(true);
   });
+
+  test('should update options correctly when to call selectOrder function', () => {
+    const sut = new Filter(getOptions());
+
+    expect(sut.options.orderBy.selected).toEqual(getOptions().orderBy.selected);
+
+    const optionSelected = sut.options.orderBy.list[2];
+    sut.selectOrder(optionSelected);
+
+    expect(sut.options.orderBy.selected).toEqual(optionSelected);
+  });
 });
 
 type Options = {
@@ -85,5 +96,9 @@ class Filter {
   }) => {
     const index = this.options.filterBy.list.indexOf(filter);
     this.options.filterBy.list[index].selected = true;
+  };
+
+  @action selectOrder = (order: { id: number; label: string }) => {
+    this.options.orderBy.selected = order;
   };
 }
