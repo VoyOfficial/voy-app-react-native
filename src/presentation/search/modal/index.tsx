@@ -157,15 +157,21 @@ export const FilterModal = ({
 
 export const useFilterModalFactory = () => {
   const [showOrderList, setShowOrderList] = useState(false);
+  const [showFilterList, setShowFilterList] = useState(false);
 
   const changeShowOfOrderList = () => {
     setShowOrderList(!showOrderList);
   };
+
+  const changeShowOfFilterList = () => {
+    setShowFilterList(!showFilterList);
+  };
+
   return {
     showOrderList,
-    showFilterList: false,
+    showFilterList,
     changeShowOfOrderList,
-    changeShowOfFilterList: () => {},
+    changeShowOfFilterList,
   };
 };
 

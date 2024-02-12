@@ -531,6 +531,18 @@ describe('Search: FilterModal', () => {
 
 describe('Search: FilterModalFactory', () => {
   describe('useFilterModalFactory', () => {
+    test('should update showFilterList to true when call changeShowOfFilterList function', async () => {
+      const { result } = renderHook(() => useFilterModalFactory());
+
+      expect(result.current.showFilterList).toEqual(false);
+
+      result.current.changeShowOfFilterList();
+
+      await waitFor(() => {
+        expect(result.current.showFilterList).toEqual(true);
+      });
+    });
+
     test('should update showOrderList to true when call changeShowOfOrderList function', async () => {
       const { result } = renderHook(() => useFilterModalFactory());
 
