@@ -111,7 +111,7 @@ describe('Presentation: Search', () => {
       () => {},
       'any_value',
       () => {},
-      () => {},
+      async () => {},
       placeList,
     );
 
@@ -130,7 +130,7 @@ describe('Presentation: Search', () => {
       () => {},
       'any_value',
       () => {},
-      () => {},
+      async () => {},
       placeList,
     );
 
@@ -145,7 +145,7 @@ const makeSut = (
   filter = () => {},
   searchValue = '',
   changeSearch = () => {},
-  searchTo = () => {},
+  searchTo = async () => {},
   placeList: Array<Place> = [],
 ) => {
   const sut = render(
