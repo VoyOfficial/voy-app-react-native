@@ -1,15 +1,23 @@
 import React from 'react';
 import { ReactTestInstance } from 'react-test-renderer';
-import { fireEvent, render } from '@testing-library/react-native';
+import {
+  fireEvent,
+  render,
+  renderHook,
+  waitFor,
+} from '@testing-library/react-native';
 import {
   TextMatch,
   TextMatchOptions,
 } from '@testing-library/react-native/build/matches';
 import { CommonQueryOptions } from '@testing-library/react-native/build/queries/options';
-import FilterModal from '../../../../src/presentation/search/modal';
+import {
+  FilterModal,
+  useFilterModalFactory,
+} from '../../../../src/presentation/search/modal';
 import filterOptionsFactory from '../helpers/filterOptionsFactory';
 
-describe('Search: Modal', () => {
+describe('Search: FilterModal', () => {
   test('should show order by selected correctly', () => {
     const filterOptions = filterOptionsFactory();
     const {
@@ -518,6 +526,22 @@ describe('Search: Modal', () => {
     expect(filterOptions.filterBy.list[1].selected).toEqual(true);
     expect(filterOptions.filterBy.list[2].selected).toEqual(true);
     expect(filterOptions.filterBy.list[4].selected).toEqual(true);
+  });
+});
+
+describe('Search: FilterModalFactory', () => {
+  describe('useFilterModalFactory', () => {
+    test('should update showOrderList to true when call changeShowOfOrderList function', async () => {
+      const { result } = renderHook(() => useFilterModalFactory());
+
+      expect(result.current.showOrderList).toEqual(false);
+
+      result.current.changeShowOfOrderList();
+
+      await waitFor(() => {
+        expect(result.current.showOrderList).toEqual(true);
+      });
+    });
   });
 });
 

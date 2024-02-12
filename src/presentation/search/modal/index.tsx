@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ArrowIcon,
   Container,
@@ -89,7 +89,7 @@ const Options = ({
     </OptionButton>
   ));
 
-const FilterModal = ({
+export const FilterModal = ({
   filterOptions,
   selectOrder,
   selectFilter,
@@ -155,4 +155,54 @@ const FilterModal = ({
   );
 };
 
-export default FilterModal;
+export const useFilterModalFactory = () => {
+  const [showOrderList, setShowOrderList] = useState(false);
+
+  const changeShowOfOrderList = () => {
+    setShowOrderList(!showOrderList);
+  };
+  return {
+    showOrderList,
+    showFilterList: false,
+    changeShowOfOrderList,
+    changeShowOfFilterList: () => {},
+  };
+};
+
+const FilterModalFactory = () => {
+  return (
+    <FilterModal
+      filterOptions={{
+        filterBy: {
+          label: 'Filtrar por',
+          list: [
+            { id: 1, label: 'Restaurantes', selected: false },
+            { id: 2, label: 'Cafeterias', selected: false },
+            { id: 3, label: 'Entretenimento', selected: false },
+            { id: 4, label: 'Hotéis', selected: false },
+            { id: 5, label: 'Lazer', selected: false },
+            { id: 6, label: 'Esportes', selected: false },
+            { id: 7, label: 'Vida noturna', selected: false },
+          ],
+        },
+        orderBy: {
+          label: 'Ordernar por',
+          list: [
+            { id: 1, label: 'Mais avaliados' },
+            { id: 2, label: 'Mais comentados' },
+            { id: 3, label: 'Distância' },
+          ],
+          selected: { id: 1, label: 'Mais avaliados' },
+        },
+      }}
+      selectFilter={() => {}}
+      selectOrder={() => {}}
+      showOrderList={true}
+      showFilterList={true}
+      changeShowOfOrderList={() => {}}
+      changeShowOfFilterList={() => {}}
+    />
+  );
+};
+
+export default FilterModalFactory;
