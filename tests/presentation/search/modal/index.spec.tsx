@@ -673,6 +673,20 @@ describe('Search: FilterModalFactory', () => {
       );
       expect(result.current.options).not.toEqual(getOptions());
     });
+
+    test('should deselect filter and update options when call deselectFilter function', async () => {
+      const options = getOptions();
+      options.filterBy.list[4].selected = true;
+
+      const filter = new Filter(options);
+      const { result } = renderHook(() => useFilterModalFactory({ filter }));
+
+      expect(result.current.options).toEqual(options);
+      result.current.deselectFilter(options.filterBy.list[4]);
+
+      expect(result.current.options.filterBy.list[4].selected).toEqual(false);
+      expect(result.current.options).toEqual(getOptions());
+    });
   });
 });
 
