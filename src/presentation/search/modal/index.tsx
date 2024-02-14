@@ -60,6 +60,11 @@ type Props = {
     label: string;
     selected?: boolean;
   }) => void;
+  deselectFilter: (filter: {
+    id: number;
+    label: string;
+    selected?: boolean;
+  }) => void;
   showOrderList: boolean;
   showFilterList: boolean;
   changeShowOfOrderList: () => void;
@@ -69,17 +74,29 @@ type Props = {
 const Options = ({
   list,
   select,
+  deselect,
   type,
 }: {
   list: Array<{ id: number; label: string; selected?: boolean }>;
   select: (option: { id: number; label: string; selected?: boolean }) => void;
+  deselect?: (option: {
+    id: number;
+    label: string;
+    selected?: boolean;
+  }) => void;
   type: string;
 }) =>
   list.map((option) => (
     <OptionButton
       key={option.id}
       testID={`${type}_button_${option.id}_id`}
-      onPress={() => select(option)}
+      onPress={() => {
+        if (option.selected && deselect) {
+          deselect(option);
+        } else {
+          select(option);
+        }
+      }}
     >
       <OptionLabel testID={`${type}_${option.id}_id`}>
         {option.label}
@@ -95,6 +112,7 @@ export const FilterModal = ({
   filterOptions,
   selectOrder,
   selectFilter,
+  deselectFilter,
   changeShowOfOrderList,
   changeShowOfFilterList,
   showOrderList,
@@ -149,6 +167,7 @@ export const FilterModal = ({
           <Options
             list={filterOptions.filterBy.list}
             select={selectFilter}
+            deselect={deselectFilter}
             type="filter"
           />
         </FilterOptionsWrapper>
@@ -200,6 +219,36 @@ export const useFilterModalFactory = ({ filter }: { filter: Filter }) => {
     setOptions(optionsUpdated);
   };
 
+  const deselectFilter = (option: {
+    id: number;
+    label: string;
+    selected?: boolean;
+  }) => {
+    let auxOption: { id: number; label: string; selected: boolean } = {
+      id: 0,
+      label: '',
+      selected: false,
+    };
+
+    if (option.selected) {
+      auxOption = {
+        id: option.id,
+        label: option.label,
+        selected: option.selected,
+      };
+    } else {
+      auxOption = {
+        id: option.id,
+        label: option.label,
+        selected: false,
+      };
+    }
+
+    const optionsUpdated = filter.deselectFilter(auxOption, options);
+
+    setOptions(optionsUpdated);
+  };
+
   const selectOrder = (order: { id: number; label: string }) => {
     const optionsUpdated = filter.selectOrder(order, options);
     setOptions(optionsUpdated);
@@ -212,6 +261,7 @@ export const useFilterModalFactory = ({ filter }: { filter: Filter }) => {
     changeShowOfOrderList,
     changeShowOfFilterList,
     selectFilter,
+    deselectFilter,
     selectOrder,
   };
 };
@@ -221,6 +271,7 @@ const FilterModalFactory = ({ filter }: { filter?: Filter }) => {
     changeShowOfFilterList,
     changeShowOfOrderList,
     selectFilter,
+    deselectFilter,
     selectOrder,
     showFilterList,
     showOrderList,
@@ -236,6 +287,7 @@ const FilterModalFactory = ({ filter }: { filter?: Filter }) => {
       showFilterList={showFilterList}
       changeShowOfOrderList={changeShowOfOrderList}
       changeShowOfFilterList={changeShowOfFilterList}
+      deselectFilter={deselectFilter}
     />
   );
 };

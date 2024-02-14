@@ -79,6 +79,27 @@ export default class Filter {
     return auxOptions;
   };
 
+  @action deselectFilter = (
+    filter: {
+      id: number;
+      label: string;
+      selected: boolean;
+    },
+    options: Options,
+  ) => {
+    const auxOptions = { ...options };
+    const optionFounded = auxOptions.filterBy.list.find(
+      (option) => option.id === filter.id,
+    );
+
+    if (optionFounded) {
+      optionFounded.selected = false;
+    }
+
+    this.options = auxOptions;
+    return auxOptions;
+  };
+
   @action selectOrder = (
     order: { id: number; label: string },
     options: Options,

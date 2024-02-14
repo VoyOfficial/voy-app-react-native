@@ -23,6 +23,22 @@ describe('Model: Filter', () => {
     expect(sut.options.filterBy.list[4].selected).toEqual(true);
   });
 
+  test('should update options correctly when to call deselectFilter function', () => {
+    const optionsToConstructor = getOptions();
+    optionsToConstructor.filterBy.list[4].selected = true;
+    const sut = new Filter(optionsToConstructor);
+
+    const options = getOptions();
+    options.filterBy.list[4].selected = true;
+    expect(options.filterBy.list[4].selected).toEqual(true);
+    expect(sut.options.filterBy.list[4].selected).toEqual(true);
+
+    sut.deselectFilter(options.filterBy.list[4], options);
+
+    expect(options.filterBy.list[4].selected).toEqual(false);
+    expect(sut.options.filterBy.list[4].selected).toEqual(false);
+  });
+
   test('should update options correctly when to call selectOrder function', () => {
     const sut = new Filter(getOptions());
 

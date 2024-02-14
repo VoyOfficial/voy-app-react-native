@@ -26,6 +26,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -47,6 +48,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -67,6 +69,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -84,6 +87,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: true,
@@ -101,6 +105,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: true,
@@ -118,6 +123,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -135,6 +141,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: false,
@@ -152,6 +159,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: false,
@@ -169,6 +177,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -186,6 +195,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -203,6 +213,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -222,6 +233,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -242,6 +254,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: true,
@@ -263,6 +276,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: true,
@@ -297,6 +311,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: true,
@@ -332,6 +347,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -372,6 +388,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -417,6 +434,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: false,
@@ -434,6 +452,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: false,
@@ -451,6 +470,7 @@ describe('Search: FilterModal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: true,
@@ -471,11 +491,14 @@ describe('Search: FilterModal', () => {
       filterOptions.orderBy.selected = order;
     };
 
+    const deselectFilter = () => {};
+
     const {
       sut: { getByTestId },
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter,
       selectOrder,
       showFilterList: false,
       showOrderList: true,
@@ -508,11 +531,14 @@ describe('Search: FilterModal', () => {
       });
     };
 
+    const deselectFilter = () => {};
+
     const {
       sut: { getByTestId },
     } = makeSut({
       filterOptions,
       selectFilter,
+      deselectFilter,
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: true,
@@ -527,6 +553,62 @@ describe('Search: FilterModal', () => {
     expect(filterOptions.filterBy.list[1].selected).toEqual(true);
     expect(filterOptions.filterBy.list[2].selected).toEqual(true);
     expect(filterOptions.filterBy.list[4].selected).toEqual(true);
+  });
+
+  test('should update filters selected when press more of one filter already selected', () => {
+    const filterOptions = filterOptionsFactory();
+    const selectFilter = (filterSelected: {
+      id: number;
+      label: string;
+      selected?: boolean;
+    }) => {
+      filterOptions.filterBy.list.forEach((filter) => {
+        if (filter.id === filterSelected.id) {
+          filter.selected = true;
+        }
+      });
+    };
+
+    const deselectFilter = (filterSelected: {
+      id: number;
+      label: string;
+      selected?: boolean;
+    }) => {
+      filterOptions.filterBy.list.forEach((filter) => {
+        if (filter.id === filterSelected.id) {
+          filter.selected = false;
+        }
+      });
+    };
+
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter,
+      deselectFilter,
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: true,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
+
+    fireEvent.press(getByTestId('filter_button_1_id'));
+    fireEvent.press(getByTestId('filter_button_2_id'));
+    fireEvent.press(getByTestId('filter_button_4_id'));
+
+    expect(filterOptions.filterBy.list[1].selected).toEqual(true);
+    expect(filterOptions.filterBy.list[2].selected).toEqual(true);
+    expect(filterOptions.filterBy.list[4].selected).toEqual(true);
+
+    fireEvent.press(getByTestId('filter_button_1_id'));
+    fireEvent.press(getByTestId('filter_button_2_id'));
+    fireEvent.press(getByTestId('filter_button_4_id'));
+
+    expect(filterOptions.filterBy.list[1].selected).toEqual(false);
+    expect(filterOptions.filterBy.list[2].selected).toEqual(false);
+    expect(filterOptions.filterBy.list[4].selected).toEqual(false);
   });
 });
 
@@ -589,6 +671,11 @@ type Props = {
     label: string;
     selected?: boolean;
   }) => void;
+  deselectFilter: (filter: {
+    id: number;
+    label: string;
+    selected?: boolean;
+  }) => void;
   selectOrder: (order: { id: number; label: string }) => void;
   showFilterList: boolean;
   showOrderList: boolean;
@@ -599,6 +686,7 @@ type Props = {
 const makeSut = ({
   filterOptions,
   selectFilter,
+  deselectFilter,
   selectOrder,
   showFilterList,
   showOrderList,
@@ -610,6 +698,7 @@ const makeSut = ({
       filterOptions={filterOptions}
       selectOrder={selectOrder}
       selectFilter={selectFilter}
+      deselectFilter={deselectFilter}
       showOrderList={showOrderList}
       showFilterList={showFilterList}
       changeShowOfOrderList={changeShowOfOrderList}
