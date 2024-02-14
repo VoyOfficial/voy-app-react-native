@@ -656,6 +656,23 @@ describe('Search: FilterModalFactory', () => {
       expect(filter.options.filterBy.list[4].selected).toEqual(true);
       expect(result.current.options).not.toEqual(getOptions());
     });
+
+    test('should select order and update options when call selectOrder function', async () => {
+      const filter = new Filter(getOptions());
+      const { result } = renderHook(() => useFilterModalFactory({ filter }));
+
+      expect(filter.options.orderBy.selected).toEqual(
+        getOptions().orderBy.list[0],
+      );
+      expect(result.current.options).toEqual(getOptions());
+
+      result.current.selectOrder(getOptions().orderBy.list[2]);
+
+      expect(filter.options.orderBy.selected).toEqual(
+        getOptions().orderBy.list[2],
+      );
+      expect(result.current.options).not.toEqual(getOptions());
+    });
   });
 });
 
