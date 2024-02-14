@@ -16,6 +16,7 @@ import {
   useFilterModalFactory,
 } from '../../../../src/presentation/search/modal';
 import filterOptionsFactory from '../helpers/filterOptionsFactory';
+import Filter from '../../../../src/presentation/search/model/Filter';
 
 describe('Search: FilterModal', () => {
   test('should show order by selected correctly', () => {
@@ -532,7 +533,9 @@ describe('Search: FilterModal', () => {
 describe('Search: FilterModalFactory', () => {
   describe('useFilterModalFactory', () => {
     test('should update showFilterList to true when call changeShowOfFilterList function', async () => {
-      const { result } = renderHook(() => useFilterModalFactory());
+      const { result } = renderHook(() =>
+        useFilterModalFactory({ filter: new Filter() }),
+      );
 
       expect(result.current.showFilterList).toEqual(false);
 
@@ -544,7 +547,9 @@ describe('Search: FilterModalFactory', () => {
     });
 
     test('should update showOrderList to true when call changeShowOfOrderList function', async () => {
-      const { result } = renderHook(() => useFilterModalFactory());
+      const { result } = renderHook(() =>
+        useFilterModalFactory({ filter: new Filter() }),
+      );
 
       expect(result.current.showOrderList).toEqual(false);
 

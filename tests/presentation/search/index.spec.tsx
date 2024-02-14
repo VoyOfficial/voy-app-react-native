@@ -1,8 +1,10 @@
 import React from 'react';
+import { Provider } from 'mobx-react';
 import { fireEvent, render } from '@testing-library/react-native';
-import Search from '../../../src/presentation/search';
+import Filter from '../../../src/presentation/search/model/Filter';
 import placeListFactory from '../helpers/placeListFactory';
 import { Place } from '../../../src/presentation/components/cardList';
+import { Search } from '../../../src/presentation/search';
 
 describe('Presentation: Search', () => {
   test('should show input of search with success', () => {
@@ -149,14 +151,17 @@ const makeSut = (
   placeList: Array<Place> = [],
 ) => {
   const sut = render(
-    <Search
-      searchValue={searchValue}
-      changeSearch={changeSearch}
-      searchTo={searchTo}
-      filter={filter}
-      showFilterOptions={showFilterOptions}
-      placeList={placeList}
-    />,
+    <Provider {...{ filter: new Filter() }}>
+      <Search
+        searchValue={searchValue}
+        changeSearch={changeSearch}
+        searchTo={searchTo}
+        filter={filter}
+        showFilterOptions={showFilterOptions}
+        placeList={placeList}
+      />
+      ,
+    </Provider>,
   );
 
   return { sut };

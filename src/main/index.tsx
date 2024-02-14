@@ -1,9 +1,11 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
 import styled from 'styled-components/native';
+import { Provider } from 'mobx-react';
 import { NavigationContainerRef } from '@react-navigation/native';
 import Navigation, { StackParams } from './navigation/navigation';
 import { Routes, getScreensStack, setTopLevelNavigator } from './navigation';
+import stores from './stores';
 
 type Props = {
   initialRouteName?: keyof StackParams;
@@ -17,13 +19,15 @@ const Main: React.FC<Props> = ({
   return (
     <WrapperScreen>
       <StatusBar barStyle={'dark-content'} />
-      <Navigation
-        setNavigationTop={(navigationRef: NavigationContainerRef<any>) =>
-          setTopLevelNavigator(navigationRef)
-        }
-        initialRouteName={initialRouteName}
-        screensStack={screensStack}
-      />
+      <Provider {...stores}>
+        <Navigation
+          setNavigationTop={(navigationRef: NavigationContainerRef<any>) =>
+            setTopLevelNavigator(navigationRef)
+          }
+          initialRouteName={initialRouteName}
+          screensStack={screensStack}
+        />
+      </Provider>
     </WrapperScreen>
   );
 };

@@ -1,13 +1,12 @@
-import { useState } from 'react';
 import { renderHook, waitFor } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
 import { SearchPlaces } from '~/domain/useCases';
 import { SearchPlaceModel } from '~/domain/models';
 import { FilterParam } from '~/domain/params';
 import { Filter, Ordination } from '~/domain/enums';
-import { Props as ViewModel } from '../../../src/presentation/search';
 import { Place } from '../../../src/presentation/components/cardList';
 import placeListFactory from '../helpers/placeListFactory';
+import { useSearch } from '../../../src/presentation/search';
 
 class SearchPlacesFake implements SearchPlaces {
   public place = '';
@@ -122,59 +121,3 @@ describe('Presentation: useSearch', () => {
     });
   });
 });
-
-type Props = {
-  searchPlaces: SearchPlaces;
-  nextPageToken: string;
-  filterParam: FilterParam;
-};
-
-const useSearch = ({
-  searchPlaces,
-  filterParam,
-  nextPageToken,
-}: Props): ViewModel => {
-  const [showFilterOptions, setShowFilterOptions] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
-  const [placeList, setPlaceList] = useState<Array<Place>>([]);
-
-  const filter = () => {
-    setShowFilterOptions(!showFilterOptions);
-  };
-
-  const changeSearch = (value: string) => {
-    setSearchValue(value);
-  };
-
-  const searchTo = async (value: string) => {
-    const { ordination, type } = filterParam;
-    const result = await searchPlaces.search(
-      value,
-      { ordination, type },
-      nextPageToken,
-    );
-
-    const auxPlaceList: Array<Place> = [];
-    result.forEach((place) => {
-      auxPlaceList.push({
-        amountOfReviews: place.amountOfReviews,
-        imageUrl: place.imageUrl,
-        location: place.location,
-        myDistanceOfLocal: place.myDistanceOfLocal,
-        rating: place.rating,
-        title: place.title,
-      });
-    });
-
-    setPlaceList(auxPlaceList);
-  };
-
-  return {
-    changeSearch,
-    filter,
-    placeList,
-    searchTo,
-    searchValue,
-    showFilterOptions,
-  };
-};
