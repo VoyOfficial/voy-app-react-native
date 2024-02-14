@@ -15,12 +15,12 @@ class SearchPlacesFake implements SearchPlaces {
   public list: SearchPlaceModel[] = [];
   async search(
     place: string,
-    { type, ordination }: FilterParam,
+    { types, ordination }: FilterParam,
     nextPageToken?: string | undefined,
   ): Promise<SearchPlaceModel[]> {
     this.place = place;
     this.nextPageToken = nextPageToken;
-    this.filterParam = { ordination, type };
+    this.filterParam = { ordination, types };
 
     this.list = placeListFactory(5).map((place) => {
       return { ...place, isSaved: true };
@@ -37,7 +37,7 @@ describe('Presentation: useSearch', () => {
         searchPlaces: new SearchPlacesFake(),
         filterParam: {
           ordination: Ordination.Closer,
-          type: Filter.CoffeeMakers,
+          types: [Filter.CoffeeMakers],
         },
         nextPageToken: '',
       }),
@@ -58,7 +58,7 @@ describe('Presentation: useSearch', () => {
         searchPlaces: new SearchPlacesFake(),
         filterParam: {
           ordination: Ordination.Closer,
-          type: Filter.CoffeeMakers,
+          types: [Filter.CoffeeMakers],
         },
         nextPageToken: '',
       }),
@@ -78,7 +78,7 @@ describe('Presentation: useSearch', () => {
     const nextPageToken = faker.datatype.uuid();
     const filterParam: FilterParam = {
       ordination: Ordination.MostCommented,
-      type: Filter.Restaurants,
+      types: [Filter.Restaurants],
     };
     const { result } = renderHook(() =>
       useSearch({ searchPlaces, nextPageToken, filterParam }),
@@ -96,7 +96,7 @@ describe('Presentation: useSearch', () => {
     const nextPageToken = faker.datatype.uuid();
     const filterParam: FilterParam = {
       ordination: Ordination.MostCommented,
-      type: Filter.Restaurants,
+      types: [Filter.Restaurants],
     };
     const { result } = renderHook(() =>
       useSearch({ searchPlaces, nextPageToken, filterParam }),

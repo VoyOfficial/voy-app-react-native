@@ -28,10 +28,10 @@ const useSearch = ({
   };
 
   const searchTo = async (value: string) => {
-    const { ordination, type } = filterParam;
+    const { ordination, types } = filterParam;
     const result = await searchPlaces.search(
       value,
-      { ordination, type },
+      { ordination, types },
       nextPageToken,
     );
 

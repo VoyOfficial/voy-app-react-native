@@ -1,7 +1,7 @@
 import { Filter, Ordination } from '../enums';
 
 type FilterParam = {
-  type: Filter;
+  types: Array<Filter>;
   ordination: Ordination;
 };
 

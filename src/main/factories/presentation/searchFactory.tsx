@@ -12,7 +12,7 @@ import { Search, useSearch } from '../../../../src/presentation/search';
 class SearchPlacesFake implements SearchPlaces {
   async search(
     place: string,
-    { type, ordination }: FilterParam,
+    { types, ordination }: FilterParam,
     nextPageToken?: string | undefined,
   ): Promise<SearchPlaceModel[]> {
     return [];
@@ -26,7 +26,10 @@ type Props = {
 
 const SearchFactory = ({}: Props) => {
   const viewModel = useSearch({
-    filterParam: { ordination: Ordination.Closer, type: Filter.Entertainment },
+    filterParam: {
+      ordination: Ordination.Closer,
+      types: [Filter.Entertainment],
+    },
     nextPageToken: '',
     searchPlaces: new SearchPlacesFake(),
   });
