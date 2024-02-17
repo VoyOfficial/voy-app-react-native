@@ -2,7 +2,7 @@ import React from 'react';
 import { render, waitFor } from '@testing-library/react-native';
 import { Routes } from '~/main/navigation';
 import PlaceDetailsFactory from '../../../../src/main/factories/presentation/placeDetailsFactory';
-import PlaceDetails from '../../../../src/presentation/placeDetails';
+import PlaceDetails from '../../../../src/presentation/placeDetails/placeDetails';
 
 describe('Presentation: PlaceDetailsFactory', () => {
   test('should factory the PlaceDetails with success', async () => {

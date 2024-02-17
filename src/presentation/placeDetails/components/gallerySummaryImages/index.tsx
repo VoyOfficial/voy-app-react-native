@@ -12,7 +12,7 @@ const GallerySummaryImages = ({
   press,
 }: {
   images: Array<string>;
-  press: (image: string) => void;
+  press: (image: string, showInGallery: boolean) => void;
 }) => {
   const gallerySummaryImages = [];
   const showMinimalGallerySummary = images.length <= 3;
@@ -23,7 +23,7 @@ const GallerySummaryImages = ({
         <GallerySummaryImageButton
           key={index}
           testID={`gallery_summary_image_button_${index}_id`}
-          onPress={() => press(images[index])}
+          onPress={() => press(images[index], false)}
         >
           <GallerySummaryImage
             testID={`gallery_summary_image_${index}_id`}
@@ -44,7 +44,9 @@ const GallerySummaryImages = ({
         <GallerySummaryImageButton
           key={index}
           testID={`gallery_summary_image_button_${index}_id`}
-          onPress={() => press(images[index])}
+          onPress={() =>
+            press(images[index], showMostAvailableNumberOfImages(index))
+          }
         >
           {showMostAvailableNumberOfImages(index) && (
             <>

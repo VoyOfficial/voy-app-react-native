@@ -17,8 +17,15 @@ import {
   Title,
   WalkingIcon,
 } from './styles';
+import ImagesGallery from './components/imagesGallery';
 
-type Props = {
+export const gallerySummaryImagesToImagesGallery = (
+  images: Array<string>,
+): Array<{ id: number; url: string }> => {
+  return images.map((image, index) => ({ id: index, url: image }));
+};
+
+export type PlaceDetailsViewModel = {
   title: string;
   description: string;
   location: string;
@@ -31,7 +38,9 @@ type Props = {
   photoOfReviewProfiles: Array<string>;
   backgroundImage: string;
   gallerySummaryImages: Array<string>;
-  pressSummaryImageFromGallery: () => void;
+  isOpenImagesGallery: boolean;
+  pressSummaryImageFromGallery: (image: string, showInGallery: boolean) => void;
+  closeImagesGallery: () => void;
 };
 
 const PlaceDetails = ({
@@ -47,10 +56,17 @@ const PlaceDetails = ({
   photoOfReviewProfiles,
   backgroundImage,
   gallerySummaryImages,
+  isOpenImagesGallery,
   pressSummaryImageFromGallery,
-}: Props) => {
+  closeImagesGallery,
+}: PlaceDetailsViewModel) => {
   return (
     <ScrollContainer>
+      <ImagesGallery
+        images={gallerySummaryImagesToImagesGallery(gallerySummaryImages)}
+        isOpen={isOpenImagesGallery}
+        close={closeImagesGallery}
+      />
       <ImagesWrapper>
         <BackgroundImage
           testID="background_image_id"
