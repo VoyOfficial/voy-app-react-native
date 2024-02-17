@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { inject, observer } from 'mobx-react';
+import Filter, { Options as FilterOptions } from '../model/Filter';
 import {
   ArrowIcon,
   Container,
@@ -58,6 +60,11 @@ type Props = {
     label: string;
     selected?: boolean;
   }) => void;
+  deselectFilter: (filter: {
+    id: number;
+    label: string;
+    selected?: boolean;
+  }) => void;
   showOrderList: boolean;
   showFilterList: boolean;
   changeShowOfOrderList: () => void;
@@ -67,17 +74,29 @@ type Props = {
 const Options = ({
   list,
   select,
+  deselect,
   type,
 }: {
   list: Array<{ id: number; label: string; selected?: boolean }>;
   select: (option: { id: number; label: string; selected?: boolean }) => void;
+  deselect?: (option: {
+    id: number;
+    label: string;
+    selected?: boolean;
+  }) => void;
   type: string;
 }) =>
   list.map((option) => (
     <OptionButton
       key={option.id}
       testID={`${type}_button_${option.id}_id`}
-      onPress={() => select(option)}
+      onPress={() => {
+        if (option.selected && deselect) {
+          deselect(option);
+        } else {
+          select(option);
+        }
+      }}
     >
       <OptionLabel testID={`${type}_${option.id}_id`}>
         {option.label}
@@ -89,10 +108,11 @@ const Options = ({
     </OptionButton>
   ));
 
-const FilterModal = ({
+export const FilterModal = ({
   filterOptions,
   selectOrder,
   selectFilter,
+  deselectFilter,
   changeShowOfOrderList,
   changeShowOfFilterList,
   showOrderList,
@@ -147,6 +167,7 @@ const FilterModal = ({
           <Options
             list={filterOptions.filterBy.list}
             select={selectFilter}
+            deselect={deselectFilter}
             type="filter"
           />
         </FilterOptionsWrapper>
@@ -155,4 +176,120 @@ const FilterModal = ({
   );
 };
 
-export default FilterModal;
+export const useFilterModalFactory = ({ filter }: { filter: Filter }) => {
+  const [showOrderList, setShowOrderList] = useState(false);
+  const [showFilterList, setShowFilterList] = useState(false);
+  const [options, setOptions] = useState<FilterOptions>(filter.options);
+
+  const changeShowOfOrderList = () => {
+    setShowOrderList(!showOrderList);
+  };
+
+  const changeShowOfFilterList = () => {
+    setShowFilterList(!showFilterList);
+  };
+
+  const selectFilter = (option: {
+    id: number;
+    label: string;
+    selected?: boolean;
+  }) => {
+    let auxOption: { id: number; label: string; selected: boolean } = {
+      id: 0,
+      label: '',
+      selected: false,
+    };
+
+    if (option.selected) {
+      auxOption = {
+        id: option.id,
+        label: option.label,
+        selected: option.selected,
+      };
+    } else {
+      auxOption = {
+        id: option.id,
+        label: option.label,
+        selected: false,
+      };
+    }
+
+    const optionsUpdated = filter.selectFilter(auxOption, options);
+
+    setOptions(optionsUpdated);
+  };
+
+  const deselectFilter = (option: {
+    id: number;
+    label: string;
+    selected?: boolean;
+  }) => {
+    let auxOption: { id: number; label: string; selected: boolean } = {
+      id: 0,
+      label: '',
+      selected: false,
+    };
+
+    if (option.selected) {
+      auxOption = {
+        id: option.id,
+        label: option.label,
+        selected: option.selected,
+      };
+    } else {
+      auxOption = {
+        id: option.id,
+        label: option.label,
+        selected: false,
+      };
+    }
+
+    const optionsUpdated = filter.deselectFilter(auxOption, options);
+
+    setOptions(optionsUpdated);
+  };
+
+  const selectOrder = (order: { id: number; label: string }) => {
+    const optionsUpdated = filter.selectOrder(order, options);
+    setOptions(optionsUpdated);
+  };
+
+  return {
+    showOrderList,
+    showFilterList,
+    options,
+    changeShowOfOrderList,
+    changeShowOfFilterList,
+    selectFilter,
+    deselectFilter,
+    selectOrder,
+  };
+};
+
+const FilterModalFactory = ({ filter }: { filter?: Filter }) => {
+  const {
+    changeShowOfFilterList,
+    changeShowOfOrderList,
+    selectFilter,
+    deselectFilter,
+    selectOrder,
+    showFilterList,
+    showOrderList,
+    options,
+  } = useFilterModalFactory({ filter: filter! });
+
+  return (
+    <FilterModal
+      filterOptions={options}
+      selectFilter={selectFilter}
+      selectOrder={selectOrder}
+      showOrderList={showOrderList}
+      showFilterList={showFilterList}
+      changeShowOfOrderList={changeShowOfOrderList}
+      changeShowOfFilterList={changeShowOfFilterList}
+      deselectFilter={deselectFilter}
+    />
+  );
+};
+
+export default inject('filter')(observer(FilterModalFactory));

@@ -15,7 +15,7 @@ describe('Data: RemoteSearchPlaces', () => {
     sut.search(
       '',
       {
-        type: Filter.Entertainment,
+        types: [Filter.Entertainment],
         ordination: Ordination.Closer,
       },
       nextPageToken,
@@ -29,7 +29,7 @@ describe('Data: RemoteSearchPlaces', () => {
     const { sut, httpClient } = makeSut(url);
 
     sut.search('', {
-      type: Filter.Entertainment,
+      types: [Filter.Entertainment],
       ordination: Ordination.Closer,
     });
 
@@ -45,7 +45,7 @@ describe('Data: RemoteSearchPlaces', () => {
     sut.search(
       place,
       {
-        type: Filter.Entertainment,
+        types: [Filter.Entertainment],
         ordination: Ordination.Closer,
       },
       nextPageToken,
@@ -58,30 +58,30 @@ describe('Data: RemoteSearchPlaces', () => {
 
   test('should search in the body of the httpPostClient call for the correct type and ordination params', () => {
     const url = makeUrl();
-    const type = Filter.Entertainment;
+    const types = [Filter.Entertainment];
     const ordination = Ordination.Closer;
     const { sut, httpClient } = makeSut(url);
 
     sut.search('', {
-      type: type,
+      types: types,
       ordination: ordination,
     });
 
     expect(httpClient.body).toEqual({
-      type: type,
+      types: types,
       ordination: ordination,
     });
   });
 
   test('should search with httpPostClient returning noContent and returning list empty', async () => {
     const url = makeUrl();
-    const type = Filter.Entertainment;
+    const types = [Filter.Entertainment];
     const ordination = Ordination.Closer;
     const { sut, httpClient } = makeSut(url);
     httpClient.completeWithNoContentError();
 
     const response = await sut.search('', {
-      type: type,
+      types: types,
       ordination: ordination,
     });
 
@@ -90,13 +90,13 @@ describe('Data: RemoteSearchPlaces', () => {
 
   test('should search with httpPostClient returning noAccess error', async () => {
     const url = makeUrl();
-    const type = Filter.Entertainment;
+    const types = [Filter.Entertainment];
     const ordination = Ordination.Closer;
     const { sut, httpClient } = makeSut(url);
     httpClient.completeWithForbiddenError();
 
     const promise = sut.search('', {
-      type: type,
+      types: types,
       ordination: ordination,
     });
 
@@ -105,14 +105,14 @@ describe('Data: RemoteSearchPlaces', () => {
 
   test('should search with httpPostClient returning a list with success', async () => {
     const url = makeUrl();
-    const type = Filter.Entertainment;
+    const types = [Filter.Entertainment];
     const ordination = Ordination.Closer;
     const body = searchPlacesModelFactory();
     const { sut, httpClient } = makeSut(url);
     httpClient.completeWithSuccess(HttpStatusCode.ok, body);
 
     const response = await sut.search('', {
-      type: type,
+      types: types,
       ordination: ordination,
     });
 
@@ -121,13 +121,13 @@ describe('Data: RemoteSearchPlaces', () => {
 
   test('should search with httpPostClient returning unexpected error', async () => {
     const url = makeUrl();
-    const type = Filter.Entertainment;
+    const types = [Filter.Entertainment];
     const ordination = Ordination.Closer;
     const { sut, httpClient } = makeSut(url);
     httpClient.completeWithUnexpectedError();
 
     const promise = sut.search('', {
-      type: type,
+      types: types,
       ordination: ordination,
     });
 

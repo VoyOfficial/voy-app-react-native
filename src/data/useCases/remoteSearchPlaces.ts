@@ -9,13 +9,13 @@ export default class RemoteSearchPlaces implements SearchPlaces {
 
   async search(
     place: string,
-    { type, ordination }: FilterParam,
+    { types, ordination }: FilterParam,
     nextPageToken?: string,
   ): Promise<SearchPlaceModel[]> {
     const urlWithParams = this.makeUrl(place, nextPageToken);
     const response = await this.httpPostClient.post({
       url: urlWithParams,
-      body: { type: type, ordination: ordination },
+      body: { types: types, ordination: ordination },
     });
 
     switch (response.statusCode) {

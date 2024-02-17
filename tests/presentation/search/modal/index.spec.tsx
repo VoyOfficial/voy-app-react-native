@@ -1,15 +1,26 @@
 import React from 'react';
 import { ReactTestInstance } from 'react-test-renderer';
-import { fireEvent, render } from '@testing-library/react-native';
+import {
+  fireEvent,
+  render,
+  renderHook,
+  waitFor,
+} from '@testing-library/react-native';
 import {
   TextMatch,
   TextMatchOptions,
 } from '@testing-library/react-native/build/matches';
 import { CommonQueryOptions } from '@testing-library/react-native/build/queries/options';
-import FilterModal from '../../../../src/presentation/search/modal';
+import {
+  FilterModal,
+  useFilterModalFactory,
+} from '../../../../src/presentation/search/modal';
 import filterOptionsFactory from '../helpers/filterOptionsFactory';
+import Filter, {
+  getOptions,
+} from '../../../../src/presentation/search/model/Filter';
 
-describe('Search: Modal', () => {
+describe('Search: FilterModal', () => {
   test('should show order by selected correctly', () => {
     const filterOptions = filterOptionsFactory();
     const {
@@ -17,6 +28,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -38,6 +50,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -58,6 +71,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -75,6 +89,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: true,
@@ -92,6 +107,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: true,
@@ -109,6 +125,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -126,6 +143,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: false,
@@ -143,6 +161,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: false,
@@ -160,6 +179,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -177,6 +197,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -194,6 +215,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -213,6 +235,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -233,6 +256,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: true,
@@ -254,6 +278,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: true,
@@ -288,6 +313,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: true,
@@ -323,6 +349,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -363,6 +390,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: false,
@@ -408,6 +436,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: false,
@@ -425,6 +454,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: false,
       showOrderList: false,
@@ -442,6 +472,7 @@ describe('Search: Modal', () => {
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter: () => {},
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: true,
@@ -462,11 +493,14 @@ describe('Search: Modal', () => {
       filterOptions.orderBy.selected = order;
     };
 
+    const deselectFilter = () => {};
+
     const {
       sut: { getByTestId },
     } = makeSut({
       filterOptions,
       selectFilter: () => {},
+      deselectFilter,
       selectOrder,
       showFilterList: false,
       showOrderList: true,
@@ -499,11 +533,14 @@ describe('Search: Modal', () => {
       });
     };
 
+    const deselectFilter = () => {};
+
     const {
       sut: { getByTestId },
     } = makeSut({
       filterOptions,
       selectFilter,
+      deselectFilter,
       selectOrder: () => {},
       showFilterList: true,
       showOrderList: true,
@@ -518,6 +555,138 @@ describe('Search: Modal', () => {
     expect(filterOptions.filterBy.list[1].selected).toEqual(true);
     expect(filterOptions.filterBy.list[2].selected).toEqual(true);
     expect(filterOptions.filterBy.list[4].selected).toEqual(true);
+  });
+
+  test('should update filters selected when press more of one filter already selected', () => {
+    const filterOptions = filterOptionsFactory();
+    const selectFilter = (filterSelected: {
+      id: number;
+      label: string;
+      selected?: boolean;
+    }) => {
+      filterOptions.filterBy.list.forEach((filter) => {
+        if (filter.id === filterSelected.id) {
+          filter.selected = true;
+        }
+      });
+    };
+
+    const deselectFilter = (filterSelected: {
+      id: number;
+      label: string;
+      selected?: boolean;
+    }) => {
+      filterOptions.filterBy.list.forEach((filter) => {
+        if (filter.id === filterSelected.id) {
+          filter.selected = false;
+        }
+      });
+    };
+
+    const {
+      sut: { getByTestId },
+    } = makeSut({
+      filterOptions,
+      selectFilter,
+      deselectFilter,
+      selectOrder: () => {},
+      showFilterList: true,
+      showOrderList: true,
+      changeShowOfFilterList: () => {},
+      changeShowOfOrderList: () => {},
+    });
+
+    fireEvent.press(getByTestId('filter_button_1_id'));
+    fireEvent.press(getByTestId('filter_button_2_id'));
+    fireEvent.press(getByTestId('filter_button_4_id'));
+
+    expect(filterOptions.filterBy.list[1].selected).toEqual(true);
+    expect(filterOptions.filterBy.list[2].selected).toEqual(true);
+    expect(filterOptions.filterBy.list[4].selected).toEqual(true);
+
+    fireEvent.press(getByTestId('filter_button_1_id'));
+    fireEvent.press(getByTestId('filter_button_2_id'));
+    fireEvent.press(getByTestId('filter_button_4_id'));
+
+    expect(filterOptions.filterBy.list[1].selected).toEqual(false);
+    expect(filterOptions.filterBy.list[2].selected).toEqual(false);
+    expect(filterOptions.filterBy.list[4].selected).toEqual(false);
+  });
+});
+
+describe('Search: FilterModalFactory', () => {
+  describe('useFilterModalFactory', () => {
+    test('should update showFilterList to true when call changeShowOfFilterList function', async () => {
+      const { result } = renderHook(() =>
+        useFilterModalFactory({ filter: new Filter() }),
+      );
+
+      expect(result.current.showFilterList).toEqual(false);
+
+      result.current.changeShowOfFilterList();
+
+      await waitFor(() => {
+        expect(result.current.showFilterList).toEqual(true);
+      });
+    });
+
+    test('should update showOrderList to true when call changeShowOfOrderList function', async () => {
+      const { result } = renderHook(() =>
+        useFilterModalFactory({ filter: new Filter() }),
+      );
+
+      expect(result.current.showOrderList).toEqual(false);
+
+      result.current.changeShowOfOrderList();
+
+      await waitFor(() => {
+        expect(result.current.showOrderList).toEqual(true);
+      });
+    });
+
+    test('should select filter and update options when call selectFilter function', async () => {
+      const filter = new Filter(getOptions());
+      const { result } = renderHook(() => useFilterModalFactory({ filter }));
+
+      expect(filter.options.filterBy.list[4].selected).toEqual(false);
+      expect(result.current.options).toEqual(getOptions());
+
+      result.current.selectFilter(getOptions().filterBy.list[4]);
+
+      expect(filter.options.filterBy.list[4].selected).toEqual(true);
+      expect(result.current.options).not.toEqual(getOptions());
+    });
+
+    test('should select order and update options when call selectOrder function', async () => {
+      const filter = new Filter(getOptions());
+      const { result } = renderHook(() => useFilterModalFactory({ filter }));
+
+      expect(filter.options.orderBy.selected).toEqual(
+        getOptions().orderBy.list[0],
+      );
+      expect(result.current.options).toEqual(getOptions());
+
+      result.current.selectOrder(getOptions().orderBy.list[2]);
+
+      expect(filter.options.orderBy.selected).toEqual(
+        getOptions().orderBy.list[2],
+      );
+      expect(result.current.options).not.toEqual(getOptions());
+    });
+
+    test('should deselect filter and update options when call deselectFilter function', async () => {
+      const options = getOptions();
+      options.filterBy.list[4].selected = true;
+
+      const filter = new Filter(options);
+      const { result } = renderHook(() => useFilterModalFactory({ filter }));
+
+      expect(result.current.options).toEqual(options);
+      result.current.deselectFilter(options.filterBy.list[4]);
+
+      expect(result.current.options.filterBy.list[4].selected).toEqual(false);
+      expect(result.current.options).toEqual(getOptions());
+    });
   });
 });
 
@@ -548,6 +717,11 @@ type Props = {
     label: string;
     selected?: boolean;
   }) => void;
+  deselectFilter: (filter: {
+    id: number;
+    label: string;
+    selected?: boolean;
+  }) => void;
   selectOrder: (order: { id: number; label: string }) => void;
   showFilterList: boolean;
   showOrderList: boolean;
@@ -558,6 +732,7 @@ type Props = {
 const makeSut = ({
   filterOptions,
   selectFilter,
+  deselectFilter,
   selectOrder,
   showFilterList,
   showOrderList,
@@ -569,6 +744,7 @@ const makeSut = ({
       filterOptions={filterOptions}
       selectOrder={selectOrder}
       selectFilter={selectFilter}
+      deselectFilter={deselectFilter}
       showOrderList={showOrderList}
       showFilterList={showFilterList}
       changeShowOfOrderList={changeShowOfOrderList}
