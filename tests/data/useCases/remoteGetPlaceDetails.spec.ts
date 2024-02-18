@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { PlaceDetailsModel } from '~/domain/models';
 import { GetPlaceDetails } from '~/domain/useCases';
 import { HttpGetClient, HttpStatusCode } from '~/data/http';
+import { UnexpectedError } from '~/data/errors';
 import { makeUrl } from '../helpers/testFactories';
 import { HttpClientSpy } from '../http/httpClientSpy';
 
@@ -70,6 +71,19 @@ describe('Data: RemoteGetPlaceDetails', () => {
 
     expect(placeDetails).toEqual(placeDetailsResponse);
   });
+
+  test('must try get the place details through of httpGetClient, returning exception unexpected', async () => {
+    const url = makeUrl();
+    const httpClient = new HttpClientSpy();
+    httpClient.completeWithUnexpectedError();
+
+    const sut = new RemoteGetPlaceDetails(url, httpClient);
+
+    const id = faker.datatype.uuid();
+    const promise = sut.get(id);
+
+    await expect(promise).rejects.toThrow(new UnexpectedError());
+  });
 });
 
 class RemoteGetPlaceDetails implements GetPlaceDetails {
@@ -86,7 +100,7 @@ class RemoteGetPlaceDetails implements GetPlaceDetails {
       case HttpStatusCode.ok:
         return body;
       default:
-        throw new Error(`error`);
+        throw new UnexpectedError();
     }
   };
 }
