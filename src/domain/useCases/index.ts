@@ -6,3 +6,4 @@ export { default as SearchPlaces } from './searchPlaces';
 export { default as ListPlaces } from './listPlaces';
 export { default as SocialLogin } from './socialLogin';
 export { default as ListRecommendations } from './listRecommendations';
+export { default as GetPlaceDetails } from './getPlaceDetails';
