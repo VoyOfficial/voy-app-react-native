@@ -97,13 +97,37 @@ describe('Data: RemoteGetPlaceDetails', () => {
 
     await expect(promise).rejects.toThrow(new PlaceDetailsNotFoundError());
   });
+
+  test('must try get the place details through of httpGetClient, returning not have access exception', async () => {
+    const url = makeUrl();
+    const httpClient = new HttpClientSpy();
+    httpClient.completeWithForbiddenError();
+
+    const sut = new RemoteGetPlaceDetails(url, httpClient);
+
+    const id = faker.datatype.uuid();
+    const promise = sut.get(id);
+
+    await expect(promise).rejects.toThrow(
+      new NotHaveAccessToPlaceDetailsError(),
+    );
+  });
 });
 
-export default class PlaceDetailsNotFoundError extends Error {
+class PlaceDetailsNotFoundError extends Error {
   constructor() {
     super();
     this.message = 'Place details not found. try again later.';
     this.name = 'PlaceDetailsNotFoundError';
+  }
+}
+
+class NotHaveAccessToPlaceDetailsError extends Error {
+  constructor() {
+    super();
+    this.message =
+      "You don't have access to Place details. Please try again later.";
+    this.name = 'NotHaveAccessToPlaceDetailsError';
   }
 }
 
@@ -122,6 +146,8 @@ class RemoteGetPlaceDetails implements GetPlaceDetails {
         return body;
       case HttpStatusCode.notFound:
         throw new PlaceDetailsNotFoundError();
+      case HttpStatusCode.forbidden:
+        throw new NotHaveAccessToPlaceDetailsError();
       default:
         throw new UnexpectedError();
     }
