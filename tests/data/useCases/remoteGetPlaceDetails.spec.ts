@@ -1,8 +1,11 @@
 import { faker } from '@faker-js/faker';
-import { PlaceDetailsModel } from '~/domain/models';
-import { GetPlaceDetails } from '~/domain/useCases';
-import { HttpGetClient, HttpStatusCode } from '~/data/http';
-import { UnexpectedError } from '~/data/errors';
+import { HttpStatusCode } from '~/data/http';
+import {
+  NotHaveAccessToPlaceDetailsError,
+  PlaceDetailsNotFoundError,
+  UnexpectedError,
+} from '~/data/errors';
+import { RemoteGetPlaceDetails } from '~/data/useCases';
 import { makeUrl } from '../helpers/testFactories';
 import { HttpClientSpy } from '../http/httpClientSpy';
 
@@ -113,43 +116,3 @@ describe('Data: RemoteGetPlaceDetails', () => {
     );
   });
 });
-
-class PlaceDetailsNotFoundError extends Error {
-  constructor() {
-    super();
-    this.message = 'Place details not found. try again later.';
-    this.name = 'PlaceDetailsNotFoundError';
-  }
-}
-
-class NotHaveAccessToPlaceDetailsError extends Error {
-  constructor() {
-    super();
-    this.message =
-      "You don't have access to Place details. Please try again later.";
-    this.name = 'NotHaveAccessToPlaceDetailsError';
-  }
-}
-
-class RemoteGetPlaceDetails implements GetPlaceDetails {
-  constructor(
-    private readonly url: string,
-    private readonly httpGetClient: HttpGetClient,
-  ) {}
-  get = async (id: string): Promise<PlaceDetailsModel> => {
-    const { statusCode, body } = await this.httpGetClient.get({
-      url: `${this.url}?id=${id}`,
-    });
-
-    switch (statusCode) {
-      case HttpStatusCode.ok:
-        return body;
-      case HttpStatusCode.notFound:
-        throw new PlaceDetailsNotFoundError();
-      case HttpStatusCode.forbidden:
-        throw new NotHaveAccessToPlaceDetailsError();
-      default:
-        throw new UnexpectedError();
-    }
-  };
-}

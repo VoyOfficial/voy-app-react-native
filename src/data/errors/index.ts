@@ -5,3 +5,5 @@ export { default as UserNotHaveAccessError } from './userNotHaveAccessError';
 export { default as NoAccessError } from './noAccessError';
 export { default as SocialLoginError } from './socialLoginError';
 export { default as NoPermissionError } from './noPermissionError';
+export { default as NotHaveAccessToPlaceDetailsError } from './notHaveAccessToPlaceDetailsError';
+export { default as PlaceDetailsNotFoundError } from './placeDetailsNotFoundError';
