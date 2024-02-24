@@ -84,7 +84,28 @@ describe('Data: RemoteGetPlaceDetails', () => {
 
     await expect(promise).rejects.toThrow(new UnexpectedError());
   });
+
+  test('must try get the place details through of httpGetClient, returning place details not found exception', async () => {
+    const url = makeUrl();
+    const httpClient = new HttpClientSpy();
+    httpClient.completeWithPlaceDetailsNotFound();
+
+    const sut = new RemoteGetPlaceDetails(url, httpClient);
+
+    const id = faker.datatype.uuid();
+    const promise = sut.get(id);
+
+    await expect(promise).rejects.toThrow(new PlaceDetailsNotFoundError());
+  });
 });
+
+export default class PlaceDetailsNotFoundError extends Error {
+  constructor() {
+    super();
+    this.message = 'Place details not found. try again later.';
+    this.name = 'PlaceDetailsNotFoundError';
+  }
+}
 
 class RemoteGetPlaceDetails implements GetPlaceDetails {
   constructor(
@@ -99,6 +120,8 @@ class RemoteGetPlaceDetails implements GetPlaceDetails {
     switch (statusCode) {
       case HttpStatusCode.ok:
         return body;
+      case HttpStatusCode.notFound:
+        throw new PlaceDetailsNotFoundError();
       default:
         throw new UnexpectedError();
     }
