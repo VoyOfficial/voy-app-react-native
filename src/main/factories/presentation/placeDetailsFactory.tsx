@@ -1,4 +1,5 @@
 import React from 'react';
+import { GetPlaceDetailsFake } from 'tests/presentation/placeDetails/usePlaceDetails.spec';
 import { RouteProp } from '@react-navigation/native';
 import { Routes } from '~/main/navigation';
 import {
@@ -15,6 +16,8 @@ type Props = {
 const PlaceDetailsFactory = ({}: Props) => {
   const viewModel = usePlaceDetails({
     gallerySummaryImages: [],
+    id: '',
+    getPlaceDetails: new GetPlaceDetailsFake(),
   });
 
   return <PlaceDetails {...viewModel} />;
