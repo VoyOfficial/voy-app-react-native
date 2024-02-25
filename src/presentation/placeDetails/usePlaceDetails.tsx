@@ -1,13 +1,24 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
 import { GetPlaceDetails } from '~/domain/useCases';
-import { PlaceDetailsModel } from '~/domain/models';
 import { PlaceDetailsViewModel } from './placeDetails';
 
 type Props = {
   gallerySummaryImages: Array<string>;
   getPlaceDetails: GetPlaceDetails;
   id: string;
+};
+
+type PlaceDetails = {
+  amountOfReviews: string;
+  businessHoursSummary: string;
+  contact: string;
+  description: string;
+  myDistanceOfLocal: string;
+  fullLocation: string;
+  location: string;
+  photoOfReviewProfiles: Array<string>;
+  rating: string;
+  title: string;
 };
 
 const usePlaceDetails = ({
@@ -17,20 +28,12 @@ const usePlaceDetails = ({
 }: Props): PlaceDetailsViewModel => {
   const [backgroundImage, setBackgroundImage] = useState('');
   const [isOpenImagesGallery, setIsOpenImagesGallery] = useState(false);
-  const [placeDetails, setPlaceDetails] = useState<PlaceDetailsModel>({
+  const [placeDetails, setPlaceDetails] = useState<PlaceDetails>({
     amountOfReviews: '',
-    businessHoursSummary: {
-      friday: { start: '', end: '' },
-      monday: { start: '', end: '' },
-      saturday: { start: '', end: '' },
-      sunday: { start: '', end: '' },
-      thursday: { start: '', end: '' },
-      tuesday: { start: '', end: '' },
-      wednesday: { start: '', end: '' },
-    },
+    businessHoursSummary: '',
     contact: '',
     description: '',
-    distance: '',
+    myDistanceOfLocal: '',
     fullLocation: '',
     location: '',
     photoOfReviewProfiles: [''],
@@ -44,7 +47,19 @@ const usePlaceDetails = ({
   }, []);
 
   const updatePlaceDetails = async () => {
-    await getPlaceDetails.get(id);
+    const response = await getPlaceDetails.get(id);
+    setPlaceDetails({
+      amountOfReviews: response.amountOfReviews + ' avaliações',
+      businessHoursSummary: 'Diariamente - Acesso livre (24 horas)',
+      contact: response.contact,
+      description: response.description,
+      myDistanceOfLocal: 'a ' + response.distance + 'm',
+      fullLocation: response.fullLocation,
+      location: response.location,
+      photoOfReviewProfiles: response.photoOfReviewProfiles,
+      rating: response.rating + '/5',
+      title: response.title,
+    });
   };
 
   const pressSummaryImageFromGallery = (
@@ -65,20 +80,20 @@ const usePlaceDetails = ({
   };
 
   return {
-    amountOfReviews: '',
+    amountOfReviews: placeDetails.amountOfReviews,
     backgroundImage,
-    businessHoursSummary: '',
-    contact: '',
-    description: '',
-    fullLocation: '',
+    businessHoursSummary: placeDetails.businessHoursSummary,
+    contact: placeDetails.contact,
+    description: placeDetails.description,
+    fullLocation: placeDetails.fullLocation,
     gallerySummaryImages,
-    location: '',
-    myDistanceOfLocal: '',
-    photoOfReviewProfiles: [],
+    location: placeDetails.location,
+    myDistanceOfLocal: placeDetails.myDistanceOfLocal,
+    photoOfReviewProfiles: placeDetails.photoOfReviewProfiles,
     pressSummaryImageFromGallery,
     closeImagesGallery,
-    rating: '',
-    title: '',
+    rating: placeDetails.rating,
+    title: placeDetails.title,
     isOpenImagesGallery,
   };
 };
