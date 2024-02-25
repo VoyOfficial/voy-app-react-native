@@ -36,7 +36,7 @@ const usePlaceDetails = ({
     myDistanceOfLocal: '',
     fullLocation: '',
     location: '',
-    photoOfReviewProfiles: [''],
+    photoOfReviewProfiles: [],
     rating: '',
     title: '',
   });
@@ -47,19 +47,34 @@ const usePlaceDetails = ({
   }, []);
 
   const updatePlaceDetails = async () => {
-    const response = await getPlaceDetails.get(id);
-    setPlaceDetails({
-      amountOfReviews: response.amountOfReviews + ' avaliações',
-      businessHoursSummary: 'Diariamente - Acesso livre (24 horas)',
-      contact: response.contact,
-      description: response.description,
-      myDistanceOfLocal: 'a ' + response.distance + 'm',
-      fullLocation: response.fullLocation,
-      location: response.location,
-      photoOfReviewProfiles: response.photoOfReviewProfiles,
-      rating: response.rating + '/5',
-      title: response.title,
-    });
+    try {
+      const response = await getPlaceDetails.get(id);
+      setPlaceDetails({
+        amountOfReviews: response.amountOfReviews + ' avaliações',
+        businessHoursSummary: 'Diariamente - Acesso livre (24 horas)',
+        contact: response.contact,
+        description: response.description,
+        myDistanceOfLocal: 'a ' + response.distance + 'm',
+        fullLocation: response.fullLocation,
+        location: response.location,
+        photoOfReviewProfiles: response.photoOfReviewProfiles,
+        rating: response.rating + '/5',
+        title: response.title,
+      });
+    } catch (error) {
+      setPlaceDetails({
+        amountOfReviews: '',
+        businessHoursSummary: '',
+        contact: '',
+        description: '',
+        myDistanceOfLocal: '',
+        fullLocation: '',
+        location: '',
+        photoOfReviewProfiles: [],
+        rating: '',
+        title: '',
+      });
+    }
   };
 
   const pressSummaryImageFromGallery = (

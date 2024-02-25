@@ -47,9 +47,18 @@ export class GetPlaceDetailsFake implements GetPlaceDetails {
     rating: faker.datatype.number({ min: 1, max: 5 }).toString(),
   };
   id = '';
+  error: { status: boolean; message: string } = { message: '', status: false };
   get = async (id: string): Promise<PlaceDetailsModel> => {
     this.id = id;
+
+    if (this.error.status) {
+      throw new Error(this.error.message);
+    }
     return this.placeDetails;
+  };
+
+  completeGetWithError = (message: string) => {
+    this.error = { status: true, message };
   };
 }
 
@@ -187,6 +196,32 @@ describe('Presentation: usePlaceDetails', () => {
       expect(result.current.businessHoursSummary).toEqual(
         'Diariamente - Acesso livre (24 horas)',
       );
+    });
+  });
+
+  test('should get empty place details when GetPlaceDetails get returns error', async () => {
+    const getPlaceDetails = new GetPlaceDetailsFake();
+    getPlaceDetails.completeGetWithError('ocorreu um erro');
+    const id = 'any_id';
+    const { result } = renderHook(() =>
+      usePlaceDetails({
+        gallerySummaryImages: [faker.image.imageUrl()],
+        getPlaceDetails,
+        id,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(result.current.amountOfReviews).toEqual('');
+      expect(result.current.title).toEqual('');
+      expect(result.current.contact).toEqual('');
+      expect(result.current.description).toEqual('');
+      expect(result.current.fullLocation).toEqual('');
+      expect(result.current.myDistanceOfLocal).toEqual('');
+      expect(result.current.location).toEqual('');
+      expect(result.current.rating).toEqual('');
+      expect(result.current.photoOfReviewProfiles).toEqual([]);
+      expect(result.current.businessHoursSummary).toEqual('');
     });
   });
 });
