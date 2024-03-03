@@ -51,4 +51,11 @@ export class HttpClientSpy implements HttpPostClient, HttpGetClient {
       body: null,
     };
   }
+
+  completeWithPlaceDetailsNotFound() {
+    this.response = {
+      statusCode: HttpStatusCode.notFound,
+      body: null,
+    };
+  }
 }

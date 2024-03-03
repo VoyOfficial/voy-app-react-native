@@ -1,19 +1,81 @@
 import { useEffect, useState } from 'react';
+import { GetPlaceDetails } from '~/domain/useCases';
 import { PlaceDetailsViewModel } from './placeDetails';
 
 type Props = {
   gallerySummaryImages: Array<string>;
+  getPlaceDetails: GetPlaceDetails;
+  id: string;
+};
+
+type PlaceDetails = {
+  amountOfReviews: string;
+  businessHoursSummary: string;
+  contact: string;
+  description: string;
+  myDistanceOfLocal: string;
+  fullLocation: string;
+  location: string;
+  photoOfReviewProfiles: Array<string>;
+  rating: string;
+  title: string;
 };
 
 const usePlaceDetails = ({
   gallerySummaryImages,
+  getPlaceDetails,
+  id,
 }: Props): PlaceDetailsViewModel => {
   const [backgroundImage, setBackgroundImage] = useState('');
   const [isOpenImagesGallery, setIsOpenImagesGallery] = useState(false);
+  const [placeDetails, setPlaceDetails] = useState<PlaceDetails>({
+    amountOfReviews: '',
+    businessHoursSummary: '',
+    contact: '',
+    description: '',
+    myDistanceOfLocal: '',
+    fullLocation: '',
+    location: '',
+    photoOfReviewProfiles: [],
+    rating: '',
+    title: '',
+  });
 
   useEffect(() => {
     setBackgroundImage(gallerySummaryImages[0]);
+    updatePlaceDetails();
   }, []);
+
+  const updatePlaceDetails = async () => {
+    try {
+      const response = await getPlaceDetails.get(id);
+      setPlaceDetails({
+        amountOfReviews: response.amountOfReviews + ' avaliações',
+        businessHoursSummary: 'Diariamente - Acesso livre (24 horas)',
+        contact: response.contact,
+        description: response.description,
+        myDistanceOfLocal: 'a ' + response.distance + 'm',
+        fullLocation: response.fullLocation,
+        location: response.location,
+        photoOfReviewProfiles: response.photoOfReviewProfiles,
+        rating: response.rating + '/5',
+        title: response.title,
+      });
+    } catch (error) {
+      setPlaceDetails({
+        amountOfReviews: '',
+        businessHoursSummary: '',
+        contact: '',
+        description: '',
+        myDistanceOfLocal: '',
+        fullLocation: '',
+        location: '',
+        photoOfReviewProfiles: [],
+        rating: '',
+        title: '',
+      });
+    }
+  };
 
   const pressSummaryImageFromGallery = (
     image: string,
@@ -33,20 +95,20 @@ const usePlaceDetails = ({
   };
 
   return {
-    amountOfReviews: '',
+    amountOfReviews: placeDetails.amountOfReviews,
     backgroundImage,
-    businessHoursSummary: '',
-    contact: '',
-    description: '',
-    fullLocation: '',
+    businessHoursSummary: placeDetails.businessHoursSummary,
+    contact: placeDetails.contact,
+    description: placeDetails.description,
+    fullLocation: placeDetails.fullLocation,
     gallerySummaryImages,
-    location: '',
-    myDistanceOfLocal: '',
-    photoOfReviewProfiles: [],
+    location: placeDetails.location,
+    myDistanceOfLocal: placeDetails.myDistanceOfLocal,
+    photoOfReviewProfiles: placeDetails.photoOfReviewProfiles,
     pressSummaryImageFromGallery,
     closeImagesGallery,
-    rating: '',
-    title: '',
+    rating: placeDetails.rating,
+    title: placeDetails.title,
     isOpenImagesGallery,
   };
 };

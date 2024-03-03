@@ -6,3 +6,4 @@ export { default as RoadmapModel } from './roadmapModel';
 export { default as BusinessHoursModel } from './businessHoursModel';
 export { default as SearchPlaceModel } from './searchPlaceModel';
 export { default as RecommendationModel } from './recommendationModel';
+export { default as PlaceDetailsModel } from './placeDetailsModel';

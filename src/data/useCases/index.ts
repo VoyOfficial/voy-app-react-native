@@ -6,3 +6,4 @@ export { default as RemoteListRoadmap } from './remoteListRoadmap';
 export { default as RemoteSearchPlaces } from './remoteSearchPlaces';
 export { default as RemoteSocialLogin } from './remoteSocialLogin';
 export { default as RemoteListRecommendations } from './remoteListRecommendations';
+export { default as RemoteGetPlaceDetails } from './remoteGetPlaceDetails';
