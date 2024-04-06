@@ -5,7 +5,7 @@ import { PlaceDetailsViewModel } from './placeDetails';
 type Props = {
   gallerySummaryImages: Array<string>;
   getPlaceDetails: GetPlaceDetails;
-  id: string;
+  id: number;
 };
 
 type PlaceDetails = {

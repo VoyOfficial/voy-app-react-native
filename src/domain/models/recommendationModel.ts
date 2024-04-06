@@ -1,4 +1,5 @@
 type RecommendationModel = {
+  id: number;
   imageUrl: string;
   title: string;
   location: string;

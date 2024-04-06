@@ -3,6 +3,7 @@ import { RouteProp } from '@react-navigation/native';
 import { Actions, Routes, navigator } from '~/main/navigation';
 import { ListPlaces, ListRecommendations } from '~/domain/useCases';
 import { PlaceModel, RecommendationModel } from '~/domain/models';
+import { AxiosAdapter } from '~/infra/http';
 import { Place } from '../../../presentation/components/cardList';
 import { StackParams } from '../../navigation/navigation';
 import PlaceList from '../../../../src/presentation/placeList';
@@ -13,15 +14,12 @@ import getPlacesByOrigin from './helpers/getPlacesByOrigin';
 
 class ListRecommendationsDAO implements ListRecommendations {
   async list(): Promise<RecommendationModel[]> {
-    return [
-      {
-        imageUrl: '',
-        location: '',
-        myDistanceOfLocal: '',
-        rating: '',
-        title: '',
-      },
-    ];
+    const axios = new AxiosAdapter();
+    const response = await axios.get({
+      url: `http://localhost:3000/recommendations`,
+    });
+
+    return response.body;
   }
 }
 
@@ -33,16 +31,12 @@ class ListPlacesDAO implements ListPlaces {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     nextPageToken?: string | undefined,
   ): Promise<PlaceModel[]> {
-    return [
-      {
-        amountOfReviews: '',
-        imageUrl: '',
-        location: '',
-        myDistanceOfLocal: '',
-        rating: '',
-        title: '',
-      },
-    ];
+    const axios = new AxiosAdapter();
+    const response = await axios.get({
+      url: `http://localhost:3000/places`,
+    });
+
+    return response.body;
   }
 }
 
