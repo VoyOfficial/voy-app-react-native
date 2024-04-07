@@ -40,6 +40,7 @@ describe('Presentation: useSearch', () => {
           types: [Filter.CoffeeMakers],
         },
         nextPageToken: '',
+        navigate: () => {},
       }),
     );
 
@@ -61,6 +62,7 @@ describe('Presentation: useSearch', () => {
           types: [Filter.CoffeeMakers],
         },
         nextPageToken: '',
+        navigate: () => {},
       }),
     );
 
@@ -81,7 +83,12 @@ describe('Presentation: useSearch', () => {
       types: [Filter.Restaurants],
     };
     const { result } = renderHook(() =>
-      useSearch({ searchPlaces, nextPageToken, filterParam }),
+      useSearch({
+        searchPlaces,
+        nextPageToken,
+        filterParam,
+        navigate: () => {},
+      }),
     );
 
     result.current.searchTo('Malbec');
@@ -99,7 +106,12 @@ describe('Presentation: useSearch', () => {
       types: [Filter.Restaurants],
     };
     const { result } = renderHook(() =>
-      useSearch({ searchPlaces, nextPageToken, filterParam }),
+      useSearch({
+        searchPlaces,
+        nextPageToken,
+        filterParam,
+        navigate: () => {},
+      }),
     );
 
     await result.current.searchTo('Malbec');
@@ -113,11 +125,41 @@ describe('Presentation: useSearch', () => {
         myDistanceOfLocal: place.myDistanceOfLocal,
         rating: place.rating,
         title: place.title,
+        id: place.id,
       });
     });
 
     await waitFor(() => {
       expect(result.current.placeList).toEqual(list);
+    });
+  });
+
+  test('should call navigate function correctly when call showMoreDetails function', async () => {
+    const navigateSpy = jest.fn();
+    const searchPlaces = new SearchPlacesFake();
+    const nextPageToken = faker.datatype.uuid();
+    const filterParam: FilterParam = {
+      ordination: Ordination.MostCommented,
+      types: [Filter.Restaurants],
+    };
+    const { result } = renderHook(() =>
+      useSearch({
+        searchPlaces,
+        nextPageToken,
+        filterParam,
+        navigate: navigateSpy,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(result.current.placeList).toEqual(searchPlaces.list);
+    });
+
+    result.current.showMoreDetails(searchPlaces.list[0]);
+
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy).toHaveBeenCalledWith('PlaceDetails', {
+      place: searchPlaces.list[0],
     });
   });
 });

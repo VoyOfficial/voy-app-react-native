@@ -18,6 +18,7 @@ import {
 } from './styles';
 
 type Props = {
+  id: number;
   index: number;
   imageUrl: string;
   title: string;
@@ -30,6 +31,7 @@ type Props = {
 };
 
 const ListCard = ({
+  id,
   index,
   imageUrl,
   title,
@@ -46,6 +48,7 @@ const ListCard = ({
         testID={`list_card_${index}_id`}
         onPress={() =>
           showMoreDetails({
+            id,
             title,
             amountOfReviews,
             imageUrl,

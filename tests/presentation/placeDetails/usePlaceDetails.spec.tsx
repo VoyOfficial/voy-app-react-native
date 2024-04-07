@@ -46,9 +46,9 @@ export class GetPlaceDetailsFake implements GetPlaceDetails {
     photoOfReviewProfiles: [faker.image.imageUrl()],
     rating: faker.datatype.number({ min: 1, max: 5 }).toString(),
   };
-  id = '';
+  id = 0;
   error: { status: boolean; message: string } = { message: '', status: false };
-  get = async (id: string): Promise<PlaceDetailsModel> => {
+  get = async (id: number): Promise<PlaceDetailsModel> => {
     this.id = id;
 
     if (this.error.status) {
@@ -64,7 +64,7 @@ export class GetPlaceDetailsFake implements GetPlaceDetails {
 
 describe('Presentation: usePlaceDetails', () => {
   test('should update the backgroundImage correctly when call pressSummaryImageFromGallery function', async () => {
-    const { result } = makeSut('', ['']);
+    const { result } = makeSut(0, ['']);
 
     expect(result.current.backgroundImage).toEqual('');
 
@@ -77,7 +77,7 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should update isOpenImagesGallery to true when call pressSummaryImageFromGallery with showInGallery true', async () => {
-    const { result } = makeSut('', ['']);
+    const { result } = makeSut(0, ['']);
 
     expect(result.current.isOpenImagesGallery).toEqual(false);
 
@@ -92,7 +92,7 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should update isOpenImagesGallery to false when call closeImagesGallery', async () => {
-    const { result } = makeSut('', ['']);
+    const { result } = makeSut(0, ['']);
 
     const image = faker.image.imageUrl();
 
@@ -111,7 +111,7 @@ describe('Presentation: usePlaceDetails', () => {
 
   test('should update backgroundImage when initialize', async () => {
     const backgroundImage = faker.image.imageUrl();
-    const { result } = makeSut('', [backgroundImage]);
+    const { result } = makeSut(0, [backgroundImage]);
 
     await waitFor(() => {
       expect(result.current.backgroundImage).toEqual(backgroundImage);
@@ -120,7 +120,7 @@ describe('Presentation: usePlaceDetails', () => {
 
   test('should call get of GetPlaceDetails correctly when initialize', async () => {
     const getPlaceDetails = new GetPlaceDetailsFake();
-    const id = 'any_id';
+    const id = 0;
 
     makeSut(id, [faker.image.imageUrl()], getPlaceDetails);
 
@@ -131,7 +131,7 @@ describe('Presentation: usePlaceDetails', () => {
 
   test('should get place details with success when initialize', async () => {
     const getPlaceDetails = new GetPlaceDetailsFake();
-    const id = 'any_id';
+    const id = 0;
 
     const { result } = makeSut(id, [faker.image.imageUrl()], getPlaceDetails);
 
@@ -168,7 +168,7 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should get empty place details when GetPlaceDetails get returns error', async () => {
-    const id = 'any_id';
+    const id = 0;
     const getPlaceDetails = new GetPlaceDetailsFake();
     getPlaceDetails.completeGetWithError('ocorreu um erro');
 
@@ -190,7 +190,7 @@ describe('Presentation: usePlaceDetails', () => {
 });
 
 const makeSut = (
-  id: string,
+  id: number,
   gallerySummaryImages: Array<string> = [faker.image.imageUrl()],
   getPlaceDetails: GetPlaceDetails = new GetPlaceDetailsFake(),
 ) => {

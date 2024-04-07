@@ -1,83 +1,35 @@
 import React from 'react';
-import { RouteProp } from '@react-navigation/native';
-import { faker } from '@faker-js/faker';
-import { Routes } from '~/main/navigation';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { GetPlaceDetails } from '~/domain/useCases';
-import { PlaceDetailsModel } from '~/domain/models';
+import { PlaceDetailsModel, PlaceModel } from '~/domain/models';
+import { AxiosAdapter } from '~/infra/http';
 import {
   PlaceDetails,
   usePlaceDetails,
 } from '../../../../src/presentation/placeDetails';
-import { StackParams } from '../../navigation/navigation';
 
-export class GetPlaceDetailsFake implements GetPlaceDetails {
-  placeDetails: PlaceDetailsModel = {
-    title: faker.company.name(),
-    amountOfReviews: faker.datatype.number().toString(),
-    businessHoursSummary: {
-      sunday: {
-        start: '08:00',
-        end: '12:00',
-      },
-      monday: {
-        start: '08:00',
-        end: '12:00',
-      },
-      tuesday: {
-        start: '08:00',
-        end: '12:00',
-      },
-      wednesday: {
-        start: '08:00',
-        end: '12:00',
-      },
-      thursday: {
-        start: '08:00',
-        end: '12:00',
-      },
-      friday: {
-        start: '08:00',
-        end: '12:00',
-      },
-      saturday: {
-        start: '08:00',
-        end: '12:00',
-      },
-    },
-    contact: faker.phone.number(),
-    description: faker.lorem.paragraph(),
-    distance: faker.datatype.number().toString(),
-    fullLocation: faker.address.streetAddress(),
-    location: faker.address.cityName(),
-    photoOfReviewProfiles: [faker.image.imageUrl()],
-    rating: faker.datatype.number({ min: 1, max: 5 }).toString(),
-  };
-  id = '';
-  error: { status: boolean; message: string } = { message: '', status: false };
-  get = async (id: string): Promise<PlaceDetailsModel> => {
-    this.id = id;
-
-    if (this.error.status) {
-      throw new Error(this.error.message);
-    }
-    return this.placeDetails;
-  };
-
-  completeGetWithError = (message: string) => {
-    this.error = { status: true, message };
+export class GetPlaceDetailsDAO implements GetPlaceDetails {
+  get = async (id: number): Promise<PlaceDetailsModel> => {
+    const axios = new AxiosAdapter();
+    const response = await axios.get({
+      url: `http://localhost:3000/placeDetails/${id}`,
+    });
+    return response.body;
   };
 }
 
-type Props = {
-  route: RouteProp<StackParams, Routes>;
-  navigation: any;
+type RootStackParamList = {
+  Home: { place: PlaceModel };
 };
 
-const PlaceDetailsFactory = ({}: Props) => {
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+
+const PlaceDetailsFactory = ({ route }: Props) => {
+  const id = route.params?.place.id;
   const viewModel = usePlaceDetails({
     gallerySummaryImages: [],
-    id: '',
-    getPlaceDetails: new GetPlaceDetailsFake(),
+    id: id,
+    getPlaceDetails: new GetPlaceDetailsDAO(),
   });
 
   return <PlaceDetails {...viewModel} />;

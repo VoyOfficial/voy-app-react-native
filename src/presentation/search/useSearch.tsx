@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { FilterParam } from '~/domain/params';
 import { SearchPlaces } from '~/domain/useCases';
+import { Routes } from '~/main/navigation';
+import { GenericObject } from '../../main/types/genericObject';
 import { Place } from '../components/cardList';
 import { SearchViewModel } from './search';
 
@@ -8,12 +10,14 @@ type Props = {
   searchPlaces: SearchPlaces;
   nextPageToken: string;
   filterParam: FilterParam;
+  navigate: (routeName: string, params?: GenericObject | undefined) => void;
 };
 
 const useSearch = ({
   searchPlaces,
   filterParam,
   nextPageToken,
+  navigate,
 }: Props): SearchViewModel => {
   const [showFilterOptions, setShowFilterOptions] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -44,10 +48,15 @@ const useSearch = ({
         myDistanceOfLocal: place.myDistanceOfLocal,
         rating: place.rating,
         title: place.title,
+        id: place.id,
       });
     });
 
     setPlaceList(auxPlaceList);
+  };
+
+  const showMoreDetails = (place: Place) => {
+    navigate(Routes.PLACE_DETAILS, { place });
   };
 
   return {
@@ -57,6 +66,7 @@ const useSearch = ({
     searchTo,
     searchValue,
     showFilterOptions,
+    showMoreDetails,
   };
 };
 

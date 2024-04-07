@@ -10,6 +10,7 @@ import {
 } from './styles';
 
 export type Place = {
+  id: number;
   imageUrl: string;
   title: string;
   location: string;
@@ -69,6 +70,7 @@ const factoryListCard = (
   return (
     <ListCard
       index={index}
+      id={place.id}
       title={place.title}
       imageUrl={place.imageUrl}
       location={place.location}

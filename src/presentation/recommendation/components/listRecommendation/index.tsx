@@ -11,6 +11,7 @@ import {
 } from './styles';
 
 export type RecommendationProps = {
+  id: number;
   imageUrl: string;
   title: string;
   location: string;
@@ -47,6 +48,7 @@ const ListRecommendation = ({
           data={recommendations}
           renderItem={({ item, index }) => (
             <ListCard
+              id={item.id}
               index={index}
               imageUrl={item.imageUrl}
               location={item.location}

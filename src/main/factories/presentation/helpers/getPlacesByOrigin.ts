@@ -15,6 +15,7 @@ export class RecommendationsMapper {
         myDistanceOfLocal: recommendation.myDistanceOfLocal,
         rating: recommendation.rating,
         title: recommendation.title,
+        id: recommendation.id,
       };
     }) as Place[];
   };

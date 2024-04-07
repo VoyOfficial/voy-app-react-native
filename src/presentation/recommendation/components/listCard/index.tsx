@@ -21,6 +21,7 @@ import {
 
 type Props = {
   index: number;
+  id: number;
   imageUrl: string;
   title: string;
   location: string;
@@ -32,6 +33,7 @@ type Props = {
 
 const ListCard = ({
   index,
+  id,
   title,
   location,
   myDistanceOfLocal,
@@ -46,6 +48,7 @@ const ListCard = ({
         testID={`list_card_${index}_id`}
         onPress={() =>
           showMoreDetails({
+            id,
             imageUrl,
             location,
             myDistanceOfLocal,

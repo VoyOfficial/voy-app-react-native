@@ -22,9 +22,16 @@ export type SearchViewModel = {
   searchTo: (value: string) => Promise<void>;
   filter: () => void;
   showFilterOptions: boolean;
+  showMoreDetails: (place: Place) => void;
 };
 
-const CardListFactory = ({ placeList }: { placeList: Array<Place> }) => (
+const CardListFactory = ({
+  placeList,
+  showMoreDetails,
+}: {
+  placeList: Array<Place>;
+  showMoreDetails: (place: Place) => void;
+}) => (
   <CardList
     title={''}
     seeAllBy={''}
@@ -32,7 +39,7 @@ const CardListFactory = ({ placeList }: { placeList: Array<Place> }) => (
     placeList={placeList}
     favorite={() => {}}
     showSeeAllButton={false}
-    showMoreDetails={() => {}}
+    showMoreDetails={showMoreDetails}
   />
 );
 
@@ -43,6 +50,7 @@ const Search = ({
   changeSearch,
   searchTo,
   filter,
+  showMoreDetails,
 }: SearchViewModel) => {
   return (
     <Container>
@@ -67,7 +75,10 @@ const Search = ({
       </HeaderWrapper>
       {searchValue !== '' && (
         <CardListWrapper>
-          <CardListFactory placeList={placeList} />
+          <CardListFactory
+            placeList={placeList}
+            showMoreDetails={showMoreDetails}
+          />
         </CardListWrapper>
       )}
       {showFilterOptions && (
