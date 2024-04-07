@@ -140,6 +140,26 @@ describe('Presentation: Search', () => {
       expect(getByTestId(`list_card_${index}_id`)).toBeTruthy();
     });
   });
+
+  test('should call showMoreDetails function correctly when press the show more details button', () => {
+    const placeList = placeListFactory(5);
+    const {
+      sut: { getByTestId },
+      showMoreDetailsSpy,
+    } = makeSut(
+      true,
+      () => {},
+      'any_value',
+      () => {},
+      async () => {},
+      placeList,
+    );
+
+    fireEvent.press(getByTestId('list_card_1_id'));
+
+    expect(showMoreDetailsSpy).toHaveBeenCalledTimes(1);
+    expect(showMoreDetailsSpy).toHaveBeenCalledWith(placeList[1]);
+  });
 });
 
 const makeSut = (
@@ -150,6 +170,8 @@ const makeSut = (
   searchTo = async () => {},
   placeList: Array<Place> = [],
 ) => {
+  const showMoreDetailsSpy = jest.fn();
+
   const sut = render(
     <Provider {...{ filter: new Filter() }}>
       <Search
@@ -159,10 +181,11 @@ const makeSut = (
         filter={filter}
         showFilterOptions={showFilterOptions}
         placeList={placeList}
+        showMoreDetails={showMoreDetailsSpy}
       />
       ,
     </Provider>,
   );
 
-  return { sut };
+  return { sut, showMoreDetailsSpy };
 };
