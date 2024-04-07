@@ -44,6 +44,7 @@ const useSearch = ({
         myDistanceOfLocal: place.myDistanceOfLocal,
         rating: place.rating,
         title: place.title,
+        id: place.id,
       });
     });
 
@@ -57,6 +58,7 @@ const useSearch = ({
     searchTo,
     searchValue,
     showFilterOptions,
+    showMoreDetails: () => {},
   };
 };
 
