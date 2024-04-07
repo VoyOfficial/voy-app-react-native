@@ -1,5 +1,4 @@
 import React from 'react';
-import { faker } from '@faker-js/faker';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { GetPlaceDetails } from '~/domain/useCases';
 import { PlaceDetailsModel, PlaceModel } from '~/domain/models';
@@ -16,64 +15,6 @@ export class GetPlaceDetailsDAO implements GetPlaceDetails {
       url: `http://localhost:3000/placeDetails/${id}`,
     });
     return response.body;
-  };
-}
-
-export class GetPlaceDetailsFake implements GetPlaceDetails {
-  placeDetails: PlaceDetailsModel = {
-    title: faker.company.name(),
-    amountOfReviews: faker.datatype.number().toString(),
-    businessHoursSummary: {
-      sunday: {
-        start: '',
-        end: '',
-      },
-      monday: {
-        start: '',
-        end: '',
-      },
-      tuesday: {
-        start: '',
-        end: '',
-      },
-      wednesday: {
-        start: '',
-        end: '',
-      },
-      thursday: {
-        start: '',
-        end: '',
-      },
-      friday: {
-        start: '',
-        end: '',
-      },
-      saturday: {
-        start: '',
-        end: '',
-      },
-    },
-    contact: '',
-    description: '',
-    distance: '',
-    fullLocation: '',
-    location: '',
-    photoOfReviewProfiles: [],
-    rating: '',
-  };
-  id = 0;
-  error: { status: boolean; message: string } = { message: '', status: false };
-  get = async (id: number): Promise<PlaceDetailsModel> => {
-    this.id = id;
-
-    if (this.error.status) {
-      throw new Error(this.error.message);
-    }
-    return this.placeDetails;
-  };
-
-  completeGetWithError = (message: string) => {
-    this.error = { status: true, message };
   };
 }
 

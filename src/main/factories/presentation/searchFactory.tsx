@@ -10,16 +10,6 @@ import { AxiosAdapter } from '~/infra/http';
 import { StackParams } from '../../../../src/main/navigation/navigation';
 import { Search, useSearch } from '../../../../src/presentation/search';
 
-class SearchPlacesFake implements SearchPlaces {
-  async search(
-    place: string,
-    { types, ordination }: FilterParam,
-    nextPageToken?: string | undefined,
-  ): Promise<SearchPlaceModel[]> {
-    return [];
-  }
-}
-
 class SearchPlacesDAO implements SearchPlaces {
   async search(
     place: string,
