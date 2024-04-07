@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import { RouteProp } from '@react-navigation/native';
-import { Routes } from '~/main/navigation';
+import { Actions, Routes, navigator } from '~/main/navigation';
 import { Filter, Ordination } from '~/domain/enums';
 import { SearchPlaces } from '~/domain/useCases';
 import { SearchPlaceModel } from '~/domain/models';
@@ -48,6 +48,7 @@ const SearchFactory = ({}: Props) => {
     },
     nextPageToken: '',
     searchPlaces: new SearchPlacesDAO(),
+    navigate: new Actions(navigator).navigate,
   });
   return <Search {...viewModel} />;
 };
