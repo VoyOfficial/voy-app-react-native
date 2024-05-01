@@ -13,6 +13,17 @@ describe('Components: Error', () => {
     expect(getByText(content.title)).toBeTruthy();
     expect(getByText(content.message)).toBeTruthy();
   });
+
+  test('should show generic error content', () => {
+    const content: ErrorContent = {
+      message: '',
+      title: '',
+    };
+    const { getByText } = render(<Error content={content} />);
+
+    expect(getByText('Aaaah não')).toBeTruthy();
+    expect(getByText('Parece que tivemos um imprevito.')).toBeTruthy();
+  });
 });
 
 type ErrorContent = {
@@ -28,8 +39,17 @@ const Error = ({ content }: Props) => {
   const { title, message } = content;
   return (
     <>
-      <Text>{title}</Text>
-      <Text>{message}</Text>
+      {title && message ? (
+        <>
+          <Text>{title}</Text>
+          <Text>{message}</Text>
+        </>
+      ) : (
+        <>
+          <Text>{'Aaaah não'}</Text>
+          <Text>{'Parece que tivemos um imprevito.'}</Text>
+        </>
+      )}
     </>
   );
 };
