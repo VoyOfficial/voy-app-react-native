@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
 import { fireEvent, render } from '@testing-library/react-native';
-import Icon from '../../../../src/presentation/assets/fonts/Voy';
+import Error, {
+  ErrorContent,
+} from '../../../../src/presentation/components/error';
 
 describe('Components: Error', () => {
   test('should show error content correctly', () => {
@@ -57,36 +58,3 @@ describe('Components: Error', () => {
     expect(tryAgain).toHaveBeenCalledTimes(1);
   });
 });
-
-type ErrorContent = {
-  title: string;
-  message: string;
-};
-
-type Props = {
-  content: ErrorContent;
-  tryAgain: () => void;
-};
-
-const Error = ({ content, tryAgain }: Props) => {
-  const { title, message } = content;
-  return (
-    <>
-      <Icon testID="sad_icon_id" name="sad" />
-      {title && message ? (
-        <>
-          <Text>{title}</Text>
-          <Text>{message}</Text>
-        </>
-      ) : (
-        <>
-          <Text>{'Aaaah não'}</Text>
-          <Text>{'Parece que tivemos um imprevito.'}</Text>
-        </>
-      )}
-      <TouchableOpacity testID="button_try_again_id" onPress={tryAgain}>
-        <Text>{'Tente novamente'}</Text>
-      </TouchableOpacity>
-    </>
-  );
-};
