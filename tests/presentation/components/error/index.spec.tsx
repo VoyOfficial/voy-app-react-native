@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native';
 import { render } from '@testing-library/react-native';
+import Icon from '../../../../src/presentation/assets/fonts/Voy';
 
 describe('Components: Error', () => {
   test('should show error content correctly', () => {
@@ -24,6 +25,16 @@ describe('Components: Error', () => {
     expect(getByText('Aaaah não')).toBeTruthy();
     expect(getByText('Parece que tivemos um imprevito.')).toBeTruthy();
   });
+
+  test('should show error icon', () => {
+    const content: ErrorContent = {
+      message: '',
+      title: '',
+    };
+    const { getByTestId } = render(<Error content={content} />);
+
+    expect(getByTestId('sad_icon_id')).toBeTruthy();
+  });
 });
 
 type ErrorContent = {
@@ -39,6 +50,7 @@ const Error = ({ content }: Props) => {
   const { title, message } = content;
   return (
     <>
+      <Icon testID="sad_icon_id" name="sad" />
       {title && message ? (
         <>
           <Text>{title}</Text>
