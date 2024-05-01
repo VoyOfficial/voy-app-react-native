@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text } from 'react-native';
-import { render } from '@testing-library/react-native';
+import { Text, TouchableOpacity } from 'react-native';
+import { fireEvent, render } from '@testing-library/react-native';
 import Icon from '../../../../src/presentation/assets/fonts/Voy';
 
 describe('Components: Error', () => {
@@ -9,7 +9,9 @@ describe('Components: Error', () => {
       message: 'any_message',
       title: 'any_title',
     };
-    const { getByText } = render(<Error content={content} />);
+    const { getByText } = render(
+      <Error content={content} tryAgain={() => {}} />,
+    );
 
     expect(getByText(content.title)).toBeTruthy();
     expect(getByText(content.message)).toBeTruthy();
@@ -20,7 +22,9 @@ describe('Components: Error', () => {
       message: '',
       title: '',
     };
-    const { getByText } = render(<Error content={content} />);
+    const { getByText } = render(
+      <Error content={content} tryAgain={() => {}} />,
+    );
 
     expect(getByText('Aaaah não')).toBeTruthy();
     expect(getByText('Parece que tivemos um imprevito.')).toBeTruthy();
@@ -31,9 +35,26 @@ describe('Components: Error', () => {
       message: '',
       title: '',
     };
-    const { getByTestId } = render(<Error content={content} />);
+    const { getByTestId } = render(
+      <Error content={content} tryAgain={() => {}} />,
+    );
 
     expect(getByTestId('sad_icon_id')).toBeTruthy();
+  });
+
+  test('should call tryAgain function when pressing the button', () => {
+    const tryAgain = jest.fn();
+    const content: ErrorContent = {
+      message: '',
+      title: '',
+    };
+    const { getByTestId } = render(
+      <Error content={content} tryAgain={tryAgain} />,
+    );
+
+    fireEvent.press(getByTestId('button_try_again_id'));
+
+    expect(tryAgain).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -44,9 +65,10 @@ type ErrorContent = {
 
 type Props = {
   content: ErrorContent;
+  tryAgain: () => void;
 };
 
-const Error = ({ content }: Props) => {
+const Error = ({ content, tryAgain }: Props) => {
   const { title, message } = content;
   return (
     <>
@@ -62,6 +84,9 @@ const Error = ({ content }: Props) => {
           <Text>{'Parece que tivemos um imprevito.'}</Text>
         </>
       )}
+      <TouchableOpacity testID="button_try_again_id" onPress={tryAgain}>
+        <Text>{'Tente novamente'}</Text>
+      </TouchableOpacity>
     </>
   );
 };
