@@ -1,3 +1,4 @@
+import { Place } from 'src/presentation/components/cardList';
 import { renderHook, waitFor } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
 import { ListPlaces, ListRecommendations } from '~/domain/useCases';
@@ -14,6 +15,7 @@ export const recommendationModelFake = (): RecommendationModel => {
       .number({ min: 1, max: 10, precision: 0.1 })
       .toString(),
     myDistanceOfLocal: faker.datatype.number().toString(),
+    id: faker.datatype.number(),
   };
 };
 
@@ -45,7 +47,7 @@ describe('Presentation: useHome', () => {
     const {
       sut: { result },
       navigateSpy,
-    } = makeSut();
+    } = makeSut({});
     await waitFor(() => {
       expect(result.current.recommendations).not.toEqual([]);
       expect(result.current.placeList).not.toEqual([]);
@@ -61,7 +63,7 @@ describe('Presentation: useHome', () => {
     const {
       sut: { result },
       recommendationsFake,
-    } = makeSut();
+    } = makeSut({});
 
     await waitFor(() => {
       expect(result.current.recommendations).toEqual(recommendationsFake);
@@ -72,7 +74,7 @@ describe('Presentation: useHome', () => {
     const {
       sut: { result },
       places,
-    } = makeSut();
+    } = makeSut({});
 
     await waitFor(() => {
       expect(result.current.placeList).toEqual(places);
@@ -83,7 +85,7 @@ describe('Presentation: useHome', () => {
     const {
       sut: { result },
       navigateSpy,
-    } = makeSut();
+    } = makeSut({});
 
     await waitFor(() => {
       expect(result.current.recommendations).not.toEqual([]);
@@ -101,7 +103,7 @@ describe('Presentation: useHome', () => {
       sut: { result },
       listPlacesFake,
       navigateSpy,
-    } = makeSut();
+    } = makeSut({});
 
     await waitFor(() => {
       expect(result.current.recommendations).not.toEqual([]);
@@ -120,7 +122,7 @@ describe('Presentation: useHome', () => {
     const {
       sut: { result },
       navigateSpy,
-    } = makeSut();
+    } = makeSut({});
 
     await waitFor(() => {
       expect(result.current.recommendations).not.toEqual([]);
@@ -132,14 +134,30 @@ describe('Presentation: useHome', () => {
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith('Search');
   });
+
+  test('should the error returning true when recommendations and place list are empty', async () => {
+    const {
+      sut: { result },
+    } = makeSut({ places: [], recommendations: [] });
+
+    await waitFor(() => {
+      expect(result.current.error).toEqual(true);
+    });
+  });
 });
 
-const makeSut = () => {
+type SutProps = {
+  places?: Array<Place>;
+  recommendations?: Array<RecommendationModel>;
+};
+
+const makeSut = ({
+  places = placeListFactory(5),
+  recommendations = [recommendationModelFake()],
+}: SutProps) => {
   const navigate = jest.fn();
-  const places = placeListFactory(5);
   const listPlaces = new ListPlacesFake(places);
-  const recommendationsFake = [recommendationModelFake()];
-  const listRecommendations = new ListRecommendationsFake(recommendationsFake);
+  const listRecommendations = new ListRecommendationsFake(recommendations);
   const sut = renderHook(() =>
     useHome({
       navigate,
@@ -154,6 +172,6 @@ const makeSut = () => {
     sut,
     places,
     listRecommendationsFake: listRecommendations,
-    recommendationsFake: recommendationsFake,
+    recommendationsFake: recommendations,
   };
 };

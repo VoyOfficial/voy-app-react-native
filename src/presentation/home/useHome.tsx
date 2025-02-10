@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ListPlaces, ListRecommendations } from '~/domain/useCases';
 import { RecommendationProps } from '../recommendation/components/listRecommendation';
 import { Place } from '../components/cardList';
@@ -65,6 +65,10 @@ const useHome = ({
     navigate('Search');
   };
 
+  const getError = useCallback(() => {
+    return !!(placeList.length === 0 && recommendations.length === 0);
+  }, [placeList, recommendations]);
+
   return {
     onSeeAll,
     recommendations,
@@ -72,7 +76,7 @@ const useHome = ({
     showMoreDetails,
     placeList,
     search,
-    error: true,
+    error: getError(),
   };
 };
 
