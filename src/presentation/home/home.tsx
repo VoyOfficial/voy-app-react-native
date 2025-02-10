@@ -18,13 +18,15 @@ const Home = ({
 }: HomeViewModel) => {
   return (
     <View>
-      <Error
-        tryAgain={() => {}}
-        content={{
-          title: 'Aaaah não',
-          message: 'Parece que tivemos um imprevito.',
-        }}
-      />
+      {error && (
+        <Error
+          tryAgain={() => {}}
+          content={{
+            title: 'Aaaah não',
+            message: 'Parece que tivemos um imprevito.',
+          }}
+        />
+      )}
       {!error && (
         <>
           <View

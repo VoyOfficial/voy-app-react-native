@@ -89,6 +89,21 @@ describe('Presentation: Home', () => {
       expect(queryByTestId('recommendation-list')).not.toBeTruthy();
       expect(queryByTestId('place_list_id')).not.toBeTruthy();
     });
+
+    test('should not show message error when error is false', () => {
+      const {
+        sut: { queryByText, queryByTestId },
+      } = makeSut({ error: false });
+
+      const title = queryByText('Aaaah não');
+      const description = queryByText('Parece que tivemos um imprevito.');
+
+      expect(title).not.toBeTruthy();
+      expect(description).not.toBeTruthy();
+
+      expect(queryByTestId('recommendation-list')).toBeTruthy();
+      expect(queryByTestId('place_list_id')).toBeTruthy();
+    });
   });
 });
 
