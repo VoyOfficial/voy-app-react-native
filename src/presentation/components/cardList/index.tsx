@@ -52,6 +52,7 @@ const CardList = ({
         )}
       </HeaderWrapper>
       <List
+        testID="place_list_id"
         data={placeList}
         renderItem={({ item, index }) =>
           factoryListCard(index, item, favorite, showMoreDetails)

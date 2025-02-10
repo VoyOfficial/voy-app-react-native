@@ -10,6 +10,7 @@ export type HomeViewModel = {
   search: () => void;
   placeList: Array<Place>;
   recommendations: Array<RecommendationProps>;
+  error: boolean;
 };
 
 type GenericObject = { [key: string]: any };
@@ -71,6 +72,7 @@ const useHome = ({
     showMoreDetails,
     placeList,
     search,
+    error: true,
   };
 };
 
