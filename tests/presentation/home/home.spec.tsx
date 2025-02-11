@@ -104,14 +104,29 @@ describe('Presentation: Home', () => {
       expect(queryByTestId('recommendation-list')).toBeTruthy();
       expect(queryByTestId('place_list_id')).toBeTruthy();
     });
+
+    test('should call the tryAgain function when pressing the "Tente novamente"', () => {
+      const tryGetListAgain = jest.fn();
+      const {
+        sut: { getByTestId },
+      } = makeSut({ error: true, tryGetListAgain });
+
+      fireEvent.press(getByTestId('button_try_again_id'));
+
+      expect(tryGetListAgain).toHaveBeenCalledTimes(1);
+    });
   });
 });
 
 type SutProps = {
   error?: boolean;
+  tryGetListAgain?: () => Promise<void>;
 };
 
-const makeSut = ({ error = false }: SutProps) => {
+const makeSut = ({
+  error = false,
+  tryGetListAgain = async () => {},
+}: SutProps) => {
   const search = jest.fn();
   const onSeeAll = () => {};
   const favorite = () => {};
@@ -127,6 +142,7 @@ const makeSut = ({ error = false }: SutProps) => {
       showMoreDetails={showMoreDetails}
       search={search}
       error={error}
+      tryGetListAgain={tryGetListAgain}
     />,
   );
 

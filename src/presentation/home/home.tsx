@@ -15,12 +15,13 @@ const Home = ({
   showMoreDetails,
   search,
   error,
+  tryGetListAgain,
 }: HomeViewModel) => {
   return (
     <View>
       {error && (
         <Error
-          tryAgain={() => {}}
+          tryAgain={tryGetListAgain}
           content={{
             title: 'Aaaah não',
             message: 'Parece que tivemos um imprevito.',
