@@ -3,11 +3,12 @@ import {
   NavigationContainer,
   NavigationContainerRef,
 } from '@react-navigation/native';
+import { PlaceModel } from '~/domain/models';
 import { StackNavigation } from './stack';
 import { Routes } from './routes';
 
 export type StackParams = {
-  [Routes.HOME]: undefined;
+  [Routes.HOME]: { place: PlaceModel };
   [Routes.PLACE_DETAILS]: undefined;
   [Routes.PLACE_LIST]: { by: string };
   [Routes.SEARCH]: undefined;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ListPlaces, ListRecommendations } from '~/domain/useCases';
 import { RecommendationProps } from '../recommendation/components/listRecommendation';
 import { Place } from '../components/cardList';
@@ -10,6 +10,8 @@ export type HomeViewModel = {
   search: () => void;
   placeList: Array<Place>;
   recommendations: Array<RecommendationProps>;
+  error: boolean;
+  tryGetListAgain: () => Promise<void>;
 };
 
 type GenericObject = { [key: string]: any };
@@ -64,6 +66,15 @@ const useHome = ({
     navigate('Search');
   };
 
+  const getError = useCallback(() => {
+    return !!(placeList.length === 0 && recommendations.length === 0);
+  }, [placeList, recommendations]);
+
+  const tryGetListAgain = async () => {
+    await getRecommendations();
+    getPlaces();
+  };
+
   return {
     onSeeAll,
     recommendations,
@@ -71,6 +82,8 @@ const useHome = ({
     showMoreDetails,
     placeList,
     search,
+    error: getError(),
+    tryGetListAgain,
   };
 };
 

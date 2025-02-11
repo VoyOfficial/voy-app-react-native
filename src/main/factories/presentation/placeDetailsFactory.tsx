@@ -1,12 +1,14 @@
 import React from 'react';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RouteProp } from '@react-navigation/native';
 import { GetPlaceDetails } from '~/domain/useCases';
 import { PlaceDetailsModel, PlaceModel } from '~/domain/models';
 import { AxiosAdapter } from '~/infra/http';
+import { Routes } from '~/main/navigation';
 import {
   PlaceDetails,
   usePlaceDetails,
 } from '../../../../src/presentation/placeDetails';
+import { StackParams } from '../../../../src/main/navigation/navigation';
 
 export class GetPlaceDetailsDAO implements GetPlaceDetails {
   get = async (id: number): Promise<PlaceDetailsModel> => {
@@ -18,17 +20,29 @@ export class GetPlaceDetailsDAO implements GetPlaceDetails {
   };
 }
 
-type RootStackParamList = {
-  Home: { place: PlaceModel };
+type Props = {
+  route: RouteProp<StackParams, Routes>;
+  navigation: any;
 };
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+const hasPlace = (
+  params: { place?: PlaceModel } | { by: string },
+): params is { place: PlaceModel } => {
+  return (params as { place: PlaceModel }).place !== undefined;
+};
+
+const getId = (route: RouteProp<StackParams, Routes>): number => {
+  if (route.params && hasPlace(route.params)) {
+    return route.params.place.id;
+  }
+
+  return 0;
+};
 
 const PlaceDetailsFactory = ({ route }: Props) => {
-  const id = route.params?.place.id;
   const viewModel = usePlaceDetails({
     gallerySummaryImages: [],
-    id: id,
+    id: getId(route),
     getPlaceDetails: new GetPlaceDetailsDAO(),
   });
 

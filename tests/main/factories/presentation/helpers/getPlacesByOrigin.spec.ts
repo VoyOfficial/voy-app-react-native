@@ -5,7 +5,7 @@ import getPlacesByOrigin, {
   RecommendationsMapper,
 } from '../../../../../src/main/factories/presentation/helpers/getPlacesByOrigin';
 import placeListFactory from '../../../../presentation/helpers/placeListFactory';
-import { ListPlacesFake } from '../../../../presentation/home/useHome.spec';
+import { ListPlacesSpy } from '../../../../presentation/home/useHome.spec';
 import { Origin } from '../../../../../src/presentation/placeList/usePlaceList';
 
 export const recommendationModelFake = (): RecommendationModel => {
@@ -38,7 +38,7 @@ describe('getListByOrigin', () => {
     const places = await getPlacesByOrigin(
       Origin.Recommendations,
       new ListRecommendationsFake(recommendations),
-      new ListPlacesFake(),
+      new ListPlacesSpy(),
       { lat: '', long: '' },
     );
     expect(places).toEqual(
@@ -54,7 +54,7 @@ describe('getListByOrigin', () => {
     const placesByOrigin = await getPlacesByOrigin(
       Origin.Places,
       new ListRecommendationsFake(recommendations),
-      new ListPlacesFake(places),
+      new ListPlacesSpy(places),
       { lat: '', long: '' },
     );
     expect(placesByOrigin).toEqual(places);
@@ -66,7 +66,7 @@ describe('getListByOrigin', () => {
     const placesByOrigin = await getPlacesByOrigin(
       undefined as unknown as Origin,
       new ListRecommendationsFake(recommendations),
-      new ListPlacesFake(places),
+      new ListPlacesSpy(places),
       { lat: '', long: '' },
     );
 

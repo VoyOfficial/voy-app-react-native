@@ -4,7 +4,8 @@ import { GetPlaceDetails } from '~/domain/useCases';
 import { PlaceDetailsModel } from '~/domain/models';
 import { usePlaceDetails } from '../../../src/presentation/placeDetails';
 
-export class GetPlaceDetailsFake implements GetPlaceDetails {
+export class GetPlaceDetailsSpy implements GetPlaceDetails {
+  getCalled = 0;
   placeDetails: PlaceDetailsModel = {
     title: faker.company.name(),
     amountOfReviews: faker.datatype.number().toString(),
@@ -49,6 +50,7 @@ export class GetPlaceDetailsFake implements GetPlaceDetails {
   id = 0;
   error: { status: boolean; message: string } = { message: '', status: false };
   get = async (id: number): Promise<PlaceDetailsModel> => {
+    this.getCalled += 1;
     this.id = id;
 
     if (this.error.status) {
@@ -60,11 +62,55 @@ export class GetPlaceDetailsFake implements GetPlaceDetails {
   completeGetWithError = (message: string) => {
     this.error = { status: true, message };
   };
+
+  clearPlaceDetails = () => {
+    this.placeDetails = {
+      amountOfReviews: '',
+      contact: '',
+      description: '',
+      distance: '',
+      fullLocation: '',
+      location: '',
+      rating: '',
+      title: '',
+      photoOfReviewProfiles: [],
+      businessHoursSummary: {
+        sunday: {
+          start: '',
+          end: '',
+        },
+        monday: {
+          start: '',
+          end: '',
+        },
+        tuesday: {
+          start: '',
+          end: '',
+        },
+        wednesday: {
+          start: '',
+          end: '',
+        },
+        thursday: {
+          start: '',
+          end: '',
+        },
+        friday: {
+          start: '',
+          end: '',
+        },
+        saturday: {
+          start: '',
+          end: '',
+        },
+      },
+    };
+  };
 }
 
 describe('Presentation: usePlaceDetails', () => {
   test('should update the backgroundImage correctly when call pressSummaryImageFromGallery function', async () => {
-    const { result } = makeSut(0, ['']);
+    const { result } = makeSut({ id: 0, gallerySummaryImages: [''] });
 
     expect(result.current.backgroundImage).toEqual('');
 
@@ -77,7 +123,7 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should update isOpenImagesGallery to true when call pressSummaryImageFromGallery with showInGallery true', async () => {
-    const { result } = makeSut(0, ['']);
+    const { result } = makeSut({ id: 0, gallerySummaryImages: [''] });
 
     expect(result.current.isOpenImagesGallery).toEqual(false);
 
@@ -92,7 +138,7 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should update isOpenImagesGallery to false when call closeImagesGallery', async () => {
-    const { result } = makeSut(0, ['']);
+    const { result } = makeSut({ id: 0, gallerySummaryImages: [''] });
 
     const image = faker.image.imageUrl();
 
@@ -111,7 +157,10 @@ describe('Presentation: usePlaceDetails', () => {
 
   test('should update backgroundImage when initialize', async () => {
     const backgroundImage = faker.image.imageUrl();
-    const { result } = makeSut(0, [backgroundImage]);
+    const { result } = makeSut({
+      id: 0,
+      gallerySummaryImages: [backgroundImage],
+    });
 
     await waitFor(() => {
       expect(result.current.backgroundImage).toEqual(backgroundImage);
@@ -119,10 +168,14 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should call get of GetPlaceDetails correctly when initialize', async () => {
-    const getPlaceDetails = new GetPlaceDetailsFake();
+    const getPlaceDetails = new GetPlaceDetailsSpy();
     const id = 0;
 
-    makeSut(id, [faker.image.imageUrl()], getPlaceDetails);
+    makeSut({
+      id,
+      gallerySummaryImages: [faker.image.imageUrl()],
+      getPlaceDetails,
+    });
 
     await waitFor(() => {
       expect(getPlaceDetails.id).toEqual(id);
@@ -130,10 +183,14 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should get place details with success when initialize', async () => {
-    const getPlaceDetails = new GetPlaceDetailsFake();
+    const getPlaceDetails = new GetPlaceDetailsSpy();
     const id = 0;
 
-    const { result } = makeSut(id, [faker.image.imageUrl()], getPlaceDetails);
+    const { result } = makeSut({
+      id,
+      gallerySummaryImages: [faker.image.imageUrl()],
+      getPlaceDetails,
+    });
 
     await waitFor(() => {
       expect(result.current.amountOfReviews).toEqual(
@@ -169,10 +226,14 @@ describe('Presentation: usePlaceDetails', () => {
 
   test('should get empty place details when GetPlaceDetails get returns error', async () => {
     const id = 0;
-    const getPlaceDetails = new GetPlaceDetailsFake();
+    const getPlaceDetails = new GetPlaceDetailsSpy();
     getPlaceDetails.completeGetWithError('ocorreu um erro');
 
-    const { result } = makeSut(id, [faker.image.imageUrl()], getPlaceDetails);
+    const { result } = makeSut({
+      id,
+      gallerySummaryImages: [faker.image.imageUrl()],
+      getPlaceDetails,
+    });
 
     await waitFor(() => {
       expect(result.current.amountOfReviews).toEqual('');
@@ -187,13 +248,43 @@ describe('Presentation: usePlaceDetails', () => {
       expect(result.current.businessHoursSummary).toEqual('');
     });
   });
+
+  describe('error', () => {
+    test('should the error returning true when placeDetails are empty', async () => {
+      const getPlaceDetails = new GetPlaceDetailsSpy();
+      getPlaceDetails.clearPlaceDetails();
+      const { result } = makeSut({ id: 0, getPlaceDetails });
+
+      await waitFor(() => {
+        expect(result.current.error).toEqual(true);
+      });
+    });
+
+    test('should call the get from getPlaceDetails when calling the tryGetPlaceDetailsAgain function', async () => {
+      const getPlaceDetails = new GetPlaceDetailsSpy();
+      getPlaceDetails.clearPlaceDetails();
+      const { result } = makeSut({ id: 0, getPlaceDetails });
+
+      await waitFor(() => {
+        result.current.tryGetPlaceDetailsAgain();
+      });
+
+      expect(getPlaceDetails.getCalled).toEqual(2);
+    });
+  });
 });
 
-const makeSut = (
-  id: number,
-  gallerySummaryImages: Array<string> = [faker.image.imageUrl()],
-  getPlaceDetails: GetPlaceDetails = new GetPlaceDetailsFake(),
-) => {
+type SutProps = {
+  id: number;
+  gallerySummaryImages?: Array<string>;
+  getPlaceDetails?: GetPlaceDetails;
+};
+
+const makeSut = ({
+  id,
+  gallerySummaryImages = [faker.image.imageUrl()],
+  getPlaceDetails = new GetPlaceDetailsSpy(),
+}: SutProps) => {
   return renderHook(() =>
     usePlaceDetails({
       gallerySummaryImages,

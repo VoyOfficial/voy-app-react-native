@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { GetPlaceDetails } from '~/domain/useCases';
 import { PlaceDetailsViewModel } from './placeDetails';
 
@@ -21,6 +21,19 @@ type PlaceDetails = {
   title: string;
 };
 
+const emptyPlaceDetails = {
+  amountOfReviews: '',
+  businessHoursSummary: '',
+  contact: '',
+  description: '',
+  myDistanceOfLocal: '',
+  fullLocation: '',
+  location: '',
+  photoOfReviewProfiles: [],
+  rating: '',
+  title: '',
+};
+
 const usePlaceDetails = ({
   gallerySummaryImages,
   getPlaceDetails,
@@ -28,18 +41,8 @@ const usePlaceDetails = ({
 }: Props): PlaceDetailsViewModel => {
   const [backgroundImage, setBackgroundImage] = useState('');
   const [isOpenImagesGallery, setIsOpenImagesGallery] = useState(false);
-  const [placeDetails, setPlaceDetails] = useState<PlaceDetails>({
-    amountOfReviews: '',
-    businessHoursSummary: '',
-    contact: '',
-    description: '',
-    myDistanceOfLocal: '',
-    fullLocation: '',
-    location: '',
-    photoOfReviewProfiles: [],
-    rating: '',
-    title: '',
-  });
+  const [placeDetails, setPlaceDetails] =
+    useState<PlaceDetails>(emptyPlaceDetails);
 
   useEffect(() => {
     setBackgroundImage(gallerySummaryImages[0]);
@@ -62,18 +65,7 @@ const usePlaceDetails = ({
         title: response.title,
       });
     } catch (error) {
-      setPlaceDetails({
-        amountOfReviews: '',
-        businessHoursSummary: '',
-        contact: '',
-        description: '',
-        myDistanceOfLocal: '',
-        fullLocation: '',
-        location: '',
-        photoOfReviewProfiles: [],
-        rating: '',
-        title: '',
-      });
+      setPlaceDetails(emptyPlaceDetails);
     }
   };
 
@@ -94,6 +86,18 @@ const usePlaceDetails = ({
     setIsOpenImagesGallery(false);
   };
 
+  const placeDetailsAreEmpty = useCallback((): boolean => {
+    return !!(placeDetails === emptyPlaceDetails);
+  }, [placeDetails]);
+
+  const getError = useCallback(() => {
+    return placeDetailsAreEmpty();
+  }, [placeDetailsAreEmpty]);
+
+  const tryGetPlaceDetailsAgain = async () => {
+    await updatePlaceDetails();
+  };
+
   return {
     amountOfReviews: placeDetails.amountOfReviews,
     backgroundImage,
@@ -110,6 +114,8 @@ const usePlaceDetails = ({
     rating: placeDetails.rating,
     title: placeDetails.title,
     isOpenImagesGallery,
+    error: getError(),
+    tryGetPlaceDetailsAgain,
   };
 };
 

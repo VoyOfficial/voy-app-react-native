@@ -14,7 +14,7 @@ describe('Presentation: Home', () => {
       onSeeAll,
       recommendations,
       showMoreDetails,
-    } = makeSut();
+    } = makeSut({});
 
     const listRecommendation = UNSAFE_getByType(ListRecommendation);
 
@@ -34,7 +34,7 @@ describe('Presentation: Home', () => {
       favorite,
       onSeeAll,
       showMoreDetails,
-    } = makeSut();
+    } = makeSut({});
 
     const cardList = UNSAFE_getByType(CardList);
 
@@ -52,7 +52,7 @@ describe('Presentation: Home', () => {
   test('should show search button with success', () => {
     const {
       sut: { getByTestId },
-    } = makeSut();
+    } = makeSut({});
 
     const searchButton = getByTestId('search_button_id');
     const search = getByTestId('search_id');
@@ -65,7 +65,7 @@ describe('Presentation: Home', () => {
     const {
       sut: { getByTestId },
       search,
-    } = makeSut();
+    } = makeSut({});
 
     const searchButton = getByTestId('search_button_id');
 
@@ -73,9 +73,60 @@ describe('Presentation: Home', () => {
 
     expect(search).toHaveBeenCalledTimes(1);
   });
+
+  describe('error', () => {
+    test('should only show message error when error is true', () => {
+      const {
+        sut: { getByText, queryByTestId },
+      } = makeSut({ error: true });
+
+      const title = getByText('Aaaah não');
+      const description = getByText('Parece que tivemos um imprevito.');
+
+      expect(title).toBeTruthy();
+      expect(description).toBeTruthy();
+
+      expect(queryByTestId('recommendation-list')).not.toBeTruthy();
+      expect(queryByTestId('place_list_id')).not.toBeTruthy();
+    });
+
+    test('should not show message error when error is false', () => {
+      const {
+        sut: { queryByText, queryByTestId },
+      } = makeSut({ error: false });
+
+      const title = queryByText('Aaaah não');
+      const description = queryByText('Parece que tivemos um imprevito.');
+
+      expect(title).not.toBeTruthy();
+      expect(description).not.toBeTruthy();
+
+      expect(queryByTestId('recommendation-list')).toBeTruthy();
+      expect(queryByTestId('place_list_id')).toBeTruthy();
+    });
+
+    test('should call the tryAgain function when pressing the "Tente novamente"', () => {
+      const tryGetListAgain = jest.fn();
+      const {
+        sut: { getByTestId },
+      } = makeSut({ error: true, tryGetListAgain });
+
+      fireEvent.press(getByTestId('button_try_again_id'));
+
+      expect(tryGetListAgain).toHaveBeenCalledTimes(1);
+    });
+  });
 });
 
-const makeSut = () => {
+type SutProps = {
+  error?: boolean;
+  tryGetListAgain?: () => Promise<void>;
+};
+
+const makeSut = ({
+  error = false,
+  tryGetListAgain = async () => {},
+}: SutProps) => {
   const search = jest.fn();
   const onSeeAll = () => {};
   const favorite = () => {};
@@ -90,6 +141,8 @@ const makeSut = () => {
       placeList={placeList}
       showMoreDetails={showMoreDetails}
       search={search}
+      error={error}
+      tryGetListAgain={tryGetListAgain}
     />,
   );
 
