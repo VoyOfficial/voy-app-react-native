@@ -39,6 +39,7 @@ export type PlaceDetailsViewModel = {
   backgroundImage: string;
   gallerySummaryImages: Array<string>;
   isOpenImagesGallery: boolean;
+  error: boolean;
   pressSummaryImageFromGallery: (image: string, showInGallery: boolean) => void;
   closeImagesGallery: () => void;
 };

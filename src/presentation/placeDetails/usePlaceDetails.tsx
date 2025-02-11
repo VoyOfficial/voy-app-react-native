@@ -110,6 +110,7 @@ const usePlaceDetails = ({
     rating: placeDetails.rating,
     title: placeDetails.title,
     isOpenImagesGallery,
+    error: false,
   };
 };
 

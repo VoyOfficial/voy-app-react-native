@@ -47,37 +47,36 @@ describe('PlaceDetails: gallerySummaryImagesToImagesGallery', () => {
 describe('Presentation: PlaceDetails', () => {
   test('should show title with success', () => {
     const title = faker.random.word();
-    const { getByTestId } = makeSut('', '', '', '', '', '', '', '', title);
+    const {
+      sut: { getByTestId },
+    } = makeSut({ title });
 
     expect(getByTestId('title_id').props.children).toEqual(title);
   });
 
   test('should show description with success', () => {
     const description = faker.lorem.paragraph();
-    const { getByTestId } = makeSut(description, '', '', '', '', '', '', '');
+    const {
+      sut: { getByTestId },
+    } = makeSut({ description });
 
     expect(getByTestId('description_id').props.children).toEqual(description);
   });
 
   test('should show location with success', () => {
     const location = faker.address.cityName();
-    const { getByTestId } = makeSut('', location, '', '', '', '', '', '');
+    const {
+      sut: { getByTestId },
+    } = makeSut({ location });
 
     expect(getByTestId('location_id').props.children).toEqual(location);
   });
 
   test('should show my distance of local with success', () => {
     const myDistanceOfLocal = faker.random.numeric(4);
-    const { getByTestId } = makeSut(
-      '',
-      '',
-      myDistanceOfLocal,
-      '',
-      '',
-      '',
-      '',
-      '',
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut({ myDistanceOfLocal });
 
     expect(getByTestId('distance_of_local_id').props.children).toEqual(
       myDistanceOfLocal,
@@ -87,16 +86,9 @@ describe('Presentation: PlaceDetails', () => {
   test('should show amount of reviews with success', () => {
     const amount = faker.random.numeric(4);
     const amountOfReviews = amount + ' avaliações';
-    const { getByTestId } = makeSut(
-      '',
-      '',
-      '',
-      amountOfReviews,
-      '',
-      '',
-      '',
-      '',
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut({ amountOfReviews });
 
     expect(getByTestId('amount_of_reviews_id').props.children).toEqual(
       amountOfReviews,
@@ -105,23 +97,18 @@ describe('Presentation: PlaceDetails', () => {
 
   test('should show rating correctly', () => {
     const rating = faker.random.numeric(1) + '/' + faker.random.numeric(1);
-    const { getByTestId } = makeSut('', '', '', '', rating, '', '', '');
+    const {
+      sut: { getByTestId },
+    } = makeSut({ rating });
 
     expect(getByTestId('rating_id').props.children).toEqual(rating);
   });
 
   test('should show business hours summary successfully', () => {
     const businessHoursSummary = 'Diariamente - Acesso livre (24 horas)';
-    const { getByTestId } = makeSut(
-      '',
-      '',
-      '',
-      '',
-      '',
-      businessHoursSummary,
-      '',
-      '',
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut({ businessHoursSummary });
 
     expect(getByTestId('business_hours_summary_id').props.children).toEqual(
       businessHoursSummary,
@@ -130,7 +117,9 @@ describe('Presentation: PlaceDetails', () => {
 
   test('should show full location with success', () => {
     const fullLocation = faker.address.streetAddress();
-    const { getByTestId } = makeSut('', '', '', '', '', '', fullLocation, '');
+    const {
+      sut: { getByTestId },
+    } = makeSut({ fullLocation });
 
     expect(getByTestId('full_location_id').props.children).toEqual(
       fullLocation,
@@ -139,7 +128,9 @@ describe('Presentation: PlaceDetails', () => {
 
   test('should show contact of place with success', () => {
     const contact = faker.phone.number();
-    const { getByTestId } = makeSut('', '', '', '', '', '', '', contact);
+    const {
+      sut: { getByTestId },
+    } = makeSut({ contact });
 
     expect(getByTestId('contact_id').props.children).toEqual(contact);
   });
@@ -149,18 +140,9 @@ describe('Presentation: PlaceDetails', () => {
     for (let index = 0; index < 5; index++) {
       photoOfReviewProfiles.push(faker.image.avatar());
     }
-    const { getByTestId } = makeSut(
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      photoOfReviewProfiles,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut({ photoOfReviewProfiles });
 
     photoOfReviewProfiles.forEach((photo, index) => {
       expect(
@@ -170,56 +152,58 @@ describe('Presentation: PlaceDetails', () => {
   });
 
   test('should show star icon with success', () => {
-    const { getByTestId } = makeSut('', '', '', '', '', '', '', '', '', ['']);
+    const {
+      sut: { getByTestId },
+    } = makeSut({});
 
     expect(getByTestId('star_icon_id')).toBeTruthy();
   });
 
   test('should show location icon with success', () => {
-    const { getByTestId } = makeSut('', '', '', '', '', '', '', '', '', ['']);
+    const {
+      sut: { getByTestId },
+    } = makeSut({});
 
     expect(getByTestId('location_icon_id')).toBeTruthy();
   });
 
   test('should show walking icon with success', () => {
-    const { getByTestId } = makeSut('', '', '', '', '', '', '', '', '', ['']);
+    const {
+      sut: { getByTestId },
+    } = makeSut({});
 
     expect(getByTestId('walking_icon_id')).toBeTruthy();
   });
 
   test('should show full location icon with success', () => {
-    const { getByTestId } = makeSut('', '', '', '', '', '', '', '', '', ['']);
+    const {
+      sut: { getByTestId },
+    } = makeSut({});
 
     expect(getByTestId('full_location_icon_id')).toBeTruthy();
   });
 
   test('should show clock icon with success', () => {
-    const { getByTestId } = makeSut('', '', '', '', '', '', '', '', '', ['']);
+    const {
+      sut: { getByTestId },
+    } = makeSut({});
 
     expect(getByTestId('clock_icon_id')).toBeTruthy();
   });
 
   test('should show phone icon with success', () => {
-    const { getByTestId } = makeSut('', '', '', '', '', '', '', '', '', ['']);
+    const {
+      sut: { getByTestId },
+    } = makeSut({});
 
     expect(getByTestId('phone_icon_id')).toBeTruthy();
   });
 
   test('should show background image correctly', () => {
     const backgroundImage = faker.image.city();
-    const { getByTestId } = makeSut(
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      [''],
-      backgroundImage,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut({ backgroundImage });
 
     expect(getByTestId('background_image_id').props.source).toEqual({
       uri: backgroundImage,
@@ -232,20 +216,9 @@ describe('Presentation: PlaceDetails', () => {
       gallerySummary.push(faker.image.city());
     }
     const backgroundImage = faker.image.city();
-    const { getByTestId } = makeSut(
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      [''],
-      backgroundImage,
-      gallerySummary,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut({ backgroundImage, gallerySummaryImages: gallerySummary });
 
     for (let index = 0; index < 4; index++) {
       expect(
@@ -262,20 +235,9 @@ describe('Presentation: PlaceDetails', () => {
       gallerySummary.push(faker.image.city());
     }
     const backgroundImage = faker.image.city();
-    const { queryByTestId, getByTestId } = makeSut(
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      [''],
-      backgroundImage,
-      gallerySummary,
-    );
+    const {
+      sut: { queryByTestId, getByTestId },
+    } = makeSut({ backgroundImage, gallerySummaryImages: gallerySummary });
 
     for (let index = 0; index < gallerySummary.length; index++) {
       if (index !== 3) {
@@ -298,20 +260,9 @@ describe('Presentation: PlaceDetails', () => {
       gallerySummary.push(faker.image.city());
     }
     const backgroundImage = faker.image.city();
-    const { getByTestId } = makeSut(
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      [''],
-      backgroundImage,
-      gallerySummary,
-    );
+    const {
+      sut: { getByTestId },
+    } = makeSut({ backgroundImage, gallerySummaryImages: gallerySummary });
     expect(
       getByTestId('most_available_number_of_images_id').props.children,
     ).toEqual('+5');
@@ -323,20 +274,9 @@ describe('Presentation: PlaceDetails', () => {
       gallerySummary.push(faker.image.city());
     }
     const backgroundImage = faker.image.city();
-    const { queryByTestId } = makeSut(
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      [''],
-      backgroundImage,
-      gallerySummary,
-    );
+    const {
+      sut: { queryByTestId },
+    } = makeSut({ backgroundImage, gallerySummaryImages: gallerySummary });
     expect(
       queryByTestId('most_available_number_of_images_id'),
     ).not.toBeTruthy();
@@ -348,20 +288,9 @@ describe('Presentation: PlaceDetails', () => {
       gallerySummary.push(faker.image.city());
     }
     const backgroundImage = faker.image.city();
-    const { getByTestId, queryByTestId } = makeSut(
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      [''],
-      backgroundImage,
-      gallerySummary,
-    );
+    const {
+      sut: { getByTestId, queryByTestId },
+    } = makeSut({ backgroundImage, gallerySummaryImages: gallerySummary });
 
     expect(
       queryByTestId('gallery_summary_image_background_2_id'),
@@ -376,21 +305,13 @@ describe('Presentation: PlaceDetails', () => {
       gallerySummary.push(faker.image.city());
     }
     const backgroundImage = faker.image.city();
-    const { getByTestId, queryByTestId } = makeSut(
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      [''],
+    const {
+      sut: { getByTestId, queryByTestId },
+    } = makeSut({
       backgroundImage,
-      gallerySummary,
+      gallerySummaryImages: gallerySummary,
       pressSummaryImageFromGallery,
-    );
+    });
 
     for (let index = 0; index < gallerySummary.length; index++) {
       if (index <= 3) {
@@ -412,7 +333,23 @@ describe('Presentation: PlaceDetails', () => {
   });
 });
 
-const makeSut = (
+type SutProps = {
+  description?: string;
+  location?: string;
+  myDistanceOfLocal?: string;
+  amountOfReviews?: string;
+  rating?: string;
+  businessHoursSummary?: string;
+  fullLocation?: string;
+  contact?: string;
+  title?: string;
+  photoOfReviewProfiles?: Array<string>;
+  backgroundImage?: string;
+  gallerySummaryImages?: Array<string>;
+  pressSummaryImageFromGallery?: () => void;
+};
+
+const makeSut = ({
   description = '',
   location = '',
   myDistanceOfLocal = '',
@@ -426,8 +363,8 @@ const makeSut = (
   backgroundImage = '',
   gallerySummaryImages = [''],
   pressSummaryImageFromGallery = () => {},
-) => {
-  return render(
+}: SutProps) => {
+  const sut = render(
     <PlaceDetails
       title={title}
       description={description}
@@ -444,6 +381,9 @@ const makeSut = (
       pressSummaryImageFromGallery={pressSummaryImageFromGallery}
       isOpenImagesGallery={false}
       closeImagesGallery={() => {}}
+      error={false}
     />,
   );
+
+  return { sut };
 };
