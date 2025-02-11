@@ -19,18 +19,21 @@ export const recommendationModelFake = (): RecommendationModel => {
   };
 };
 
-class ListRecommendationsFake implements ListRecommendations {
+class ListRecommendationsSpy implements ListRecommendations {
+  listCalled = 0;
   constructor(
     readonly recommendations: Array<RecommendationModel> = [
       recommendationModelFake(),
     ],
   ) {}
   async list(): Promise<RecommendationModel[]> {
+    this.listCalled += 1;
     return this.recommendations;
   }
 }
 
-export class ListPlacesFake implements ListPlaces {
+export class ListPlacesSpy implements ListPlaces {
+  listCalled = 0;
   constructor(readonly places: Array<PlaceModel> = placeListFactory(5)) {}
   async list(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -38,6 +41,7 @@ export class ListPlacesFake implements ListPlaces {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     nextPageToken?: string | undefined,
   ): Promise<PlaceModel[]> {
+    this.listCalled += 1;
     return this.places;
   }
 }
@@ -101,7 +105,7 @@ describe('Presentation: useHome', () => {
   test('should call navigate function correctly when call showMoreDetails function', async () => {
     const {
       sut: { result },
-      listPlacesFake,
+      ListPlacesSpy,
       navigateSpy,
     } = makeSut({});
 
@@ -110,11 +114,11 @@ describe('Presentation: useHome', () => {
       expect(result.current.placeList).not.toEqual([]);
     });
 
-    result.current.showMoreDetails(listPlacesFake.places[0]);
+    result.current.showMoreDetails(ListPlacesSpy.places[0]);
 
     expect(navigateSpy).toHaveBeenCalledTimes(1);
     expect(navigateSpy).toHaveBeenCalledWith('PlaceDetails', {
-      place: listPlacesFake.places[0],
+      place: ListPlacesSpy.places[0],
     });
   });
 
@@ -135,13 +139,30 @@ describe('Presentation: useHome', () => {
     expect(navigateSpy).toHaveBeenCalledWith('Search');
   });
 
-  test('should the error returning true when recommendations and place list are empty', async () => {
-    const {
-      sut: { result },
-    } = makeSut({ places: [], recommendations: [] });
+  describe('error', () => {
+    test('should the error returning true when recommendations and place list are empty', async () => {
+      const {
+        sut: { result },
+      } = makeSut({ places: [], recommendations: [] });
 
-    await waitFor(() => {
-      expect(result.current.error).toEqual(true);
+      await waitFor(() => {
+        expect(result.current.error).toEqual(true);
+      });
+    });
+
+    test('should call the list of recommendations and places when calling the tryGetListAgain function', async () => {
+      const {
+        sut: { result },
+        ListPlacesSpy,
+        ListRecommendationsSpy,
+      } = makeSut({ places: [], recommendations: [] });
+
+      await waitFor(() => {
+        result.current.tryGetListAgain();
+      });
+
+      expect(ListPlacesSpy.listCalled).toEqual(2);
+      expect(ListRecommendationsSpy.listCalled).toEqual(2);
     });
   });
 });
@@ -156,8 +177,8 @@ const makeSut = ({
   recommendations = [recommendationModelFake()],
 }: SutProps) => {
   const navigate = jest.fn();
-  const listPlaces = new ListPlacesFake(places);
-  const listRecommendations = new ListRecommendationsFake(recommendations);
+  const listPlaces = new ListPlacesSpy(places);
+  const listRecommendations = new ListRecommendationsSpy(recommendations);
   const sut = renderHook(() =>
     useHome({
       navigate,
@@ -168,10 +189,10 @@ const makeSut = ({
 
   return {
     navigateSpy: navigate,
-    listPlacesFake: listPlaces,
+    ListPlacesSpy: listPlaces,
     sut,
     places,
-    listRecommendationsFake: listRecommendations,
+    ListRecommendationsSpy: listRecommendations,
     recommendationsFake: recommendations,
   };
 };

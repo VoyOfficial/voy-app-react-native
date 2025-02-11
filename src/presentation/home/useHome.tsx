@@ -70,6 +70,11 @@ const useHome = ({
     return !!(placeList.length === 0 && recommendations.length === 0);
   }, [placeList, recommendations]);
 
+  const tryGetListAgain = async () => {
+    await getRecommendations();
+    getPlaces();
+  };
+
   return {
     onSeeAll,
     recommendations,
@@ -78,7 +83,7 @@ const useHome = ({
     placeList,
     search,
     error: getError(),
-    tryGetListAgain: async () => {},
+    tryGetListAgain,
   };
 };
 
