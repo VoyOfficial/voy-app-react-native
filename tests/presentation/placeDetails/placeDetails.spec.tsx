@@ -331,6 +331,55 @@ describe('Presentation: PlaceDetails', () => {
       }
     }
   });
+
+  describe('error', () => {
+    test('should only show message error when error is true', () => {
+      const {
+        sut: { getByText, queryByTestId },
+      } = makeSut({ error: true });
+
+      const title = getByText('Aaaah não');
+      const description = getByText('Parece que tivemos um imprevito.');
+
+      expect(title).toBeTruthy();
+      expect(description).toBeTruthy();
+
+      expect(queryByTestId('title_id')).not.toBeTruthy();
+      expect(queryByTestId('description_id')).not.toBeTruthy();
+      expect(queryByTestId('location_id')).not.toBeTruthy();
+      expect(queryByTestId('distance_of_local_id')).not.toBeTruthy();
+      expect(queryByTestId('background_image_id')).not.toBeTruthy();
+    });
+
+    test('should not show message error when error is false', () => {
+      const {
+        sut: { queryByText, queryByTestId },
+      } = makeSut({ error: false });
+
+      const title = queryByText('Aaaah não');
+      const description = queryByText('Parece que tivemos um imprevito.');
+
+      expect(title).not.toBeTruthy();
+      expect(description).not.toBeTruthy();
+
+      expect(queryByTestId('title_id')).toBeTruthy();
+      expect(queryByTestId('description_id')).toBeTruthy();
+      expect(queryByTestId('location_id')).toBeTruthy();
+      expect(queryByTestId('distance_of_local_id')).toBeTruthy();
+      expect(queryByTestId('background_image_id')).toBeTruthy();
+    });
+
+    test('should call the tryAgain function when pressing the "Tente novamente"', () => {
+      const tryGetPlaceDetailsAgain = jest.fn();
+      const {
+        sut: { getByTestId },
+      } = makeSut({ error: true, tryGetPlaceDetailsAgain });
+
+      fireEvent.press(getByTestId('button_try_again_id'));
+
+      expect(tryGetPlaceDetailsAgain).toHaveBeenCalledTimes(1);
+    });
+  });
 });
 
 type SutProps = {
@@ -346,6 +395,8 @@ type SutProps = {
   photoOfReviewProfiles?: Array<string>;
   backgroundImage?: string;
   gallerySummaryImages?: Array<string>;
+  error?: boolean;
+  tryGetPlaceDetailsAgain?: () => Promise<void>;
   pressSummaryImageFromGallery?: () => void;
 };
 
@@ -362,7 +413,9 @@ const makeSut = ({
   photoOfReviewProfiles = [''],
   backgroundImage = '',
   gallerySummaryImages = [''],
+  error = false,
   pressSummaryImageFromGallery = () => {},
+  tryGetPlaceDetailsAgain = async () => {},
 }: SutProps) => {
   const sut = render(
     <PlaceDetails
@@ -381,7 +434,8 @@ const makeSut = ({
       pressSummaryImageFromGallery={pressSummaryImageFromGallery}
       isOpenImagesGallery={false}
       closeImagesGallery={() => {}}
-      error={false}
+      error={error}
+      tryGetPlaceDetailsAgain={tryGetPlaceDetailsAgain}
     />,
   );
 

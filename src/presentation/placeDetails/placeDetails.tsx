@@ -1,4 +1,5 @@
 import React from 'react';
+import { Error } from '../components';
 import { GallerySummaryImages, MoreDetails, Reviews } from './components';
 import {
   BackgroundImage,
@@ -42,6 +43,7 @@ export type PlaceDetailsViewModel = {
   error: boolean;
   pressSummaryImageFromGallery: (image: string, showInGallery: boolean) => void;
   closeImagesGallery: () => void;
+  tryGetPlaceDetailsAgain: () => Promise<void>;
 };
 
 const PlaceDetails = ({
@@ -58,56 +60,70 @@ const PlaceDetails = ({
   backgroundImage,
   gallerySummaryImages,
   isOpenImagesGallery,
+  error,
   pressSummaryImageFromGallery,
   closeImagesGallery,
+  tryGetPlaceDetailsAgain,
 }: PlaceDetailsViewModel) => {
   return (
     <ScrollContainer>
-      <ImagesGallery
-        images={gallerySummaryImagesToImagesGallery(gallerySummaryImages)}
-        isOpen={isOpenImagesGallery}
-        close={closeImagesGallery}
-      />
-      <ImagesWrapper>
-        <BackgroundImage
-          testID="background_image_id"
-          source={{ uri: backgroundImage }}
-          resizeMode="cover"
+      {error ? (
+        <Error
+          content={{
+            title: 'Aaaah não',
+            message: 'Parece que tivemos um imprevito.',
+          }}
+          tryAgain={tryGetPlaceDetailsAgain}
         />
-        <GallerySummaryImagesWrapper>
-          <BlurOfGallerySummaryImages style={{ borderRadius: 20 }} />
-          <GallerySummaryImages
-            images={gallerySummaryImages}
-            press={pressSummaryImageFromGallery}
+      ) : (
+        <>
+          <ImagesGallery
+            images={gallerySummaryImagesToImagesGallery(gallerySummaryImages)}
+            isOpen={isOpenImagesGallery}
+            close={closeImagesGallery}
           />
-        </GallerySummaryImagesWrapper>
-      </ImagesWrapper>
-      <ContentContainer>
-        <Title testID="title_id">{title}</Title>
-        <Description testID="description_id">{description}</Description>
-        <DistanceDetailsContainer>
-          <LocationContainer>
-            <LocationIcon testID="location_icon_id" />
-            <Location testID="location_id">{location}</Location>
-          </LocationContainer>
-          <DistanceOfLocalContainer>
-            <WalkingIcon testID="walking_icon_id" />
-            <DistanceOfLocal testID="distance_of_local_id">
-              {myDistanceOfLocal}
-            </DistanceOfLocal>
-          </DistanceOfLocalContainer>
-        </DistanceDetailsContainer>
-        <Reviews
-          amountOfReviews={amountOfReviews}
-          rating={rating}
-          photoOfReviewProfiles={photoOfReviewProfiles}
-        />
-        <MoreDetails
-          businessHoursSummary={businessHoursSummary}
-          contact={contact}
-          fullLocation={fullLocation}
-        />
-      </ContentContainer>
+          <ImagesWrapper>
+            <BackgroundImage
+              testID="background_image_id"
+              source={{ uri: backgroundImage }}
+              resizeMode="cover"
+            />
+            <GallerySummaryImagesWrapper>
+              <BlurOfGallerySummaryImages style={{ borderRadius: 20 }} />
+              <GallerySummaryImages
+                images={gallerySummaryImages}
+                press={pressSummaryImageFromGallery}
+              />
+            </GallerySummaryImagesWrapper>
+          </ImagesWrapper>
+          <ContentContainer>
+            <Title testID="title_id">{title}</Title>
+            <Description testID="description_id">{description}</Description>
+            <DistanceDetailsContainer>
+              <LocationContainer>
+                <LocationIcon testID="location_icon_id" />
+                <Location testID="location_id">{location}</Location>
+              </LocationContainer>
+              <DistanceOfLocalContainer>
+                <WalkingIcon testID="walking_icon_id" />
+                <DistanceOfLocal testID="distance_of_local_id">
+                  {myDistanceOfLocal}
+                </DistanceOfLocal>
+              </DistanceOfLocalContainer>
+            </DistanceDetailsContainer>
+            <Reviews
+              amountOfReviews={amountOfReviews}
+              rating={rating}
+              photoOfReviewProfiles={photoOfReviewProfiles}
+            />
+            <MoreDetails
+              businessHoursSummary={businessHoursSummary}
+              contact={contact}
+              fullLocation={fullLocation}
+            />
+          </ContentContainer>
+        </>
+      )}
     </ScrollContainer>
   );
 };

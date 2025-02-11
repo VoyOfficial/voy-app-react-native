@@ -111,6 +111,7 @@ const usePlaceDetails = ({
     title: placeDetails.title,
     isOpenImagesGallery,
     error: false,
+    tryGetPlaceDetailsAgain: async () => {},
   };
 };
 
