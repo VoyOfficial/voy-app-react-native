@@ -12,6 +12,7 @@ export type HomeViewModel = {
   recommendations: Array<RecommendationProps>;
   error: boolean;
   tryGetListAgain: () => Promise<void>;
+  finding: boolean;
 };
 
 type GenericObject = { [key: string]: any };
@@ -84,6 +85,7 @@ const useHome = ({
     search,
     error: getError(),
     tryGetListAgain,
+    finding: false,
   };
 };
 
