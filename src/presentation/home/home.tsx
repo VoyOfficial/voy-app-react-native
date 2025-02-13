@@ -1,35 +1,12 @@
 import React from 'react';
-import {
-  ActivityIndicator,
-  Dimensions,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { ListRecommendation } from '../recommendation/components';
 import CardList from '../components/cardList';
 import { Origin } from '../placeList/usePlaceList';
 import Icon from '../assets/fonts/Voy';
 import { Error } from '../components';
+import Loading from '../components/loading';
 import { HomeViewModel } from './useHome';
-
-const dimensions = Dimensions.get('screen');
-
-const Loading = () => {
-  return (
-    <View
-      style={{
-        position: 'absolute',
-        width: dimensions.width,
-        height: dimensions.height,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F1F5F6',
-      }}
-    >
-      <ActivityIndicator testID="loading_animation_id" size={'large'} />
-    </View>
-  );
-};
 
 const Home = ({
   onSeeAll,
