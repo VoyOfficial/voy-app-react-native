@@ -32,11 +32,18 @@ const useHome = ({
     Array<RecommendationProps>
   >([]);
   const [placeList, setPlaceList] = useState<Array<Place>>([]);
+  const [finding, setFinding] = useState(false);
 
   useEffect(() => {
-    getRecommendations();
-    getPlaces();
+    getLists();
   }, []);
+
+  const getLists = async () => {
+    setFinding(true);
+    await getRecommendations();
+    await getPlaces();
+    setFinding(false);
+  };
 
   const onSeeAll = (by: string) => {
     navigate('PlaceList', { by });
@@ -85,7 +92,7 @@ const useHome = ({
     search,
     error: getError(),
     tryGetListAgain,
-    finding: false,
+    finding,
   };
 };
 

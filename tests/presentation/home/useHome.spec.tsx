@@ -6,6 +6,8 @@ import { PlaceModel, RecommendationModel } from '~/domain/models';
 import useHome from '../../../src/presentation/home/useHome';
 import placeListFactory from '../helpers/placeListFactory';
 
+jest.useFakeTimers();
+
 export const recommendationModelFake = (): RecommendationModel => {
   return {
     location: faker.address.secondaryAddress(),
@@ -21,19 +23,39 @@ export const recommendationModelFake = (): RecommendationModel => {
 
 class ListRecommendationsSpy implements ListRecommendations {
   listCalled = 0;
+  timeout = 0;
+
   constructor(
     readonly recommendations: Array<RecommendationModel> = [
       recommendationModelFake(),
     ],
   ) {}
   async list(): Promise<RecommendationModel[]> {
-    this.listCalled += 1;
-    return this.recommendations;
+    let recommendations: Array<RecommendationModel> = [];
+    const complete = () => {
+      this.listCalled += 1;
+      recommendations = this.recommendations;
+    };
+
+    if (this.timeout > 0) {
+      setTimeout(() => {
+        complete();
+      }, this.timeout);
+    } else {
+      complete();
+    }
+
+    return recommendations;
+  }
+
+  addTimeout(timeout: number) {
+    this.timeout = timeout;
   }
 }
 
 export class ListPlacesSpy implements ListPlaces {
   listCalled = 0;
+  timeout = 0;
   constructor(readonly places: Array<PlaceModel> = placeListFactory(5)) {}
   async list(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -41,8 +63,25 @@ export class ListPlacesSpy implements ListPlaces {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     nextPageToken?: string | undefined,
   ): Promise<PlaceModel[]> {
-    this.listCalled += 1;
-    return this.places;
+    let places: Array<PlaceModel> = [];
+    const complete = () => {
+      this.listCalled += 1;
+      places = this.places;
+    };
+
+    if (this.timeout > 0) {
+      setTimeout(() => {
+        complete();
+      }, this.timeout);
+    } else {
+      complete();
+    }
+
+    return places;
+  }
+
+  addTimeout(timeout: number) {
+    this.timeout = timeout;
   }
 }
 
@@ -64,21 +103,23 @@ describe('Presentation: useHome', () => {
   });
 
   test('should get the recommendations through of ListRecommendations when initialize', async () => {
+    const recommendations = [recommendationModelFake()];
+    const listRecommendations = new ListRecommendationsSpy(recommendations);
     const {
       sut: { result },
-      recommendationsFake,
-    } = makeSut({});
+    } = makeSut({ listRecommendations });
 
     await waitFor(() => {
-      expect(result.current.recommendations).toEqual(recommendationsFake);
+      expect(result.current.recommendations).toEqual(recommendations);
     });
   });
 
   test('should get the placeList through of ListPlaces when initialize', async () => {
+    const places = placeListFactory(5);
+    const listPlaces = new ListPlacesSpy(places);
     const {
       sut: { result },
-      places,
-    } = makeSut({});
+    } = makeSut({ listPlaces });
 
     await waitFor(() => {
       expect(result.current.placeList).toEqual(places);
@@ -165,20 +206,44 @@ describe('Presentation: useHome', () => {
       expect(ListRecommendationsSpy.listCalled).toEqual(2);
     });
   });
+
+  describe('loading', () => {
+    test('should the finding returning true correctly when it is finding the list recommendation and place', async () => {
+      const listPlaces = new ListPlacesSpy(placeListFactory(5));
+      const listRecommendations = new ListRecommendationsSpy([
+        recommendationModelFake(),
+      ]);
+      listPlaces.addTimeout(1000);
+      listRecommendations.addTimeout(1000);
+      const {
+        sut: { result },
+      } = makeSut({ listPlaces, listRecommendations });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(true);
+      });
+
+      jest.advanceTimersByTime(2200);
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+    });
+  });
 });
 
 type SutProps = {
   places?: Array<Place>;
   recommendations?: Array<RecommendationModel>;
+  listPlaces?: ListPlacesSpy;
+  listRecommendations?: ListRecommendationsSpy;
 };
 
 const makeSut = ({
-  places = placeListFactory(5),
-  recommendations = [recommendationModelFake()],
+  listPlaces = new ListPlacesSpy(placeListFactory(5)),
+  listRecommendations = new ListRecommendationsSpy([recommendationModelFake()]),
 }: SutProps) => {
   const navigate = jest.fn();
-  const listPlaces = new ListPlacesSpy(places);
-  const listRecommendations = new ListRecommendationsSpy(recommendations);
   const sut = renderHook(() =>
     useHome({
       navigate,
@@ -191,8 +256,6 @@ const makeSut = ({
     navigateSpy: navigate,
     ListPlacesSpy: listPlaces,
     sut,
-    places,
     ListRecommendationsSpy: listRecommendations,
-    recommendationsFake: recommendations,
   };
 };
