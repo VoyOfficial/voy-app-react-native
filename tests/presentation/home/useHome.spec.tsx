@@ -181,7 +181,7 @@ describe('Presentation: useHome', () => {
   });
 
   describe('error', () => {
-    test('should the error returning true when recommendations and place list are empty', async () => {
+    test('should the error returning true when recommendations and place list are empty and finding is false', async () => {
       const {
         sut: { result },
       } = makeSut({ places: [], recommendations: [] });
@@ -192,6 +192,22 @@ describe('Presentation: useHome', () => {
 
       await waitFor(() => {
         expect(result.current.finding).toEqual(false);
+      });
+    });
+
+    test('should the error returning false when recommendations and place list are empty and finding is true', async () => {
+      const listPlaces = new ListPlacesSpy(placeListFactory(5));
+      const listRecommendations = new ListRecommendationsSpy([
+        recommendationModelFake(),
+      ]);
+      listPlaces.addTimeout(1000);
+      listRecommendations.addTimeout(1000);
+      const {
+        sut: { result },
+      } = makeSut({ listPlaces, listRecommendations });
+
+      await waitFor(() => {
+        expect(result.current.error).toEqual(false);
       });
     });
 

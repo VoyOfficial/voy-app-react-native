@@ -75,7 +75,11 @@ const useHome = ({
   };
 
   const getError = useCallback(() => {
-    return !!(placeList.length === 0 && recommendations.length === 0);
+    const listsAreEmpty = !!(
+      placeList.length === 0 && recommendations.length === 0
+    );
+
+    return listsAreEmpty && !finding;
   }, [placeList, recommendations]);
 
   const tryGetListAgain = async () => {
