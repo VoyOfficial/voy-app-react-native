@@ -189,6 +189,10 @@ describe('Presentation: useHome', () => {
       await waitFor(() => {
         expect(result.current.error).toEqual(true);
       });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
     });
 
     test('should call the list of recommendations and places when calling the tryGetListAgain function', async () => {
@@ -200,6 +204,10 @@ describe('Presentation: useHome', () => {
 
       await waitFor(() => {
         result.current.tryGetListAgain();
+      });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
       });
 
       expect(ListPlacesSpy.listCalled).toEqual(2);
@@ -227,6 +235,30 @@ describe('Presentation: useHome', () => {
 
       await waitFor(() => {
         expect(result.current.finding).toEqual(false);
+      });
+    });
+
+    test('should set finding to true and then back to false when calling tryGetListAgain', async () => {
+      const listPlaces = new ListPlacesSpy(placeListFactory(5));
+      const listRecommendations = new ListRecommendationsSpy([
+        recommendationModelFake(),
+      ]);
+
+      const {
+        sut: { result },
+      } = makeSut({ listPlaces, listRecommendations });
+
+      await waitFor(() => {
+        expect(result.current.finding).toBe(false);
+      });
+
+      await waitFor(() => {
+        result.current.tryGetListAgain();
+        expect(result.current.finding).toBe(true);
+      });
+
+      await waitFor(() => {
+        expect(result.current.finding).toBe(false);
       });
     });
   });

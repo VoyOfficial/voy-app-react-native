@@ -79,8 +79,7 @@ const useHome = ({
   }, [placeList, recommendations]);
 
   const tryGetListAgain = async () => {
-    await getRecommendations();
-    getPlaces();
+    await getLists();
   };
 
   return {
