@@ -182,16 +182,18 @@ describe('Presentation: useHome', () => {
 
   describe('error', () => {
     test('should the error returning true when recommendations and place list are empty and finding is false', async () => {
+      const listPlaces = new ListPlacesSpy([]);
+      const listRecommendations = new ListRecommendationsSpy([]);
+      listPlaces.addTimeout(1000);
+      listRecommendations.addTimeout(1000);
       const {
         sut: { result },
-      } = makeSut({ places: [], recommendations: [] });
+      } = makeSut({ listPlaces, listRecommendations });
+
+      jest.advanceTimersByTime(2200);
 
       await waitFor(() => {
         expect(result.current.error).toEqual(true);
-      });
-
-      await waitFor(() => {
-        expect(result.current.finding).toEqual(false);
       });
     });
 
@@ -206,8 +208,14 @@ describe('Presentation: useHome', () => {
         sut: { result },
       } = makeSut({ listPlaces, listRecommendations });
 
+      jest.advanceTimersByTime(2200);
+
       await waitFor(() => {
         expect(result.current.error).toEqual(false);
+      });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
       });
     });
 

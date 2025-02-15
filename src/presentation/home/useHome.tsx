@@ -32,7 +32,7 @@ const useHome = ({
     Array<RecommendationProps>
   >([]);
   const [placeList, setPlaceList] = useState<Array<Place>>([]);
-  const [finding, setFinding] = useState(false);
+  const [finding, setFinding] = useState(true);
 
   useEffect(() => {
     getLists();
@@ -80,7 +80,7 @@ const useHome = ({
     );
 
     return listsAreEmpty && !finding;
-  }, [placeList, recommendations]);
+  }, [placeList, recommendations, finding]);
 
   const tryGetListAgain = async () => {
     await getLists();

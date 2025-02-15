@@ -43,6 +43,7 @@ const usePlaceDetails = ({
   const [isOpenImagesGallery, setIsOpenImagesGallery] = useState(false);
   const [placeDetails, setPlaceDetails] =
     useState<PlaceDetails>(emptyPlaceDetails);
+  const [finding, setFinding] = useState(true);
 
   useEffect(() => {
     setBackgroundImage(gallerySummaryImages[0]);
@@ -51,6 +52,7 @@ const usePlaceDetails = ({
 
   const updatePlaceDetails = async () => {
     try {
+      setFinding(true);
       const response = await getPlaceDetails.get(id);
       setPlaceDetails({
         amountOfReviews: response.amountOfReviews + ' avaliações',
@@ -66,6 +68,8 @@ const usePlaceDetails = ({
       });
     } catch (error) {
       setPlaceDetails(emptyPlaceDetails);
+    } finally {
+      setFinding(false);
     }
   };
 
@@ -114,6 +118,7 @@ const usePlaceDetails = ({
     rating: placeDetails.rating,
     title: placeDetails.title,
     isOpenImagesGallery,
+    finding,
     error: getError(),
     tryGetPlaceDetailsAgain,
   };

@@ -41,6 +41,7 @@ export type PlaceDetailsViewModel = {
   gallerySummaryImages: Array<string>;
   isOpenImagesGallery: boolean;
   error: boolean;
+  finding: boolean;
   pressSummaryImageFromGallery: (image: string, showInGallery: boolean) => void;
   closeImagesGallery: () => void;
   tryGetPlaceDetailsAgain: () => Promise<void>;

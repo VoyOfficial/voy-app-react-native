@@ -4,6 +4,8 @@ import { GetPlaceDetails } from '~/domain/useCases';
 import { PlaceDetailsModel } from '~/domain/models';
 import { usePlaceDetails } from '../../../src/presentation/placeDetails';
 
+jest.useFakeTimers();
+
 export class GetPlaceDetailsSpy implements GetPlaceDetails {
   getCalled = 0;
   placeDetails: PlaceDetailsModel = {
@@ -270,6 +272,39 @@ describe('Presentation: usePlaceDetails', () => {
       });
 
       expect(getPlaceDetails.getCalled).toEqual(2);
+    });
+  });
+
+  describe('loading', () => {
+    test('should the finding returning true correctly when it is finding the place details', async () => {
+      const { result } = makeSut({ id: 0 });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(true);
+      });
+
+      jest.advanceTimersByTime(1200);
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+    });
+
+    test('should set finding to true and then back to false when calling tryGetPlaceDetailsAgain', async () => {
+      const { result } = makeSut({ id: 0 });
+
+      await waitFor(() => {
+        expect(result.current.finding).toBe(false);
+      });
+
+      await waitFor(() => {
+        result.current.tryGetPlaceDetailsAgain();
+        expect(result.current.finding).toBe(true);
+      });
+
+      await waitFor(() => {
+        expect(result.current.finding).toBe(false);
+      });
     });
   });
 });
