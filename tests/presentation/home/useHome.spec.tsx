@@ -208,9 +208,8 @@ describe('Presentation: useHome', () => {
         sut: { result },
       } = makeSut({ listPlaces, listRecommendations });
 
-      jest.advanceTimersByTime(2200);
-
       await waitFor(() => {
+        expect(result.current.finding).toEqual(true);
         expect(result.current.error).toEqual(false);
       });
 

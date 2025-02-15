@@ -95,8 +95,10 @@ const usePlaceDetails = ({
   }, [placeDetails]);
 
   const getError = useCallback(() => {
-    return placeDetailsAreEmpty();
-  }, [placeDetailsAreEmpty]);
+    const response = !!(placeDetailsAreEmpty() && !finding);
+    console.log(placeDetails);
+    return response;
+  }, [placeDetailsAreEmpty, finding]);
 
   const tryGetPlaceDetailsAgain = async () => {
     await updatePlaceDetails();
