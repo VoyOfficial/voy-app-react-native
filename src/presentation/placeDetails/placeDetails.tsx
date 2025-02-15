@@ -1,5 +1,6 @@
 import React from 'react';
 import { Error } from '../components';
+import Loading from '../components/loading';
 import { GallerySummaryImages, MoreDetails, Reviews } from './components';
 import {
   BackgroundImage,
@@ -62,13 +63,15 @@ const PlaceDetails = ({
   gallerySummaryImages,
   isOpenImagesGallery,
   error,
+  finding,
   pressSummaryImageFromGallery,
   closeImagesGallery,
   tryGetPlaceDetailsAgain,
 }: PlaceDetailsViewModel) => {
   return (
     <ScrollContainer>
-      {error ? (
+      {finding && <Loading />}
+      {error && (
         <Error
           content={{
             title: 'Aaaah não',
@@ -76,7 +79,9 @@ const PlaceDetails = ({
           }}
           tryAgain={tryGetPlaceDetailsAgain}
         />
-      ) : (
+      )}
+
+      {!error && !finding && (
         <>
           <ImagesGallery
             images={gallerySummaryImagesToImagesGallery(gallerySummaryImages)}
