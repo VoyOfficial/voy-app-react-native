@@ -126,6 +126,7 @@ const makeSut = (
 ) => {
   return render(
     <ListCard
+      id={0}
       index={0}
       imageUrl={imageUrl}
       title={title}

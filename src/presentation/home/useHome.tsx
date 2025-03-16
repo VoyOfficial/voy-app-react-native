@@ -12,6 +12,7 @@ export type HomeViewModel = {
   recommendations: Array<RecommendationProps>;
   error: boolean;
   tryGetListAgain: () => Promise<void>;
+  finding: boolean;
 };
 
 type GenericObject = { [key: string]: any };
@@ -31,11 +32,18 @@ const useHome = ({
     Array<RecommendationProps>
   >([]);
   const [placeList, setPlaceList] = useState<Array<Place>>([]);
+  const [finding, setFinding] = useState(true);
 
   useEffect(() => {
-    getRecommendations();
-    getPlaces();
+    getLists();
   }, []);
+
+  const getLists = async () => {
+    setFinding(true);
+    await getRecommendations();
+    await getPlaces();
+    setFinding(false);
+  };
 
   const onSeeAll = (by: string) => {
     navigate('PlaceList', { by });
@@ -67,12 +75,15 @@ const useHome = ({
   };
 
   const getError = useCallback(() => {
-    return !!(placeList.length === 0 && recommendations.length === 0);
-  }, [placeList, recommendations]);
+    const listsAreEmpty = !!(
+      placeList.length === 0 && recommendations.length === 0
+    );
+
+    return listsAreEmpty && !finding;
+  }, [placeList, recommendations, finding]);
 
   const tryGetListAgain = async () => {
-    await getRecommendations();
-    getPlaces();
+    await getLists();
   };
 
   return {
@@ -84,6 +95,7 @@ const useHome = ({
     search,
     error: getError(),
     tryGetListAgain,
+    finding,
   };
 };
 

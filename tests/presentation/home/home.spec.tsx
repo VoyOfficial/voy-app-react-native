@@ -116,15 +116,41 @@ describe('Presentation: Home', () => {
       expect(tryGetListAgain).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('loading', () => {
+    test('should only show the loading animation when finding is true', () => {
+      const {
+        sut: { getByTestId, queryByTestId },
+      } = makeSut({ finding: true });
+
+      expect(getByTestId('loading_animation_id')).toBeTruthy();
+
+      expect(queryByTestId('recommendation-list')).not.toBeTruthy();
+      expect(queryByTestId('place_list_id')).not.toBeTruthy();
+    });
+
+    test('should not show the loading animation when finding is false', () => {
+      const {
+        sut: { queryByTestId, getByTestId },
+      } = makeSut({ finding: false });
+
+      expect(queryByTestId('loading_animation_id')).not.toBeTruthy();
+
+      expect(getByTestId('recommendation-list')).toBeTruthy();
+      expect(getByTestId('place_list_id')).toBeTruthy();
+    });
+  });
 });
 
 type SutProps = {
   error?: boolean;
+  finding?: boolean;
   tryGetListAgain?: () => Promise<void>;
 };
 
 const makeSut = ({
   error = false,
+  finding = false,
   tryGetListAgain = async () => {},
 }: SutProps) => {
   const search = jest.fn();
@@ -143,6 +169,7 @@ const makeSut = ({
       search={search}
       error={error}
       tryGetListAgain={tryGetListAgain}
+      finding={finding}
     />,
   );
 

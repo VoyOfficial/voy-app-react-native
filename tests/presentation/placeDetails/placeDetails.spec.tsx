@@ -380,6 +380,36 @@ describe('Presentation: PlaceDetails', () => {
       expect(tryGetPlaceDetailsAgain).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('loading', () => {
+    test('should only show the loading animation when finding is true', () => {
+      const {
+        sut: { getByTestId, queryByTestId },
+      } = makeSut({ finding: true });
+
+      expect(getByTestId('loading_animation_id')).toBeTruthy();
+
+      expect(queryByTestId('title_id')).not.toBeTruthy();
+      expect(queryByTestId('description_id')).not.toBeTruthy();
+      expect(queryByTestId('location_id')).not.toBeTruthy();
+      expect(queryByTestId('distance_of_local_id')).not.toBeTruthy();
+      expect(queryByTestId('background_image_id')).not.toBeTruthy();
+    });
+
+    test('should not show the loading animation when finding is false', () => {
+      const {
+        sut: { queryByTestId, getByTestId },
+      } = makeSut({ finding: false });
+
+      expect(queryByTestId('loading_animation_id')).not.toBeTruthy();
+
+      expect(getByTestId('title_id')).toBeTruthy();
+      expect(getByTestId('description_id')).toBeTruthy();
+      expect(getByTestId('location_id')).toBeTruthy();
+      expect(getByTestId('distance_of_local_id')).toBeTruthy();
+      expect(getByTestId('background_image_id')).toBeTruthy();
+    });
+  });
 });
 
 type SutProps = {
@@ -396,6 +426,7 @@ type SutProps = {
   backgroundImage?: string;
   gallerySummaryImages?: Array<string>;
   error?: boolean;
+  finding?: boolean;
   tryGetPlaceDetailsAgain?: () => Promise<void>;
   pressSummaryImageFromGallery?: () => void;
 };
@@ -414,6 +445,7 @@ const makeSut = ({
   backgroundImage = '',
   gallerySummaryImages = [''],
   error = false,
+  finding = false,
   pressSummaryImageFromGallery = () => {},
   tryGetPlaceDetailsAgain = async () => {},
 }: SutProps) => {
@@ -436,6 +468,7 @@ const makeSut = ({
       closeImagesGallery={() => {}}
       error={error}
       tryGetPlaceDetailsAgain={tryGetPlaceDetailsAgain}
+      finding={finding}
     />,
   );
 

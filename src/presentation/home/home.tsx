@@ -5,6 +5,7 @@ import CardList from '../components/cardList';
 import { Origin } from '../placeList/usePlaceList';
 import Icon from '../assets/fonts/Voy';
 import { Error } from '../components';
+import Loading from '../components/loading';
 import { HomeViewModel } from './useHome';
 
 const Home = ({
@@ -15,10 +16,12 @@ const Home = ({
   showMoreDetails,
   search,
   error,
+  finding,
   tryGetListAgain,
 }: HomeViewModel) => {
   return (
     <View>
+      {finding && <Loading />}
       {error && (
         <Error
           tryAgain={tryGetListAgain}
@@ -28,7 +31,7 @@ const Home = ({
           }}
         />
       )}
-      {!error && (
+      {!error && !finding && (
         <>
           <View
             style={{
