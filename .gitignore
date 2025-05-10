@@ -64,3 +64,9 @@ buck-out/
 
 #tests
 /coverage
+
+# Android
+android/app/google-services.json
+
+# iOS
+ios/GoogleService-Info.plist
