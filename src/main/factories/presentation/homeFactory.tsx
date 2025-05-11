@@ -11,7 +11,7 @@ class ListRecommendationsDAO implements ListRecommendations {
   async list(): Promise<RecommendationModel[]> {
     const axios = new AxiosAdapter();
     const response = await axios.get({
-      url: 'http://10.0.2.2:3000/recommendations',
+      url: 'http://localhost:3000/recommendations', //10.0.2.2:3000
     });
     return response.body;
   }
@@ -27,7 +27,7 @@ class ListPlacesDAO implements ListPlaces {
   ): Promise<PlaceModel[]> {
     const axios = new AxiosAdapter();
     const response = await axios.get({
-      url: 'http://10.0.2.2:3000/places',
+      url: 'http://localhost:3000/places', // 10.0.2.2:3000
     });
     return response.body;
   }

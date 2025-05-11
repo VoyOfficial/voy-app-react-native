@@ -25,6 +25,7 @@
   "dependencies": {
     "@georstat/react-native-image-gallery": "^1.1.0",
     "@react-native-community/blur": "^4.3.2",
+    "@react-native-firebase/analytics": "^22.1.0",
     "@react-native-firebase/app": "^22.1.0",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
