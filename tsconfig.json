@@ -16,6 +16,9 @@
       "~/main": [
         "src/main"
       ],
+      "~/domain/analytics": [
+        "src/domain/analytics"
+      ],
       "~/domain/useCases": [
         "src/domain/useCases"
       ],
@@ -42,6 +45,9 @@
       ],
       "~/infra/http": [
         "src/infra/http"
+      ],
+      "~/infra/analytics": [
+        "src/infra/analytics"
       ],
       "~/presentation/components": [
         "src/presentation/components"
