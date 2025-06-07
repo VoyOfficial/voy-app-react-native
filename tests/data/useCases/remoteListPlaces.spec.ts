@@ -99,6 +99,19 @@ describe('Data: RemoteListPlaces', () => {
   });
 
   describe('Analytics', () => {
+    const emptyParameters = [
+      {
+        long: '-1213242432',
+        lat: '-2324546432',
+        place: null,
+      },
+      {
+        long: '',
+        lat: '',
+        place: null,
+      },
+    ];
+
     test('should track the list places event with correct parameters', async () => {
       const { sut, httpClient, analytics } = makeSut();
       const httpResult = mockRemoteListPlace();
@@ -118,6 +131,28 @@ describe('Data: RemoteListPlaces', () => {
         places: httpResult,
       });
     });
+
+    test.each(emptyParameters)(
+      'should track the list places event with empty parameters',
+      async (parameters) => {
+        const { sut, httpClient, analytics } = makeSut();
+        httpClient.response = {
+          statusCode: HttpStatusCode.ok,
+          body: parameters.place,
+        };
+
+        const location = { long: parameters.long, lat: parameters.lat };
+        const nextPageToken = makeNextPageToken();
+        await sut.list(location, nextPageToken);
+
+        expect(analytics.event).toBe('list_places');
+        expect(analytics.params).toEqual({
+          long: parameters.long,
+          lat: parameters.lat,
+          places: [],
+        });
+      },
+    );
   });
 });
 
