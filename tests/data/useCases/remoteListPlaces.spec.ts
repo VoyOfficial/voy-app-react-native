@@ -153,6 +153,26 @@ describe('Data: RemoteListPlaces', () => {
         });
       },
     );
+
+    test.each([HttpStatusCode.noContent, HttpStatusCode.forbidden])(
+      'should not track the list places event when httpClient returns different of 200',
+      async (statusCode) => {
+        const { sut, httpClient, analytics } = makeSut();
+        httpClient.response = {
+          statusCode: statusCode,
+          body: null,
+        };
+
+        const location = { long: '-1213242432', lat: '-2324546432' };
+        const nextPageToken = makeNextPageToken();
+
+        if (statusCode === HttpStatusCode.forbidden)
+          await expect(sut.list(location, nextPageToken)).rejects.toThrow();
+
+        expect(analytics.event).toBe('');
+        expect(analytics.params).toEqual({});
+      },
+    );
   });
 });
 
