@@ -6,7 +6,11 @@ export default class FirebaseAnalyticsAdapter implements AnalyticsTracker {
     eventName: string,
     params: Record<string, any>,
   ): Promise<boolean> {
-    await analytics().logEvent(eventName, params);
-    return true;
+    try {
+      await analytics().logEvent(eventName, params);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
