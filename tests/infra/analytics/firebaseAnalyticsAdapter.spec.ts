@@ -6,34 +6,49 @@ import { FirebaseAnalyticsAdapter } from '~/infra/analytics';
 jest.mock('@react-native-firebase/analytics', () => jest.fn());
 
 describe('Analytics: FirebaseAnalyticsAdapter', () => {
-  test('should track through the FirebaseAnalyticsAdapter the correct information', async () => {
-    const analyticsMocked = firebaseAnalyticsMock();
-    const sut = new FirebaseAnalyticsAdapter();
+  const eventName = 'event_name';
+  const params = { param1: 'value1', param2: 'value2' };
 
-    const eventName = 'event_name';
-    const params = { param1: 'value1', param2: 'value2' };
+  test('should track through the FirebaseAnalyticsAdapter the correct information', async () => {
+    const analyticsMocked = firebaseAnalyticsMock(false);
+    const { sut } = makeSut();
+
     const status = await sut.trackEvent(eventName, params);
 
     expect(status).toEqual(true);
-    expect(analyticsMocked.logEvent).toHaveBeenCalled();
-    expect(analyticsMocked.logEvent).toHaveBeenCalledWith(eventName, params);
+    calledLogEvent(analyticsMocked, { eventName, params });
   });
 
   test('should try tracking through the FirebaseAnalyticsAdapter', async () => {
-    const throwError = true;
-    const analyticsMocked = firebaseAnalyticsMock(throwError);
-    const sut = new FirebaseAnalyticsAdapter();
-
-    const eventName = 'event_name';
-    const params = { param1: 'value1', param2: 'value2' };
+    const analyticsMocked = firebaseAnalyticsMock(true);
+    const { sut } = makeSut();
 
     const status = await sut.trackEvent(eventName, params);
 
     expect(status).toEqual(false);
-    expect(analyticsMocked.logEvent).toHaveBeenCalled();
-    expect(analyticsMocked.logEvent).toHaveBeenCalledWith(eventName, params);
+    calledLogEvent(analyticsMocked, { eventName, params });
   });
 });
+
+const makeSut = () => {
+  const sut = new FirebaseAnalyticsAdapter();
+
+  return { sut };
+};
+
+const calledLogEvent = (
+  analyticsMocked: jest.Mocked<FirebaseAnalyticsTypes.Module>,
+  params: {
+    eventName: string;
+    params: Record<string, any>;
+  },
+) => {
+  expect(analyticsMocked.logEvent).toHaveBeenCalled();
+  expect(analyticsMocked.logEvent).toHaveBeenCalledWith(
+    params.eventName,
+    params.params,
+  );
+};
 
 const firebaseAnalyticsMock = (
   throwError = false,
