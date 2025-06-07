@@ -1,6 +1,7 @@
 import { NoPermissionError, UnexpectedError } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
 import { RemoteListPlaces } from '~/data/useCases';
+import { AnalyticsTracker } from '~/domain/analytics';
 import { makeNextPageToken, makeUrl } from '../helpers/testFactories';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
@@ -96,11 +97,48 @@ describe('Data: RemoteListPlaces', () => {
 
     expect(placeList).toEqual([]);
   });
+
+  describe('Analytics', () => {
+    test('should track the list places event with correct parameters', async () => {
+      const { sut, httpClient, analytics } = makeSut();
+      const httpResult = mockRemoteListPlace();
+      httpClient.response = {
+        statusCode: HttpStatusCode.ok,
+        body: httpResult,
+      };
+
+      const location = { long: '-1213242432', lat: '-2324546432' };
+      const nextPageToken = makeNextPageToken();
+      await sut.list(location, nextPageToken);
+
+      expect(analytics.event).toBe('list_places');
+      expect(analytics.params).toEqual({
+        long: location.long,
+        lat: location.lat,
+        places: httpResult,
+      });
+    });
+  });
 });
 
 const makeSut = (url = makeUrl()) => {
+  const analytics = new AnalyticsTrackerSpy();
   const httpClient = new HttpClientSpy();
-  const sut = new RemoteListPlaces(url, httpClient);
+  const sut = new RemoteListPlaces(url, httpClient, analytics);
 
-  return { sut, httpClient };
+  return { sut, httpClient, analytics };
 };
+
+class AnalyticsTrackerSpy implements AnalyticsTracker {
+  event = '';
+  params: Record<string, any> = {};
+
+  trackEvent = async (
+    event: string,
+    params: Record<string, any>,
+  ): Promise<boolean> => {
+    this.event = event;
+    this.params = { ...params };
+    return false;
+  };
+}
