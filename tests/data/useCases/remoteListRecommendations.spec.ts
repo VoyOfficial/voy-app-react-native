@@ -89,6 +89,23 @@ describe('Data: ListRecommendations', () => {
       recommendations: [],
     });
   });
+
+  test.each([HttpStatusCode.noContent, HttpStatusCode.forbidden])(
+    'should not track the list recommendations event when httpClient returns different of 200',
+    async (statusCode) => {
+      const { sut, httpClient, analytics } = makeSut();
+      httpClient.response = {
+        statusCode: statusCode,
+        body: null,
+      };
+
+      if (statusCode === HttpStatusCode.forbidden)
+        await expect(sut.list()).rejects.toThrow();
+
+      expect(analytics.event).toBe('');
+      expect(analytics.params).toEqual({});
+    },
+  );
 });
 
 const makeSut = (url = makeUrl()) => {
