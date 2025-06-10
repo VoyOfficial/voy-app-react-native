@@ -74,6 +74,21 @@ describe('Data: ListRecommendations', () => {
       });
     });
   });
+
+  test('should track the list recommendations event with empty body', async () => {
+    const { sut, httpClient, analytics } = makeSut();
+    httpClient.response = {
+      statusCode: HttpStatusCode.ok,
+      body: null,
+    };
+
+    await sut.list();
+
+    expect(analytics.event).toBe('list_recommendations');
+    expect(analytics.params).toEqual({
+      recommendations: [],
+    });
+  });
 });
 
 const makeSut = (url = makeUrl()) => {

@@ -18,10 +18,11 @@ export default class RemoteListRecommendations implements ListRecommendations {
 
     switch (statusCode) {
       case HttpStatusCode.ok:
+        const recommendations = body || [];
         await this.analytics.trackEvent('list_recommendations', {
-          recommendations: body,
+          recommendations,
         });
-        return body;
+        return recommendations;
       case HttpStatusCode.noContent:
         return [];
       case HttpStatusCode.forbidden:
