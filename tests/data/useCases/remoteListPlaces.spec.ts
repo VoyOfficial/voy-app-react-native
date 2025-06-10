@@ -1,10 +1,10 @@
 import { NoPermissionError, UnexpectedError } from '~/data/errors';
 import { HttpStatusCode } from '~/data/http';
 import { RemoteListPlaces } from '~/data/useCases';
-import { AnalyticsTracker } from '~/domain/analytics';
 import { makeNextPageToken, makeUrl } from '../helpers/testFactories';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
+import AnalyticsTrackerSpy from '../analytics/analyticsTrackerSpy';
 
 describe('Data: RemoteListPlaces', () => {
   test('should list with httpPostClient call correct url', async () => {
@@ -183,17 +183,3 @@ const makeSut = (url = makeUrl()) => {
 
   return { sut, httpClient, analytics };
 };
-
-class AnalyticsTrackerSpy implements AnalyticsTracker {
-  event = '';
-  params: Record<string, any> = {};
-
-  trackEvent = async (
-    event: string,
-    params: Record<string, any>,
-  ): Promise<boolean> => {
-    this.event = event;
-    this.params = { ...params };
-    return false;
-  };
-}

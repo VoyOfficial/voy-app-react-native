@@ -4,6 +4,7 @@ import { RemoteListRecommendations } from '~/data/useCases';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import { makeUrl } from '../helpers/testFactories';
 import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
+import AnalyticsTrackerSpy from '../analytics/analyticsTrackerSpy';
 
 describe('Data: ListRecommendations', () => {
   test('should list with httpGetClient calling correct url', () => {
@@ -58,10 +59,26 @@ describe('Data: ListRecommendations', () => {
 
     await expect(promise).rejects.toThrow(new NoPermissionError());
   });
+
+  describe('Analytics', () => {
+    test('should track the list recommendations event with correct parameters', async () => {
+      const httpResult = mockRemoteListPlace();
+      const { sut, httpClient, analytics } = makeSut();
+      httpClient.completeWithSuccess(HttpStatusCode.ok, httpResult);
+
+      await sut.list();
+
+      expect(analytics.event).toBe('list_recommendations');
+      expect(analytics.params).toEqual({
+        recommendations: httpResult,
+      });
+    });
+  });
 });
 
 const makeSut = (url = makeUrl()) => {
   const httpClient = new HttpClientSpy();
-  const sut = new RemoteListRecommendations(url, httpClient);
-  return { sut, httpClient };
+  const analytics = new AnalyticsTrackerSpy();
+  const sut = new RemoteListRecommendations(url, httpClient, analytics);
+  return { sut, httpClient, analytics };
 };
