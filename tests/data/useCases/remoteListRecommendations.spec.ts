@@ -70,7 +70,9 @@ describe('Data: ListRecommendations', () => {
 
       expect(analytics.event).toBe('list_recommendations');
       expect(analytics.params).toEqual({
-        recommendations: httpResult,
+        recommendations: httpResult.map((recommendation) => {
+          return { id: recommendation.id, name: recommendation.title };
+        }),
       });
     });
   });
