@@ -1,5 +1,6 @@
 import { GetPlaceDetails } from '~/domain/useCases';
 import { PlaceDetailsModel } from '~/domain/models';
+import { AnalyticsTracker } from '~/domain/analytics';
 import { HttpGetClient, HttpStatusCode } from '../http';
 import {
   NotHaveAccessToPlaceDetailsError,
@@ -11,6 +12,7 @@ export default class RemoteGetPlaceDetails implements GetPlaceDetails {
   constructor(
     private readonly url: string,
     private readonly httpGetClient: HttpGetClient,
+    private readonly analytics: AnalyticsTracker,
   ) {}
   get = async (id: string): Promise<PlaceDetailsModel> => {
     const { statusCode, body } = await this.httpGetClient.get({
@@ -19,6 +21,9 @@ export default class RemoteGetPlaceDetails implements GetPlaceDetails {
 
     switch (statusCode) {
       case HttpStatusCode.ok:
+        this.analytics.trackEvent('place_details', {
+          place_details: body,
+        });
         return body;
       case HttpStatusCode.notFound:
         throw new PlaceDetailsNotFoundError();
