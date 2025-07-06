@@ -1,11 +1,16 @@
 import { SearchPlaces } from '~/domain/useCases';
 import { FilterParam } from '~/domain/params';
 import { SearchPlaceModel } from '~/domain/models';
+import { AnalyticsTracker } from '~/domain/analytics';
 import { HttpPostClient, HttpStatusCode } from '../http';
 import { NoAccessError, UnexpectedError } from '../errors';
 
 export default class RemoteSearchPlaces implements SearchPlaces {
-  constructor(readonly url: string, readonly httpPostClient: HttpPostClient) {}
+  constructor(
+    readonly url: string,
+    readonly httpPostClient: HttpPostClient,
+    private readonly analytics: AnalyticsTracker,
+  ) {}
 
   async search(
     place: string,
@@ -20,6 +25,12 @@ export default class RemoteSearchPlaces implements SearchPlaces {
 
     switch (response.statusCode) {
       case HttpStatusCode.ok:
+        this.analytics.trackEvent('search', {
+          search: place,
+          types,
+          ordination,
+          result: response.body,
+        });
         return response.body;
       case HttpStatusCode.noContent:
         return [];
