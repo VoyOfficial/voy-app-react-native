@@ -163,6 +163,30 @@ describe('Data: RemoteSearchPlaces', () => {
         result: search,
       });
     });
+
+    test('should track the search event with empty body', async () => {
+      const analytics = new AnalyticsTrackerSpy();
+      const url = makeUrl();
+      const httpClient = new HttpClientSpy();
+      httpClient.response = {
+        statusCode: HttpStatusCode.ok,
+        body: null,
+      };
+      const sut = new RemoteSearchPlaces(url, httpClient, analytics);
+
+      const types = [Filter.Entertainment];
+      const ordination = Ordination.Closer;
+      const place = 'coffee shop';
+      await sut.search(place, { types: types, ordination: ordination });
+
+      expect(analytics.event).toEqual('search');
+      expect(analytics.params).toEqual({
+        search: place,
+        types,
+        ordination,
+        result: [],
+      });
+    });
   });
 });
 

@@ -29,7 +29,7 @@ export default class RemoteSearchPlaces implements SearchPlaces {
           search: place,
           types,
           ordination,
-          result: response.body,
+          result: response.body || [],
         });
         return response.body;
       case HttpStatusCode.noContent:
