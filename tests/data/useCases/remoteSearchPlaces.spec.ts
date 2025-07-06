@@ -187,6 +187,32 @@ describe('Data: RemoteSearchPlaces', () => {
         result: [],
       });
     });
+
+    test.each([HttpStatusCode.noContent, HttpStatusCode.forbidden])(
+      'should not track the search event when httpClient returns different of 200',
+      async (statusCode) => {
+        const analytics = new AnalyticsTrackerSpy();
+        const url = makeUrl();
+        const httpClient = new HttpClientSpy();
+        httpClient.response = {
+          statusCode: statusCode,
+          body: null,
+        };
+        const sut = new RemoteSearchPlaces(url, httpClient, analytics);
+
+        const types = [Filter.Entertainment];
+        const ordination = Ordination.Closer;
+        const place = 'coffee shop';
+
+        if (statusCode === HttpStatusCode.forbidden)
+          await expect(
+            sut.search(place, { types, ordination }),
+          ).rejects.toThrow();
+
+        expect(analytics.event).toBe('');
+        expect(analytics.params).toEqual({});
+      },
+    );
   });
 });
 
