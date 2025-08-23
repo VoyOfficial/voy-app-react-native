@@ -19,6 +19,19 @@ describe('Analytics: FirebaseAnalyticsAdapter', () => {
     calledLogEvent(analyticsMocked, { eventName, params });
   });
 
+  test('should track through the FirebaseAnalyticsAdapter the correct information when called with an array of strings', async () => {
+    const analyticsMocked = firebaseAnalyticsMock(false);
+    const { sut } = makeSut();
+
+    const status = await sut.trackEvent(eventName, ['value1', 'value2']);
+
+    expect(status).toEqual(true);
+    calledLogEvent(analyticsMocked, {
+      eventName,
+      params: { places: 'value1, value2' },
+    });
+  });
+
   test('should try tracking through the FirebaseAnalyticsAdapter', async () => {
     const analyticsMocked = firebaseAnalyticsMock(true);
     const { sut } = makeSut();
