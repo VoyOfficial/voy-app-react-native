@@ -26,12 +26,16 @@ export default class RemoteListPlaces implements ListPlaces {
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        const places = httpResponse.body || [];
-        await this.trackEvent('list_places', {
-          long: location.long,
-          lat: location.lat,
-          places,
-        });
+        const places: Array<PlaceModel> = httpResponse.body || [];
+
+        if (Array.isArray(places)) {
+          await this.trackEvent('list_places', {
+            long: location.long,
+            lat: location.lat,
+            places_title: places?.map((place: PlaceModel) => place.title) || '',
+            place_count: places.length,
+          });
+        }
         return places;
       case HttpStatusCode.noContent:
         return [];

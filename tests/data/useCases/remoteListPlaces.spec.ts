@@ -128,7 +128,8 @@ describe('Data: RemoteListPlaces', () => {
       expect(analytics.params).toEqual({
         long: location.long,
         lat: location.lat,
-        places: httpResult,
+        places_title: httpResult.map((place) => place.title),
+        place_count: httpResult.length,
       });
     });
 
@@ -149,7 +150,8 @@ describe('Data: RemoteListPlaces', () => {
         expect(analytics.params).toEqual({
           long: parameters.long,
           lat: parameters.lat,
-          places: [],
+          places_title: [],
+          place_count: 0,
         });
       },
     );
