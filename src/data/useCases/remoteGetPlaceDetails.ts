@@ -21,10 +21,9 @@ export default class RemoteGetPlaceDetails implements GetPlaceDetails {
 
     switch (statusCode) {
       case HttpStatusCode.ok:
-        this.analytics.trackEvent('place_details', {
-          place_details: body,
-        });
-        return body;
+        const placeDetails = body as PlaceDetailsModel;
+        this.trackPlaceDetailsEvent(placeDetails);
+        return placeDetails;
       case HttpStatusCode.notFound:
         throw new PlaceDetailsNotFoundError();
       case HttpStatusCode.forbidden:
@@ -33,4 +32,14 @@ export default class RemoteGetPlaceDetails implements GetPlaceDetails {
         throw new UnexpectedError();
     }
   };
+
+  private trackPlaceDetailsEvent(placeDetails: PlaceDetailsModel): void {
+    this.analytics.trackEvent('place_details', {
+      place_title: placeDetails.title,
+      place_location: placeDetails.fullLocation,
+      place_rating: placeDetails.rating,
+      place_distance: placeDetails.distance,
+      place_amount_of_reviews: placeDetails.amountOfReviews,
+    });
+  }
 }

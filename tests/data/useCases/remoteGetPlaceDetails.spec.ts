@@ -137,7 +137,11 @@ describe('Data: RemoteGetPlaceDetails', () => {
 
       expect(analytics.event).toEqual('place_details');
       expect(analytics.params).toEqual({
-        place_details: placeDetails,
+        place_title: placeDetails.title,
+        place_location: placeDetails.fullLocation,
+        place_rating: placeDetails.rating,
+        place_distance: placeDetails.distance,
+        place_amount_of_reviews: placeDetails.amountOfReviews,
       });
     });
   });
