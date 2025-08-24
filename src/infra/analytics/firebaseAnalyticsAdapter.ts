@@ -12,7 +12,7 @@ export default class FirebaseAnalyticsAdapter implements AnalyticsTracker {
       if (Array.isArray(params)) {
         processedParams = { places: this.arrayToString(params) };
       } else {
-        processedParams = params;
+        processedParams = this.processObjectParams(params);
       }
 
       await analytics().logEvent(eventName, processedParams);
@@ -22,7 +22,23 @@ export default class FirebaseAnalyticsAdapter implements AnalyticsTracker {
     }
   }
 
-  arrayToString(array: Array<string>): string {
+  private processObjectParams(
+    params: Record<string, any>,
+  ): Record<string, any> {
+    const processedParams: Record<string, any> = {};
+
+    for (const [key, value] of Object.entries(params)) {
+      if (Array.isArray(value)) {
+        processedParams[key] = this.arrayToString(value);
+      } else {
+        processedParams[key] = value;
+      }
+    }
+
+    return processedParams;
+  }
+
+  private arrayToString(array: Array<string>): string {
     return array.join(', ');
   }
 }

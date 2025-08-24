@@ -23,7 +23,9 @@ describe('Analytics: FirebaseAnalyticsAdapter', () => {
     const analyticsMocked = firebaseAnalyticsMock(false);
     const { sut } = makeSut();
 
-    const status = await sut.trackEvent(eventName, ['value1', 'value2']);
+    const status = await sut.trackEvent(eventName, {
+      places: ['value1', 'value2'],
+    });
 
     expect(status).toEqual(true);
     calledLogEvent(analyticsMocked, {
