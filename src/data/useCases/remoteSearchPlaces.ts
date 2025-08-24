@@ -25,13 +25,9 @@ export default class RemoteSearchPlaces implements SearchPlaces {
 
     switch (response.statusCode) {
       case HttpStatusCode.ok:
-        this.analytics.trackEvent('search', {
-          search: place,
-          types,
-          ordination,
-          result: response.body || [],
-        });
-        return response.body;
+        const searchResults = (response.body as SearchPlaceModel[]) || [];
+        this.trackSearchEvent(place, types, ordination, searchResults);
+        return searchResults;
       case HttpStatusCode.noContent:
         return [];
       case HttpStatusCode.forbidden:
@@ -39,6 +35,26 @@ export default class RemoteSearchPlaces implements SearchPlaces {
       default:
         throw new UnexpectedError();
     }
+  }
+
+  private trackSearchEvent(
+    search: string,
+    types: FilterParam['types'],
+    ordination: FilterParam['ordination'],
+    searchResults: SearchPlaceModel[],
+  ): void {
+    this.analytics.trackEvent('search', {
+      search,
+      types,
+      ordination,
+      result:
+        searchResults.length > 0
+          ? {
+              places_title: searchResults.map((place) => place.title),
+              place_count: searchResults.length,
+            }
+          : [],
+    });
   }
 
   private makeUrl(place: string, nextPageToken?: string): string {

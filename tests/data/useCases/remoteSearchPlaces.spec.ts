@@ -160,7 +160,10 @@ describe('Data: RemoteSearchPlaces', () => {
         search: place,
         types,
         ordination,
-        result: search,
+        result: {
+          places_title: search.map((place) => place.title),
+          place_count: search.length,
+        },
       });
     });
 
