@@ -8,7 +8,7 @@ import placeListFactory from '../helpers/placeListFactory';
 
 jest.useFakeTimers();
 
-export const recommendationModelFake = (): RecommendationModel => {
+const recommendationModelFake = (): RecommendationModel => {
   return {
     location: faker.address.secondaryAddress(),
     imageUrl: faker.image.city(),
