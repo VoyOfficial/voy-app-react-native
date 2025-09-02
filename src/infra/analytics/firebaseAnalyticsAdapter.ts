@@ -30,6 +30,8 @@ export default class FirebaseAnalyticsAdapter implements AnalyticsTracker {
     for (const [key, value] of Object.entries(params)) {
       if (Array.isArray(value)) {
         processedParams[key] = this.arrayToString(value);
+      } else if (typeof value === 'string') {
+        processedParams[key] = this.sanitizeString(value);
       } else {
         processedParams[key] = value;
       }
@@ -39,6 +41,16 @@ export default class FirebaseAnalyticsAdapter implements AnalyticsTracker {
   }
 
   private arrayToString(array: Array<string>): string {
-    return array.join(', ');
+    return array.map((item) => this.sanitizeString(item)).join(', ');
+  }
+
+  private sanitizeString(str: string): string {
+    return str
+      .normalize('NFD') // Normalize to decomposed form
+      .replace(/[\u0300-\u036f]/g, '') // Remove accent marks
+      .replace(/[^a-zA-Z0-9\s]/g, '') // Remove special characters, keep letters, numbers, and spaces
+      .replace(/\s+/g, '-') // Replace spaces with dashes
+      .replace(/^-+|-+$/g, '') // Remove leading and trailing dashes
+      .toLowerCase(); // Convert to lowercase for consistency
   }
 }
