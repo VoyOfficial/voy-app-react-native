@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import {
+  HttpGetClient,
   HttpPostClient,
   HttpRequest,
   HttpResponse,
@@ -23,7 +24,7 @@ export const unexpectedErrorResponse = {
 
 type HttpRequestMethod<T> = Partial<T> & { method: HttpMethods };
 
-export class AxiosAdapter implements HttpPostClient {
+export class AxiosAdapter implements HttpPostClient, HttpGetClient {
   private async request(
     data: HttpRequestMethod<HttpRequest>,
   ): Promise<HttpResponse<any>> {

@@ -1,11 +1,16 @@
 import { SearchPlaces } from '~/domain/useCases';
 import { FilterParam } from '~/domain/params';
 import { SearchPlaceModel } from '~/domain/models';
+import { AnalyticsTracker } from '~/domain/analytics';
 import { HttpPostClient, HttpStatusCode } from '../http';
 import { NoAccessError, UnexpectedError } from '../errors';
 
 export default class RemoteSearchPlaces implements SearchPlaces {
-  constructor(readonly url: string, readonly httpPostClient: HttpPostClient) {}
+  constructor(
+    readonly url: string,
+    readonly httpPostClient: HttpPostClient,
+    private readonly analytics: AnalyticsTracker,
+  ) {}
 
   async search(
     place: string,
@@ -20,7 +25,9 @@ export default class RemoteSearchPlaces implements SearchPlaces {
 
     switch (response.statusCode) {
       case HttpStatusCode.ok:
-        return response.body;
+        const searchResults = (response.body as SearchPlaceModel[]) || [];
+        this.trackSearchEvent(place, types, ordination, searchResults);
+        return searchResults;
       case HttpStatusCode.noContent:
         return [];
       case HttpStatusCode.forbidden:
@@ -28,6 +35,26 @@ export default class RemoteSearchPlaces implements SearchPlaces {
       default:
         throw new UnexpectedError();
     }
+  }
+
+  private trackSearchEvent(
+    search: string,
+    types: FilterParam['types'],
+    ordination: FilterParam['ordination'],
+    searchResults: SearchPlaceModel[],
+  ): void {
+    this.analytics.trackEvent('search', {
+      search,
+      types,
+      ordination,
+      result:
+        searchResults.length > 0
+          ? {
+              places_title: searchResults.map((place) => place.title),
+              place_count: searchResults.length,
+            }
+          : [],
+    });
   }
 
   private makeUrl(place: string, nextPageToken?: string): string {

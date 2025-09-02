@@ -1,17 +1,24 @@
 import { faker } from '@faker-js/faker';
 import { PlaceModel } from '~/domain/models';
-import businessHoursModelStub from '../stubs/businessHoursModelStub';
 
 export const mockRemotePlace = (): PlaceModel => ({
-  about: faker.lorem.paragraph(),
-  address: faker.address.secondaryAddress(),
-  businessHours: businessHoursModelStub(),
-  comments: [faker.lorem.words(10)],
-  contact: faker.phone.number(),
-  images: [faker.image.city()],
-  isSaved: faker.datatype.boolean(),
-  name: faker.name.jobTitle(),
-  rating: faker.datatype.number({ min: 1, max: 10, precision: 0.1 }),
+  id: faker.datatype.number({ min: 1, max: 1000 }),
+  imageUrl: faker.image.city(),
+  title: faker.company.name(),
+  location: faker.address.streetAddress(),
+  myDistanceOfLocal: `${faker.datatype.float({
+    min: 0.1,
+    max: 50,
+    precision: 0.1,
+  })} km`,
+  amountOfReviews: `${faker.datatype.number({ min: 0, max: 1000 })} reviews`,
+  rating: faker.datatype
+    .float({
+      min: 1,
+      max: 5,
+      precision: 0.1,
+    })
+    .toString(),
 });
 
 export const mockRemoteListPlace = (): PlaceModel[] => [mockRemotePlace()];

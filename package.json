@@ -12,7 +12,9 @@
     "pretty": "prettier --config ./.prettierrc.js --write \"*/**/*.{js,jsx,ts,tsx,json}\"",
     "prepare": "husky install",
     "precommit": "lint-staged",
-    "web": "react-scripts start"
+    "web": "react-scripts start",
+    "postinstall": "patch-package",
+    "server": "node server.js"
   },
   "lint-staged": {
     "**/*.ts?(x)": [
@@ -24,10 +26,13 @@
   "dependencies": {
     "@georstat/react-native-image-gallery": "^1.1.0",
     "@react-native-community/blur": "^4.3.2",
+    "@react-native-firebase/analytics": "14.11.0",
+    "@react-native-firebase/app": "14.11.0",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "@react-navigation/stack": "^6.3.20",
     "axios": "^0.27.2",
+    "json-server": "0.17.4",
     "mobx": "^6.12.0",
     "mobx-react": "^9.1.0",
     "react": "18.0.0",
@@ -66,9 +71,9 @@
     "eslint-plugin-react": "^7.30.1",
     "husky": "^8.0.1",
     "jest": "^26.6.3",
-    "json-server": "^1.0.0-alpha.23",
     "lint-staged": "^13.0.3",
     "metro-react-native-babel-preset": "^0.70.3",
+    "patch-package": "^8.0.0",
     "react-scripts": "^5.0.1",
     "react-test-renderer": "18.0.0",
     "typescript": "^4.4.4"

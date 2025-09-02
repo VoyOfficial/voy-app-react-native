@@ -1,5 +1,6 @@
 import { ListRecommendations } from '~/domain/useCases';
 import { RecommendationModel } from '~/domain/models';
+import { AnalyticsTracker } from '~/domain/analytics';
 import { HttpGetClient, HttpStatusCode } from '../http';
 import { NoPermissionError, UnexpectedError } from '../errors';
 
@@ -7,6 +8,7 @@ export default class RemoteListRecommendations implements ListRecommendations {
   constructor(
     private readonly url: string,
     private readonly httpGetClient: HttpGetClient,
+    private readonly analytics: AnalyticsTracker,
   ) {}
 
   async list(): Promise<RecommendationModel[]> {
@@ -16,7 +18,12 @@ export default class RemoteListRecommendations implements ListRecommendations {
 
     switch (statusCode) {
       case HttpStatusCode.ok:
-        return body;
+        const recommendations: Array<RecommendationModel> = body || [];
+        await this.analytics.trackEvent('list_recommendations', {
+          recommendations_title: recommendations.map((rec) => rec.title),
+          recommendation_count: recommendations.length,
+        });
+        return recommendations;
       case HttpStatusCode.noContent:
         return [];
       case HttpStatusCode.forbidden:

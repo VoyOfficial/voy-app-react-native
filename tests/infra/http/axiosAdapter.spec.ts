@@ -5,9 +5,9 @@ import {
   unexpectedErrorResponse,
 } from '~/infra/http';
 import { HttpResponse } from '~/data/http';
-import { httpRequestFake, httpResponseFake } from './fakes/testFakes';
-import axiosMock from './mocks/axiosMock';
-import { toHttpResponse } from './helpers/extensionFactories';
+import axiosMock from '../mocks/axiosMock';
+import { httpRequestFake, httpResponseFake } from '../fakes/testFakes';
+import { toHttpResponse } from '../helpers/extensionFactories';
 
 jest.mock('axios');
 

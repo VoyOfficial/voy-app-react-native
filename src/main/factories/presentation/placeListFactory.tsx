@@ -1,9 +1,9 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { RouteProp } from '@react-navigation/native';
 import { Actions, Routes, navigator } from '~/main/navigation';
-import { ListPlaces, ListRecommendations } from '~/domain/useCases';
-import { PlaceModel, RecommendationModel } from '~/domain/models';
 import { AxiosAdapter } from '~/infra/http';
+import { RemoteListPlaces, RemoteListRecommendations } from '~/data/useCases';
+import { FirebaseAnalyticsAdapter } from '~/infra/analytics';
 import { Place } from '../../../presentation/components/cardList';
 import { StackParams } from '../../navigation/navigation';
 import PlaceList from '../../../../src/presentation/placeList';
@@ -11,34 +11,6 @@ import usePlaceList, {
   Origin,
 } from '../../../../src/presentation/placeList/usePlaceList';
 import getPlacesByOrigin from './helpers/getPlacesByOrigin';
-
-class ListRecommendationsDAO implements ListRecommendations {
-  async list(): Promise<RecommendationModel[]> {
-    const axios = new AxiosAdapter();
-    const response = await axios.get({
-      url: `http://localhost:3000/recommendations`,
-    });
-
-    return response.body;
-  }
-}
-
-class ListPlacesDAO implements ListPlaces {
-  constructor() {}
-  async list(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    location: { long: string; lat: string },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    nextPageToken?: string | undefined,
-  ): Promise<PlaceModel[]> {
-    const axios = new AxiosAdapter();
-    const response = await axios.get({
-      url: `http://localhost:3000/places`,
-    });
-
-    return response.body;
-  }
-}
 
 type Props = {
   route: RouteProp<StackParams, Routes>;
@@ -62,8 +34,16 @@ const PlaceListFactory = ({ route: { params }, navigation }: Props) => {
   const getPlaces = async () => {
     const response = await getPlacesByOrigin(
       params?.by as Origin,
-      new ListRecommendationsDAO(),
-      new ListPlacesDAO(),
+      new RemoteListRecommendations(
+        'http://localhost:3000/recommendations',
+        new AxiosAdapter(),
+        new FirebaseAnalyticsAdapter(),
+      ),
+      new RemoteListPlaces(
+        'http://localhost:3000/places',
+        new AxiosAdapter(),
+        new FirebaseAnalyticsAdapter(),
+      ),
       { lat: '', long: '' },
     );
 

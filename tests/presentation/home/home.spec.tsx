@@ -1,11 +1,12 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react-native';
+import { faker } from '@faker-js/faker';
+import { RecommendationModel } from '~/domain/models';
 import { Origin } from '../../../src/presentation/placeList/usePlaceList';
 import CardList from '../../../src/presentation/components/cardList';
 import { Home } from '../../../src/presentation/home';
 import { ListRecommendation } from '../../../src/presentation/recommendation/components';
 import placeListFactory from '../helpers/placeListFactory';
-import { recommendationModelFake } from './useHome.spec';
 
 describe('Presentation: Home', () => {
   test('should show ListRecommendation component with correct props', () => {
@@ -181,5 +182,18 @@ const makeSut = ({
     search,
     placeList,
     recommendations,
+  };
+};
+
+const recommendationModelFake = (): RecommendationModel => {
+  return {
+    location: faker.address.secondaryAddress(),
+    imageUrl: faker.image.city(),
+    title: faker.name.jobTitle(),
+    rating: faker.datatype
+      .number({ min: 1, max: 10, precision: 0.1 })
+      .toString(),
+    myDistanceOfLocal: faker.datatype.number().toString(),
+    id: faker.datatype.number(),
   };
 };

@@ -4,6 +4,7 @@ import { RemoteListPlaces } from '~/data/useCases';
 import { makeNextPageToken, makeUrl } from '../helpers/testFactories';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
+import AnalyticsTrackerSpy from '../analytics/analyticsTrackerSpy';
 
 describe('Data: RemoteListPlaces', () => {
   test('should list with httpPostClient call correct url', async () => {
@@ -96,11 +97,91 @@ describe('Data: RemoteListPlaces', () => {
 
     expect(placeList).toEqual([]);
   });
+
+  describe('Analytics', () => {
+    const emptyParameters = [
+      {
+        long: '-1213242432',
+        lat: '-2324546432',
+        place: null,
+      },
+      {
+        long: '',
+        lat: '',
+        place: null,
+      },
+    ];
+
+    test('should track the list places event with correct parameters', async () => {
+      const { sut, httpClient, analytics } = makeSut();
+      const httpResult = mockRemoteListPlace();
+      httpClient.response = {
+        statusCode: HttpStatusCode.ok,
+        body: httpResult,
+      };
+
+      const location = { long: '-1213242432', lat: '-2324546432' };
+      const nextPageToken = makeNextPageToken();
+      await sut.list(location, nextPageToken);
+
+      expect(analytics.event).toBe('list_places');
+      expect(analytics.params).toEqual({
+        long: location.long,
+        lat: location.lat,
+        places_title: httpResult.map((place) => place.title),
+        place_count: httpResult.length,
+      });
+    });
+
+    test.each(emptyParameters)(
+      'should track the list places event with empty parameters',
+      async (parameters) => {
+        const { sut, httpClient, analytics } = makeSut();
+        httpClient.response = {
+          statusCode: HttpStatusCode.ok,
+          body: parameters.place,
+        };
+
+        const location = { long: parameters.long, lat: parameters.lat };
+        const nextPageToken = makeNextPageToken();
+        await sut.list(location, nextPageToken);
+
+        expect(analytics.event).toBe('list_places');
+        expect(analytics.params).toEqual({
+          long: parameters.long,
+          lat: parameters.lat,
+          places_title: [],
+          place_count: 0,
+        });
+      },
+    );
+
+    test.each([HttpStatusCode.noContent, HttpStatusCode.forbidden])(
+      'should not track the list places event when httpClient returns different of 200',
+      async (statusCode) => {
+        const { sut, httpClient, analytics } = makeSut();
+        httpClient.response = {
+          statusCode: statusCode,
+          body: null,
+        };
+
+        const location = { long: '-1213242432', lat: '-2324546432' };
+        const nextPageToken = makeNextPageToken();
+
+        if (statusCode === HttpStatusCode.forbidden)
+          await expect(sut.list(location, nextPageToken)).rejects.toThrow();
+
+        expect(analytics.event).toBe('');
+        expect(analytics.params).toEqual({});
+      },
+    );
+  });
 });
 
 const makeSut = (url = makeUrl()) => {
+  const analytics = new AnalyticsTrackerSpy();
   const httpClient = new HttpClientSpy();
-  const sut = new RemoteListPlaces(url, httpClient);
+  const sut = new RemoteListPlaces(url, httpClient, analytics);
 
-  return { sut, httpClient };
+  return { sut, httpClient, analytics };
 };

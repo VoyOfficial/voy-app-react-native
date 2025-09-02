@@ -5,6 +5,7 @@ const placeListFactory = (quantity: number): Array<Place> => {
   const placeList = [];
   for (let index = 0; index < quantity; index++) {
     placeList.push({
+      id: index,
       imageUrl: faker.image.imageUrl(),
       title: faker.random.words(),
       location: faker.random.word(),

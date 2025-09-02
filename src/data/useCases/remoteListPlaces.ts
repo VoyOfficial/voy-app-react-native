@@ -1,5 +1,6 @@
 import { PlaceModel } from '~/domain/models';
 import { ListPlaces } from '~/domain/useCases';
+import { AnalyticsTracker } from '~/domain/analytics';
 import { NoPermissionError, UnexpectedError } from '../errors';
 import { HttpGetClient, HttpStatusCode } from '../http';
 
@@ -7,6 +8,7 @@ export default class RemoteListPlaces implements ListPlaces {
   constructor(
     private readonly url: string,
     private readonly httpGetClient: HttpGetClient,
+    private readonly analytics: AnalyticsTracker,
   ) {}
   list = async (
     location: {
@@ -24,7 +26,17 @@ export default class RemoteListPlaces implements ListPlaces {
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        return httpResponse?.body || [];
+        const places: Array<PlaceModel> = httpResponse.body || [];
+
+        if (Array.isArray(places)) {
+          await this.trackEvent('list_places', {
+            long: location.long,
+            lat: location.lat,
+            places_title: places?.map((place: PlaceModel) => place.title) || '',
+            place_count: places.length,
+          });
+        }
+        return places;
       case HttpStatusCode.noContent:
         return [];
       case HttpStatusCode.forbidden:
@@ -32,5 +44,9 @@ export default class RemoteListPlaces implements ListPlaces {
       default:
         throw new UnexpectedError();
     }
+  };
+
+  trackEvent = async (event: string, params?: Record<string, any>) => {
+    await this.analytics.trackEvent(event, params);
   };
 }

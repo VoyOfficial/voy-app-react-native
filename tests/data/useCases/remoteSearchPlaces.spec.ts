@@ -1,10 +1,14 @@
+import { faker } from '@faker-js/faker';
 import { HttpStatusCode } from '~/data/http';
 import { Filter, Ordination } from '~/domain/enums';
 import { NoAccessError, UnexpectedError } from '~/data/errors';
 import { RemoteSearchPlaces } from '~/data/useCases';
+import { SearchPlaceModel } from '~/domain/models';
+import { AnalyticsTracker } from '~/domain/analytics';
 import { makeNextPageToken, makeUrl } from '../helpers/testFactories';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import searchPlacesModelFactory from '../helpers/searchPlacesModelFactory';
+import AnalyticsTrackerSpy from '../analytics/analyticsTrackerSpy';
 
 describe('Data: RemoteSearchPlaces', () => {
   test('should search with httpPostClient calling correct url with nextPageToken param', () => {
@@ -133,11 +137,111 @@ describe('Data: RemoteSearchPlaces', () => {
 
     await expect(promise).rejects.toThrow(new UnexpectedError());
   });
+
+  describe('Analytics', () => {
+    test('should track the search event with correct parameters', async () => {
+      const analytics = new AnalyticsTrackerSpy();
+      const url = makeUrl();
+      const search = mockSearchPlaceModel();
+      const httpClient = new HttpClientSpy();
+      httpClient.response = {
+        statusCode: HttpStatusCode.ok,
+        body: search,
+      };
+      const sut = new RemoteSearchPlaces(url, httpClient, analytics);
+
+      const types = [Filter.Entertainment];
+      const ordination = Ordination.Closer;
+      const place = 'coffee shop';
+      await sut.search(place, { types: types, ordination: ordination });
+
+      expect(analytics.event).toEqual('search');
+      expect(analytics.params).toEqual({
+        search: place,
+        types,
+        ordination,
+        result: {
+          places_title: search.map((place) => place.title),
+          place_count: search.length,
+        },
+      });
+    });
+
+    test('should track the search event with empty body', async () => {
+      const analytics = new AnalyticsTrackerSpy();
+      const url = makeUrl();
+      const httpClient = new HttpClientSpy();
+      httpClient.response = {
+        statusCode: HttpStatusCode.ok,
+        body: null,
+      };
+      const sut = new RemoteSearchPlaces(url, httpClient, analytics);
+
+      const types = [Filter.Entertainment];
+      const ordination = Ordination.Closer;
+      const place = 'coffee shop';
+      await sut.search(place, { types: types, ordination: ordination });
+
+      expect(analytics.event).toEqual('search');
+      expect(analytics.params).toEqual({
+        search: place,
+        types,
+        ordination,
+        result: [],
+      });
+    });
+
+    test.each([HttpStatusCode.noContent, HttpStatusCode.forbidden])(
+      'should not track the search event when httpClient returns different of 200',
+      async (statusCode) => {
+        const analytics = new AnalyticsTrackerSpy();
+        const url = makeUrl();
+        const httpClient = new HttpClientSpy();
+        httpClient.response = {
+          statusCode: statusCode,
+          body: null,
+        };
+        const sut = new RemoteSearchPlaces(url, httpClient, analytics);
+
+        const types = [Filter.Entertainment];
+        const ordination = Ordination.Closer;
+        const place = 'coffee shop';
+
+        if (statusCode === HttpStatusCode.forbidden)
+          await expect(
+            sut.search(place, { types, ordination }),
+          ).rejects.toThrow();
+
+        expect(analytics.event).toBe('');
+        expect(analytics.params).toEqual({});
+      },
+    );
+  });
 });
 
-const makeSut = (url = makeUrl()) => {
+const makeSut = (
+  url = makeUrl(),
+  analytics: AnalyticsTracker = new AnalyticsTrackerSpy(),
+) => {
   const httpClient = new HttpClientSpy();
-  const sut = new RemoteSearchPlaces(url, httpClient);
+  const sut = new RemoteSearchPlaces(url, httpClient, analytics);
 
   return { sut, httpClient };
+};
+
+const mockSearchPlaceModel = (): Array<SearchPlaceModel> => {
+  const place: SearchPlaceModel = {
+    id: faker.datatype.number(),
+    rating: faker.datatype
+      .number({ min: 1, max: 10, precision: 0.1 })
+      .toString(),
+    isSaved: faker.datatype.boolean(),
+    amountOfReviews: faker.datatype.number().toString(),
+    imageUrl: faker.image.city(),
+    location: faker.address.cityName(),
+    title: faker.company.name(),
+    myDistanceOfLocal: faker.datatype.number().toString(),
+  };
+
+  return [place];
 };
