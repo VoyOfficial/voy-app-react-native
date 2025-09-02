@@ -111,20 +111,43 @@
       "title": "Restaurante da Maria",
       "amountOfReviews": "120",
       "businessHoursSummary": {
-        "sunday": { "start": "08:00", "end": "12:00" },
-        "monday": { "start": "08:00", "end": "12:00" },
-        "tuesday": { "start": "08:00", "end": "12:00" },
-        "wednesday": { "start": "08:00", "end": "12:00" },
-        "thursday": { "start": "08:00", "end": "12:00" },
-        "friday": { "start": "08:00", "end": "12:00" },
-        "saturday": { "start": "08:00", "end": "12:00" }
+        "sunday": {
+          "start": "08:00",
+          "end": "12:00"
+        },
+        "monday": {
+          "start": "08:00",
+          "end": "12:00"
+        },
+        "tuesday": {
+          "start": "08:00",
+          "end": "12:00"
+        },
+        "wednesday": {
+          "start": "08:00",
+          "end": "12:00"
+        },
+        "thursday": {
+          "start": "08:00",
+          "end": "12:00"
+        },
+        "friday": {
+          "start": "08:00",
+          "end": "12:00"
+        },
+        "saturday": {
+          "start": "08:00",
+          "end": "12:00"
+        }
       },
       "contact": "123-456-7890",
       "description": "Restaurante acolhedor com pratos deliciosos.",
       "distance": "500",
       "fullLocation": "Rua do Restaurante, 123",
       "location": "Rua do Restaurante, 123",
-      "photoOfReviewProfiles": ["https://example.com/review1.jpg"],
+      "photoOfReviewProfiles": [
+        "https://example.com/review1.jpg"
+      ],
       "rating": "4.5"
     },
     {
@@ -132,20 +155,43 @@
       "title": "Bar do João",
       "amountOfReviews": "90",
       "businessHoursSummary": {
-        "sunday": { "start": "08:00", "end": "12:00" },
-        "monday": { "start": "08:00", "end": "12:00" },
-        "tuesday": { "start": "08:00", "end": "12:00" },
-        "wednesday": { "start": "08:00", "end": "12:00" },
-        "thursday": { "start": "08:00", "end": "12:00" },
-        "friday": { "start": "08:00", "end": "12:00" },
-        "saturday": { "start": "08:00", "end": "12:00" }
+        "sunday": {
+          "start": "08:00",
+          "end": "12:00"
+        },
+        "monday": {
+          "start": "08:00",
+          "end": "12:00"
+        },
+        "tuesday": {
+          "start": "08:00",
+          "end": "12:00"
+        },
+        "wednesday": {
+          "start": "08:00",
+          "end": "12:00"
+        },
+        "thursday": {
+          "start": "08:00",
+          "end": "12:00"
+        },
+        "friday": {
+          "start": "08:00",
+          "end": "12:00"
+        },
+        "saturday": {
+          "start": "08:00",
+          "end": "12:00"
+        }
       },
       "contact": "987-654-3210",
       "description": "Bar animado com boa música e bebidas refrescantes.",
       "distance": "1000",
       "fullLocation": "Avenida do Bar, 456",
       "location": "Avenida do Bar, 456",
-      "photoOfReviewProfiles": ["https://example.com/review2.jpg"],
+      "photoOfReviewProfiles": [
+        "https://example.com/review2.jpg"
+      ],
       "rating": "4.2"
     },
     {
@@ -153,13 +199,34 @@
       "title": "Parque Verde",
       "amountOfReviews": "150",
       "businessHoursSummary": {
-        "sunday": { "start": "09:00", "end": "18:00" },
-        "monday": { "start": "09:00", "end": "18:00" },
-        "tuesday": { "start": "09:00", "end": "18:00" },
-        "wednesday": { "start": "09:00", "end": "18:00" },
-        "thursday": { "start": "09:00", "end": "18:00" },
-        "friday": { "start": "09:00", "end": "18:00" },
-        "saturday": { "start": "09:00", "end": "18:00" }
+        "sunday": {
+          "start": "09:00",
+          "end": "18:00"
+        },
+        "monday": {
+          "start": "09:00",
+          "end": "18:00"
+        },
+        "tuesday": {
+          "start": "09:00",
+          "end": "18:00"
+        },
+        "wednesday": {
+          "start": "09:00",
+          "end": "18:00"
+        },
+        "thursday": {
+          "start": "09:00",
+          "end": "18:00"
+        },
+        "friday": {
+          "start": "09:00",
+          "end": "18:00"
+        },
+        "saturday": {
+          "start": "09:00",
+          "end": "18:00"
+        }
       },
       "contact": "555-123-4567",
       "description": "Um parque amplo e verdejante com áreas de piquenique e trilhas para caminhada.",
@@ -177,13 +244,34 @@
       "title": "Cantinho Gourmet",
       "amountOfReviews": "80",
       "businessHoursSummary": {
-        "sunday": { "start": "10:00", "end": "22:00" },
-        "monday": { "start": "10:00", "end": "22:00" },
-        "tuesday": { "start": "10:00", "end": "22:00" },
-        "wednesday": { "start": "10:00", "end": "22:00" },
-        "thursday": { "start": "10:00", "end": "22:00" },
-        "friday": { "start": "10:00", "end": "22:00" },
-        "saturday": { "start": "10:00", "end": "22:00" }
+        "sunday": {
+          "start": "10:00",
+          "end": "22:00"
+        },
+        "monday": {
+          "start": "10:00",
+          "end": "22:00"
+        },
+        "tuesday": {
+          "start": "10:00",
+          "end": "22:00"
+        },
+        "wednesday": {
+          "start": "10:00",
+          "end": "22:00"
+        },
+        "thursday": {
+          "start": "10:00",
+          "end": "22:00"
+        },
+        "friday": {
+          "start": "10:00",
+          "end": "22:00"
+        },
+        "saturday": {
+          "start": "10:00",
+          "end": "22:00"
+        }
       },
       "contact": "444-987-6543",
       "description": "Um restaurante sofisticado com uma seleção exclusiva de pratos gourmet.",
@@ -202,13 +290,34 @@
       "title": "Boteco do Zé",
       "amountOfReviews": "60",
       "businessHoursSummary": {
-        "sunday": { "start": "16:00", "end": "02:00" },
-        "monday": { "start": "16:00", "end": "02:00" },
-        "tuesday": { "start": "16:00", "end": "02:00" },
-        "wednesday": { "start": "16:00", "end": "02:00" },
-        "thursday": { "start": "16:00", "end": "02:00" },
-        "friday": { "start": "16:00", "end": "02:00" },
-        "saturday": { "start": "16:00", "end": "02:00" }
+        "sunday": {
+          "start": "16:00",
+          "end": "02:00"
+        },
+        "monday": {
+          "start": "16:00",
+          "end": "02:00"
+        },
+        "tuesday": {
+          "start": "16:00",
+          "end": "02:00"
+        },
+        "wednesday": {
+          "start": "16:00",
+          "end": "02:00"
+        },
+        "thursday": {
+          "start": "16:00",
+          "end": "02:00"
+        },
+        "friday": {
+          "start": "16:00",
+          "end": "02:00"
+        },
+        "saturday": {
+          "start": "16:00",
+          "end": "02:00"
+        }
       },
       "contact": "555-789-1234",
       "description": "Um bar tradicional com música ao vivo e petiscos saborosos.",
@@ -226,20 +335,43 @@
       "title": "Parque da Criançada",
       "amountOfReviews": "200",
       "businessHoursSummary": {
-        "sunday": { "start": "10:00", "end": "18:00" },
-        "monday": { "start": "10:00", "end": "18:00" },
-        "tuesday": { "start": "10:00", "end": "18:00" },
-        "wednesday": { "start": "10:00", "end": "18:00" },
-        "thursday": { "start": "10:00", "end": "18:00" },
-        "friday": { "start": "10:00", "end": "18:00" },
-        "saturday": { "start": "10:00", "end": "18:00" }
+        "sunday": {
+          "start": "10:00",
+          "end": "18:00"
+        },
+        "monday": {
+          "start": "10:00",
+          "end": "18:00"
+        },
+        "tuesday": {
+          "start": "10:00",
+          "end": "18:00"
+        },
+        "wednesday": {
+          "start": "10:00",
+          "end": "18:00"
+        },
+        "thursday": {
+          "start": "10:00",
+          "end": "18:00"
+        },
+        "friday": {
+          "start": "10:00",
+          "end": "18:00"
+        },
+        "saturday": {
+          "start": "10:00",
+          "end": "18:00"
+        }
       },
       "contact": "123-456-7890",
       "description": "Um parque temático com muitas atividades para crianças e famílias.",
       "distance": "3000",
       "fullLocation": "Parque Municipal, 987",
       "location": "Parque Municipal, 987",
-      "photoOfReviewProfiles": ["https://example.com/review10.jpg"],
+      "photoOfReviewProfiles": [
+        "https://example.com/review10.jpg"
+      ],
       "rating": "4.7"
     },
     {
@@ -247,13 +379,34 @@
       "title": "Casa da Comida",
       "amountOfReviews": "120",
       "businessHoursSummary": {
-        "sunday": { "start": "12:00", "end": "22:00" },
-        "monday": { "start": "12:00", "end": "22:00" },
-        "tuesday": { "start": "12:00", "end": "22:00" },
-        "wednesday": { "start": "12:00", "end": "22:00" },
-        "thursday": { "start": "12:00", "end": "22:00" },
-        "friday": { "start": "12:00", "end": "22:00" },
-        "saturday": { "start": "12:00", "end": "22:00" }
+        "sunday": {
+          "start": "12:00",
+          "end": "22:00"
+        },
+        "monday": {
+          "start": "12:00",
+          "end": "22:00"
+        },
+        "tuesday": {
+          "start": "12:00",
+          "end": "22:00"
+        },
+        "wednesday": {
+          "start": "12:00",
+          "end": "22:00"
+        },
+        "thursday": {
+          "start": "12:00",
+          "end": "22:00"
+        },
+        "friday": {
+          "start": "12:00",
+          "end": "22:00"
+        },
+        "saturday": {
+          "start": "12:00",
+          "end": "22:00"
+        }
       },
       "contact": "555-123-4567",
       "description": "Um restaurante familiar com um cardápio variado de pratos caseiros.",
@@ -271,13 +424,34 @@
       "title": "Boteco do Luiz",
       "amountOfReviews": "90",
       "businessHoursSummary": {
-        "sunday": { "start": "14:00", "end": "02:00" },
-        "monday": { "start": "14:00", "end": "02:00" },
-        "tuesday": { "start": "14:00", "end": "02:00" },
-        "wednesday": { "start": "14:00", "end": "02:00" },
-        "thursday": { "start": "14:00", "end": "02:00" },
-        "friday": { "start": "14:00", "end": "02:00" },
-        "saturday": { "start": "14:00", "end": "02:00" }
+        "sunday": {
+          "start": "14:00",
+          "end": "02:00"
+        },
+        "monday": {
+          "start": "14:00",
+          "end": "02:00"
+        },
+        "tuesday": {
+          "start": "14:00",
+          "end": "02:00"
+        },
+        "wednesday": {
+          "start": "14:00",
+          "end": "02:00"
+        },
+        "thursday": {
+          "start": "14:00",
+          "end": "02:00"
+        },
+        "friday": {
+          "start": "14:00",
+          "end": "02:00"
+        },
+        "saturday": {
+          "start": "14:00",
+          "end": "02:00"
+        }
       },
       "contact": "555-987-6543",
       "description": "Um bar aconchegante com música ao vivo e uma variedade de bebidas.",
@@ -296,13 +470,34 @@
       "title": "Parque das Flores",
       "amountOfReviews": "210",
       "businessHoursSummary": {
-        "sunday": { "start": "08:00", "end": "18:00" },
-        "monday": { "start": "08:00", "end": "18:00" },
-        "tuesday": { "start": "08:00", "end": "18:00" },
-        "wednesday": { "start": "08:00", "end": "18:00" },
-        "thursday": { "start": "08:00", "end": "18:00" },
-        "friday": { "start": "08:00", "end": "18:00" },
-        "saturday": { "start": "08:00", "end": "18:00" }
+        "sunday": {
+          "start": "08:00",
+          "end": "18:00"
+        },
+        "monday": {
+          "start": "08:00",
+          "end": "18:00"
+        },
+        "tuesday": {
+          "start": "08:00",
+          "end": "18:00"
+        },
+        "wednesday": {
+          "start": "08:00",
+          "end": "18:00"
+        },
+        "thursday": {
+          "start": "08:00",
+          "end": "18:00"
+        },
+        "friday": {
+          "start": "08:00",
+          "end": "18:00"
+        },
+        "saturday": {
+          "start": "08:00",
+          "end": "18:00"
+        }
       },
       "contact": "555-789-0123",
       "description": "Um lindo parque com jardins floridos e muitas áreas de lazer.",
@@ -320,13 +515,34 @@
       "title": "Sabores da Praça",
       "amountOfReviews": "150",
       "businessHoursSummary": {
-        "sunday": { "start": "11:00", "end": "23:00" },
-        "monday": { "start": "11:00", "end": "23:00" },
-        "tuesday": { "start": "11:00", "end": "23:00" },
-        "wednesday": { "start": "11:00", "end": "23:00" },
-        "thursday": { "start": "11:00", "end": "23:00" },
-        "friday": { "start": "11:00", "end": "23:00" },
-        "saturday": { "start": "11:00", "end": "23:00" }
+        "sunday": {
+          "start": "11:00",
+          "end": "23:00"
+        },
+        "monday": {
+          "start": "11:00",
+          "end": "23:00"
+        },
+        "tuesday": {
+          "start": "11:00",
+          "end": "23:00"
+        },
+        "wednesday": {
+          "start": "11:00",
+          "end": "23:00"
+        },
+        "thursday": {
+          "start": "11:00",
+          "end": "23:00"
+        },
+        "friday": {
+          "start": "11:00",
+          "end": "23:00"
+        },
+        "saturday": {
+          "start": "11:00",
+          "end": "23:00"
+        }
       },
       "contact": "555-456-7890",
       "description": "Um restaurante com uma grande variedade de pratos inspirados em diferentes culturas.",
@@ -345,13 +561,34 @@
       "title": "Bar do Pedro",
       "amountOfReviews": "80",
       "businessHoursSummary": {
-        "sunday": { "start": "16:00", "end": "02:00" },
-        "monday": { "start": "16:00", "end": "02:00" },
-        "tuesday": { "start": "16:00", "end": "02:00" },
-        "wednesday": { "start": "16:00", "end": "02:00" },
-        "thursday": { "start": "16:00", "end": "02:00" },
-        "friday": { "start": "16:00", "end": "02:00" },
-        "saturday": { "start": "16:00", "end": "02:00" }
+        "sunday": {
+          "start": "16:00",
+          "end": "02:00"
+        },
+        "monday": {
+          "start": "16:00",
+          "end": "02:00"
+        },
+        "tuesday": {
+          "start": "16:00",
+          "end": "02:00"
+        },
+        "wednesday": {
+          "start": "16:00",
+          "end": "02:00"
+        },
+        "thursday": {
+          "start": "16:00",
+          "end": "02:00"
+        },
+        "friday": {
+          "start": "16:00",
+          "end": "02:00"
+        },
+        "saturday": {
+          "start": "16:00",
+          "end": "02:00"
+        }
       },
       "contact": "555-321-9876",
       "description": "Um bar animado com música ao vivo e coquetéis exclusivos.",
@@ -369,13 +606,34 @@
       "title": "Parque dos Sonhos",
       "amountOfReviews": "180",
       "businessHoursSummary": {
-        "sunday": { "start": "09:00", "end": "19:00" },
-        "monday": { "start": "09:00", "end": "19:00" },
-        "tuesday": { "start": "09:00", "end": "19:00" },
-        "wednesday": { "start": "09:00", "end": "19:00" },
-        "thursday": { "start": "09:00", "end": "19:00" },
-        "friday": { "start": "09:00", "end": "19:00" },
-        "saturday": { "start": "09:00", "end": "19:00" }
+        "sunday": {
+          "start": "09:00",
+          "end": "19:00"
+        },
+        "monday": {
+          "start": "09:00",
+          "end": "19:00"
+        },
+        "tuesday": {
+          "start": "09:00",
+          "end": "19:00"
+        },
+        "wednesday": {
+          "start": "09:00",
+          "end": "19:00"
+        },
+        "thursday": {
+          "start": "09:00",
+          "end": "19:00"
+        },
+        "friday": {
+          "start": "09:00",
+          "end": "19:00"
+        },
+        "saturday": {
+          "start": "09:00",
+          "end": "19:00"
+        }
       },
       "contact": "555-678-1234",
       "description": "Um parque encantador com trilhas para caminhada e áreas de recreação.",
@@ -388,6 +646,88 @@
         "https://example.com/review28.jpg"
       ],
       "rating": "4.5"
+    }
+  ],
+  "search": [
+    {
+      "id": 6,
+      "imageUrl": "https://example.com/restaurant3.jpg",
+      "location": "Rua do Restaurante, 456",
+      "myDistanceOfLocal": "700",
+      "rating": "4.3",
+      "title": "Casa da Comida",
+      "amountOfReviews": "120"
+    },
+    {
+      "id": 7,
+      "imageUrl": "https://example.com/bar3.jpg",
+      "location": "Avenida do Boteco, 789",
+      "myDistanceOfLocal": "850",
+      "rating": "4.1",
+      "title": "Boteco do Luiz",
+      "amountOfReviews": "90"
+    },
+    {
+      "id": 8,
+      "imageUrl": "https://example.com/park3.jpg",
+      "location": "Parque das Flores, 345",
+      "myDistanceOfLocal": "1500",
+      "rating": "4.6",
+      "title": "Parque das Flores",
+      "amountOfReviews": "210"
+    },
+    {
+      "id": 9,
+      "imageUrl": "https://example.com/restaurant4.jpg",
+      "location": "Praça da Gastronomia, 678",
+      "myDistanceOfLocal": "950",
+      "rating": "4.4",
+      "title": "Sabores da Praça",
+      "amountOfReviews": "150"
+    },
+    {
+      "id": 10,
+      "imageUrl": "https://example.com/bar4.jpg",
+      "location": "Rua do Happy Hour, 234",
+      "myDistanceOfLocal": "720",
+      "rating": "3.9",
+      "title": "Bar do Pedro",
+      "amountOfReviews": "80"
+    },
+    {
+      "id": 11,
+      "imageUrl": "https://example.com/park4.jpg",
+      "location": "Parque das Crianças, 567",
+      "myDistanceOfLocal": "2800",
+      "rating": "4.5",
+      "title": "Parque dos Sonhos",
+      "amountOfReviews": "180"
+    },
+    {
+      "types": [
+        "Entretenimento"
+      ],
+      "ordination": "Mais próximo",
+      "id": 12
+    },
+    {
+      "types": [
+        "Entretenimento"
+      ],
+      "ordination": "Mais próximo",
+      "id": 13
+    },
+    {
+      "types": [
+        "Entretenimento"
+      ],
+      "ordination": "Mais próximo"
+    },
+    {
+      "types": [
+        "Entretenimento"
+      ],
+      "ordination": "Mais próximo"
     }
   ]
 }

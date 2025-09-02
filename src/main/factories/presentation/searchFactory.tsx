@@ -3,27 +3,11 @@ import React from 'react';
 import { RouteProp } from '@react-navigation/native';
 import { Actions, Routes, navigator } from '~/main/navigation';
 import { Filter, Ordination } from '~/domain/enums';
-import { SearchPlaces } from '~/domain/useCases';
-import { SearchPlaceModel } from '~/domain/models';
-import { FilterParam } from '~/domain/params';
 import { AxiosAdapter } from '~/infra/http';
+import { RemoteSearchPlaces } from '~/data/useCases';
+import { FirebaseAnalyticsAdapter } from '~/infra/analytics';
 import { StackParams } from '../../../../src/main/navigation/navigation';
 import { Search, useSearch } from '../../../../src/presentation/search';
-
-class SearchPlacesDAO implements SearchPlaces {
-  async search(
-    place: string,
-    { types, ordination }: FilterParam,
-    nextPageToken?: string | undefined,
-  ): Promise<SearchPlaceModel[]> {
-    const axios = new AxiosAdapter();
-    const response = await axios.get({
-      url: `http://localhost:3000/recommendations`,
-    });
-
-    return response.body;
-  }
-}
 
 type Props = {
   route: RouteProp<StackParams, Routes>;
@@ -37,7 +21,11 @@ const SearchFactory = ({}: Props) => {
       types: [Filter.Entertainment],
     },
     nextPageToken: '',
-    searchPlaces: new SearchPlacesDAO(),
+    searchPlaces: new RemoteSearchPlaces(
+      'http://localhost:3000/search',
+      new AxiosAdapter(),
+      new FirebaseAnalyticsAdapter(),
+    ),
     navigate: new Actions(navigator).navigate,
   });
   return <Search {...viewModel} />;
