@@ -40,7 +40,7 @@ export const OrderByButton = styled.TouchableOpacity`
   flex-direction: row;
   padding: 19px 0px;
   border-bottom-width: 1px;
-  border-color: #e6e6e6;
+  border-color: ${({ theme }) => theme.colors.themeColors.neutral['70']};
   padding-left: 22px;
   padding-right: 16px;
   justify-content: space-between;
@@ -52,13 +52,13 @@ export const OrderByLabelWrapper = styled.View`
 `;
 
 export const OrderByLabel = styled.Text`
-  color: #212121;
+  color: ${({ theme }) => theme.colors.themeColors.primary.text};
   font-size: 15px;
   font-family: 'LexendDeca-Regular';
 `;
 
 export const OrderBySelected = styled.Text`
-  color: #5452f6;
+  color: ${({ theme }) => theme.colors.themeColors.primary.dark};
   font-size: 15px;
   font-family: 'LexendDeca-Regular';
 `;
@@ -73,7 +73,7 @@ export const OrderOptionsWrapper = styled.View``;
 export const FilterByButton = styled.TouchableOpacity`
   padding: 19px 0px;
   border-bottom-width: 1px;
-  border-color: #e6e6e6;
+  border-color: ${({ theme }) => theme.colors.themeColors.neutral['70']};
   padding-left: 22px;
   padding-right: 16px;
   flex-direction: row;

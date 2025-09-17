@@ -25,7 +25,7 @@ export const SeeAll = styled.Text`
   font-size: 13px;
   line-height: 16.25px;
   font-family: 'LexendDeca-Regular';
-  color: #5742e0;
+  color: ${({ theme }) => theme.colors.themeColors.primary.light};
 `;
 
 const ItemSeparator = styled.View`

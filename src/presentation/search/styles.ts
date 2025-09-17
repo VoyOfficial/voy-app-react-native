@@ -29,7 +29,7 @@ export const SearchInputWrapper = styled.View`
 `;
 
 export const SearchInput = styled.TextInput`
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.colors.themeColors.neutral['100']};
   padding: 11px 0px;
   padding-left: 16px;
   border-radius: 13px;
