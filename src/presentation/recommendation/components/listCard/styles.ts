@@ -2,7 +2,7 @@ import { styled } from 'styled-components/native';
 import Icon from '../../../assets/fonts/Voy';
 
 export const Container = styled.View`
-  background-color: #ffff;
+  background-color: ${({ theme }) => theme.colors.appColors.listBackground};
 
   border-radius: 15px;
   height: 243px;
@@ -60,7 +60,7 @@ export const DistanceOfLocal = styled.Text`
   font-size: 13px;
   font-weight: 400;
   line-height: 16.25px;
-  color: #aeaeae;
+  color: ${({ theme }) => theme.colors.themeColors.primary.textLight};
 `;
 
 export const Title = styled.Text`
@@ -76,7 +76,7 @@ export const Rating = styled.Text`
   font-size: 13px;
   font-weight: 400;
   line-height: 16.25px;
-  color: #212121;
+  color: ${({ theme }) => theme.colors.themeColors.primary.text};
 `;
 
 export const Location = styled.Text`
@@ -84,7 +84,7 @@ export const Location = styled.Text`
   font-size: 13px;
   font-weight: 400;
   line-height: 16.25px;
-  color: #aeaeae;
+  color: ${({ theme }) => theme.colors.themeColors.primary.textLight};
 `;
 
 export const Wrapper = styled.View`

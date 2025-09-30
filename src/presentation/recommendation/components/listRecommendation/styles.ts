@@ -29,7 +29,7 @@ export const TextButton = styled.Text`
   font-weight: 500;
   font-family: 'LexendDeca-Regular';
 
-  color: #5742e0;
+  color: ${({ theme }) => theme.colors.themeColors.primary.light};
 `;
 
 export const Content = styled.View`

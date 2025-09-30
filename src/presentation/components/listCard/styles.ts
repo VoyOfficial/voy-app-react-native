@@ -1,7 +1,7 @@
 import { styled } from 'styled-components/native';
 
 export const Container = styled.View`
-  background-color: #ffffff;
+  background-color: ${({ theme }) => theme.colors.appColors.listBackground};
   flex-direction: row;
   border-radius: 15px;
   height: 115px;
