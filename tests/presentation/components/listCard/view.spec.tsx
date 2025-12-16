@@ -1,7 +1,8 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
 import { ListCard } from '~/presentation/components';
+import { renderWithTheme } from '../../helpers/renderWithTheme';
 
 describe('Components: ListCard', () => {
   test('should show title with success', () => {
@@ -124,7 +125,7 @@ const makeSut = (
   favorite = () => {},
   showMoreDetails = () => {},
 ) => {
-  return render(
+  return renderWithTheme(
     <ListCard
       id={0}
       index={0}

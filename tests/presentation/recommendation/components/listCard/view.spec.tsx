@@ -1,7 +1,8 @@
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { fireEvent, waitFor } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
 import { ListCard } from '../../../../../src/presentation/recommendation/components';
+import { renderWithTheme } from '../../../helpers/renderWithTheme';
 
 describe('Components: CardList', () => {
   test('should show title with success', () => {
@@ -107,7 +108,7 @@ const makeSut = ({
   onSaveLocation = () => {},
   showMoreDetails = () => {},
 }) => {
-  return render(
+  return renderWithTheme(
     <ListCard
       imageUrl={imageUrl}
       title={title}

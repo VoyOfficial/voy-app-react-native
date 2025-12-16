@@ -1,13 +1,14 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
 import { GetByQuery } from '@testing-library/react-native/build/queries/makeQueries';
 import {
   TextMatch,
   TextMatchOptions,
 } from '@testing-library/react-native/build/matches';
+import { fireEvent } from '@testing-library/react-native';
 import CardList from '../../../../src/presentation/components/cardList';
 import placeListFactory from '../../../presentation/helpers/placeListFactory';
 import { makeTitle } from '../../../presentation/helpers/testFactories';
+import { renderWithTheme } from '../../helpers/renderWithTheme';
 
 describe('Components: CardList', () => {
   test('should show title of CardList with success', () => {
@@ -105,7 +106,7 @@ const makeSut = (title = '', showSeeAllButton = true, seeAllBy = '') => {
   const favorite = jest.fn();
   const showMoreDetails = jest.fn();
 
-  const sut = render(
+  const sut = renderWithTheme(
     <CardList
       placeList={placeList}
       title={title}

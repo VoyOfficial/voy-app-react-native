@@ -1,10 +1,11 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
 import { getStyleOfPhotoOfReviewProfile } from '../../../src/presentation/placeDetails/components/reviews';
 import PlaceDetails, {
   gallerySummaryImagesToImagesGallery,
 } from '../../../src/presentation/placeDetails/placeDetails';
+import { renderWithTheme } from '../helpers/renderWithTheme';
 
 describe('PlaceDetails: getStyleOfPhotoOfReviewProfile', () => {
   test('should get style of photo of review profile when index equals 0', () => {
@@ -449,7 +450,7 @@ const makeSut = ({
   pressSummaryImageFromGallery = () => {},
   tryGetPlaceDetailsAgain = async () => {},
 }: SutProps) => {
-  const sut = render(
+  const sut = renderWithTheme(
     <PlaceDetails
       title={title}
       description={description}
