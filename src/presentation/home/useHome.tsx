@@ -39,7 +39,7 @@ const useHome = ({
   }, []);
 
   const getLists = async () => {
-    setFinding(false);
+    setFinding(true);
     await getRecommendations();
     await getPlaces();
     setFinding(false);
