@@ -63,3 +63,5 @@ jest.mock('@react-navigation/elements', () => {
 
 jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 
+jest.mock('./src/infra/debug/reactotronConfig', () => ({}));
+

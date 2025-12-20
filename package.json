@@ -77,6 +77,8 @@
     "patch-package": "^8.0.0",
     "react-scripts": "^5.0.1",
     "react-test-renderer": "18.0.0",
+    "reactotron-core-client": "^2.9.9",
+    "reactotron-react-native": "^5.1.18",
     "typescript": "^4.4.4"
   },
   "config": {
