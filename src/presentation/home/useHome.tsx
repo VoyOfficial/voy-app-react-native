@@ -54,19 +54,27 @@ const useHome = ({
   };
 
   const getRecommendations = async () => {
-    const response = await listRecommendations.list({
-      lat: '-29.385436',
-      long: '-50.877608',
-    });
-    setRecommendations(response);
+    try {
+      const response = await listRecommendations.list({
+        lat: '-29.385436',
+        long: '-50.877608',
+      });
+      setRecommendations(response);
+    } catch (error) {
+      setRecommendations([]);
+    }
   };
 
   const getPlaces = async () => {
-    const response = await listPlaces.list(
-      { lat: '-29.385436', long: '-50.877608' },
-      'nextPageToken',
-    );
-    setPlaceList(response);
+    try {
+      const response = await listPlaces.list({
+        lat: '-29.385436',
+        long: '-50.877608',
+      });
+      setPlaceList(response);
+    } catch (error) {
+      setPlaceList([]);
+    }
   };
 
   const showMoreDetails = (place: Place | RecommendationProps) => {

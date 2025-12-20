@@ -16,12 +16,12 @@ const HomeFactory = ({}: Props) => {
   const viewModel = useHome({
     navigate: new Actions(navigator).navigate,
     listRecommendations: new RemoteListRecommendations(
-      'http://localhost:3000/recommendations',
+      'http://localhost:8080/api/registration/v1/places/recommendations',
       new AxiosAdapter(),
       new FirebaseAnalyticsAdapter(),
     ),
     listPlaces: new RemoteListPlaces(
-      'http://localhost:3000/places',
+      'http://localhost:8080/api/registration/v1/places',
       new AxiosAdapter(),
       new FirebaseAnalyticsAdapter(),
     ),
