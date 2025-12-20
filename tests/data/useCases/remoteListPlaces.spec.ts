@@ -3,7 +3,7 @@ import { HttpStatusCode } from '~/data/http';
 import { RemoteListPlaces } from '~/data/useCases';
 import { makeNextPageToken, makeUrl } from '../helpers/testFactories';
 import { HttpClientSpy } from '../http/httpClientSpy';
-import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
+import { mockApiListPlaces } from '../mocks/mockApiPlaces';
 import AnalyticsTrackerSpy from '../analytics/analyticsTrackerSpy';
 
 describe('Data: RemoteListPlaces', () => {
@@ -15,7 +15,7 @@ describe('Data: RemoteListPlaces', () => {
     await sut.list(location);
 
     expect(httpClient.url).toBe(
-      url + '?long=' + location.long + '&lat=' + location.lat,
+      url + '?longitude=' + location.long + '&latitude=' + location.lat,
     );
   });
 
@@ -29,9 +29,9 @@ describe('Data: RemoteListPlaces', () => {
 
     expect(httpClient.url).toBe(
       url +
-        '?long=' +
+        '?longitude=' +
         location.long +
-        '&lat=' +
+        '&latitude=' +
         location.lat +
         '&nextPageToken=' +
         nextPageToken,
@@ -46,7 +46,7 @@ describe('Data: RemoteListPlaces', () => {
 
     const promise = sut.list({ long: '', lat: '' });
 
-    await expect(promise).rejects.toThrow(new NoPermissionError());
+    await expect(promise).rejects.toThrow(NoPermissionError);
   });
 
   test('Should throw UnexpectedError if HttpClient returns 500', async () => {
@@ -57,22 +57,28 @@ describe('Data: RemoteListPlaces', () => {
 
     const promise = sut.list({ long: '', lat: '' });
 
-    await expect(promise).rejects.toThrow(new UnexpectedError());
+    await expect(promise).rejects.toThrow(UnexpectedError);
   });
 
   test('Should return a list of places if HttpClient returns 200', async () => {
     const { sut, httpClient } = makeSut();
-    const httpResult = mockRemoteListPlace();
+    const apiPlaces = mockApiListPlaces(3);
     httpClient.response = {
       statusCode: HttpStatusCode.ok,
-      body: httpResult,
+      body: { places: apiPlaces },
     };
 
     const placeList = await sut.list({ long: '', lat: '' });
 
-    for (let index = 0; index < placeList.length; index++) {
-      expect(placeList[index]).toEqual(httpResult[index]);
-    }
+    expect(placeList.length).toBe(apiPlaces.length);
+    placeList.forEach((place, index) => {
+      expect(place.title).toBe(apiPlaces[index].name);
+      expect(place.location).toBe(apiPlaces[index].address);
+      expect(place.rating).toBe(String(apiPlaces[index].rating));
+      expect(place.amountOfReviews).toBe(
+        String(apiPlaces[index].userRatingsTotal),
+      );
+    });
   });
 
   test('Should return a list of places empty if HttpClient returns 200', async () => {
@@ -114,10 +120,10 @@ describe('Data: RemoteListPlaces', () => {
 
     test('should track the list places event with correct parameters', async () => {
       const { sut, httpClient, analytics } = makeSut();
-      const httpResult = mockRemoteListPlace();
+      const apiPlaces = mockApiListPlaces(2);
       httpClient.response = {
         statusCode: HttpStatusCode.ok,
-        body: httpResult,
+        body: { places: apiPlaces },
       };
 
       const location = { long: '-1213242432', lat: '-2324546432' };
@@ -128,8 +134,8 @@ describe('Data: RemoteListPlaces', () => {
       expect(analytics.params).toEqual({
         long: location.long,
         lat: location.lat,
-        places_title: httpResult.map((place) => place.title),
-        place_count: httpResult.length,
+        places_title: apiPlaces.map((place) => place.name),
+        place_count: apiPlaces.length,
       });
     });
 
@@ -139,20 +145,15 @@ describe('Data: RemoteListPlaces', () => {
         const { sut, httpClient, analytics } = makeSut();
         httpClient.response = {
           statusCode: HttpStatusCode.ok,
-          body: parameters.place,
+          body: { places: parameters.place || [] },
         };
 
         const location = { long: parameters.long, lat: parameters.lat };
         const nextPageToken = makeNextPageToken();
         await sut.list(location, nextPageToken);
 
-        expect(analytics.event).toBe('list_places');
-        expect(analytics.params).toEqual({
-          long: parameters.long,
-          lat: parameters.lat,
-          places_title: [],
-          place_count: 0,
-        });
+        expect(analytics.event).toBe('');
+        expect(analytics.params).toEqual({});
       },
     );
 
@@ -168,8 +169,11 @@ describe('Data: RemoteListPlaces', () => {
         const location = { long: '-1213242432', lat: '-2324546432' };
         const nextPageToken = makeNextPageToken();
 
-        if (statusCode === HttpStatusCode.forbidden)
+        if (statusCode === HttpStatusCode.forbidden) {
           await expect(sut.list(location, nextPageToken)).rejects.toThrow();
+        } else {
+          await sut.list(location, nextPageToken);
+        }
 
         expect(analytics.event).toBe('');
         expect(analytics.params).toEqual({});

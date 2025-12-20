@@ -153,18 +153,28 @@ describe('[Layer]: [Module]', () => {
   });
 
   test('should [expected behavior]', async () => {
-    // Arrange
     mockDependency.method.mockResolvedValue(data);
     
-    // Act
     const result = await sut.execute();
     
-    // Assert
     expect(result).toEqual(expected);
     expect(mockDependency.method).toHaveBeenCalledWith(params);
   });
 });
 ```
+
+### Comment Guidelines
+**ONLY add comments when:**
+- Complex algorithms or business logic that isn't obvious
+- WHY something is done (not WHAT is being done)
+- Workarounds or temporary solutions that need explanation
+- Public API/library interfaces that need documentation
+
+**NEVER add comments for:**
+- Obvious code (test names should be self-explanatory)
+- Arrange/Act/Assert sections in tests (code structure makes this clear)
+- Restating what the code does
+- Implementation details that are clear from the code itself
 
 ## 🎨 File Structure Template
 

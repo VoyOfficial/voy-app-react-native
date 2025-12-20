@@ -17,7 +17,8 @@ export default class RemoteListPlaces implements ListPlaces {
     },
     nextPageToken?: string,
   ): Promise<PlaceModel[]> => {
-    let url = this.url + '?long=' + location.long + '&lat=' + location.lat;
+    let url =
+      this.url + '?longitude=' + location.long + '&latitude=' + location.lat;
     if (nextPageToken) url += '&nextPageToken=' + nextPageToken;
 
     const httpResponse = await this.httpGetClient.get({
@@ -26,9 +27,24 @@ export default class RemoteListPlaces implements ListPlaces {
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        const places: Array<PlaceModel> = httpResponse.body || [];
+        const responseBody = httpResponse.body || { places: [] };
+        const placesArray = Array.isArray(responseBody)
+          ? responseBody
+          : responseBody.places || [];
 
-        if (Array.isArray(places)) {
+        const places: Array<PlaceModel> = placesArray.map(
+          (apiPlace: any, index: number) => ({
+            id: index,
+            imageUrl: apiPlace.photoReference || '',
+            title: apiPlace.name || '',
+            location: apiPlace.address || '',
+            myDistanceOfLocal: '0',
+            amountOfReviews: String(apiPlace.userRatingsTotal || 0),
+            rating: String(apiPlace.rating || 0),
+          }),
+        );
+
+        if (places.length > 0) {
           await this.trackEvent('list_places', {
             long: location.long,
             lat: location.lat,
