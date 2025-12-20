@@ -1,4 +1,5 @@
 import { ListPlaces, ListRecommendations } from '~/domain/useCases';
+import { Location } from '~/domain/params';
 import { Origin } from '../../../../presentation/placeList/usePlaceList';
 import { Place } from '../../../../presentation/components/cardList';
 import { RecommendationProps } from '../../../../presentation/recommendation/components/listRecommendation';
@@ -25,10 +26,10 @@ const getPlacesByOrigin = async (
   by: Origin,
   listRecommendations: ListRecommendations,
   listPlaces: ListPlaces,
-  location: { lat: string; long: string },
+  location: Location,
 ): Promise<Place[]> => {
   if (by === Origin.Recommendations) {
-    const response = await listRecommendations.list();
+    const response = await listRecommendations.list(location);
     return new RecommendationsMapper(response).toPlaces();
   }
 

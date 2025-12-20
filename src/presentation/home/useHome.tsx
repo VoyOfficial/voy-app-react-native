@@ -54,13 +54,16 @@ const useHome = ({
   };
 
   const getRecommendations = async () => {
-    const response = await listRecommendations.list();
+    const response = await listRecommendations.list({
+      lat: '-29.385436',
+      long: '-50.877608',
+    });
     setRecommendations(response);
   };
 
   const getPlaces = async () => {
     const response = await listPlaces.list(
-      { lat: '0', long: '0' },
+      { lat: '-29.385436', long: '-50.877608' },
       'nextPageToken',
     );
     setPlaceList(response);

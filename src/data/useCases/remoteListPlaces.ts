@@ -1,4 +1,5 @@
 import { PlaceModel } from '~/domain/models';
+import { Location } from '~/domain/params';
 import { ListPlaces } from '~/domain/useCases';
 import { AnalyticsTracker } from '~/domain/analytics';
 import { NoPermissionError, UnexpectedError } from '../errors';
@@ -11,10 +12,7 @@ export default class RemoteListPlaces implements ListPlaces {
     private readonly analytics: AnalyticsTracker,
   ) {}
   list = async (
-    location: {
-      long: string;
-      lat: string;
-    },
+    location: Location,
     nextPageToken?: string,
   ): Promise<PlaceModel[]> => {
     let url =
