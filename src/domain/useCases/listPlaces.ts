@@ -1,11 +1,6 @@
 import { PlaceModel } from '../models';
+import { Location } from '../params';
 
 export default interface ListPlaces {
-  list(
-    location: {
-      long: string;
-      lat: string;
-    },
-    nextPageToken?: string,
-  ): Promise<PlaceModel[]>;
+  list(location: Location, nextPageToken?: string): Promise<PlaceModel[]>;
 }
