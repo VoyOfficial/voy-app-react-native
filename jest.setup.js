@@ -63,5 +63,14 @@ jest.mock('@react-navigation/elements', () => {
 
 jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 
+jest.mock('@react-native-community/geolocation', () => ({
+  getCurrentPosition: jest.fn(),
+  watchPosition: jest.fn(),
+  clearWatch: jest.fn(),
+  stopObserving: jest.fn(),
+  setRNConfiguration: jest.fn(),
+  requestAuthorization: jest.fn(),
+}));
+
 jest.mock('./src/infra/debug/reactotronConfig', () => ({}));
 

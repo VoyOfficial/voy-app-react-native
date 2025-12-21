@@ -49,6 +49,9 @@
       "~/infra/analytics": [
         "src/infra/analytics"
       ],
+      "~/infra/location": [
+        "src/infra/location"
+      ],
       "~/presentation/components": [
         "src/presentation/components"
       ],

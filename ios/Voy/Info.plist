@@ -36,7 +36,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Voy needs your location to find places near you</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Voy.ttf</string>
