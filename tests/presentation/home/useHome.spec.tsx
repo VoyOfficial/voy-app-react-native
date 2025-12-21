@@ -303,6 +303,50 @@ describe('Presentation: useHome', () => {
 
       expect(locationService.getCurrentPositionCalled).toBe(initialCalls);
     });
+
+    test('should set error to true when location service fails', async () => {
+      const locationService = new LocationServiceSpy();
+      locationService.throwError();
+
+      const {
+        sut: { result },
+      } = makeSut({ locationService });
+
+      await waitFor(() => {
+        expect(result.current.error).toBe(true);
+      });
+    });
+
+    test('should retry location service when tryGetListAgain is called after location error', async () => {
+      const locationService = new LocationServiceSpy();
+      locationService.throwError();
+
+      const {
+        sut: { result },
+      } = makeSut({ locationService });
+
+      await waitFor(() => {
+        expect(result.current.error).toBe(true);
+      });
+
+      expect(locationService.getCurrentPositionCalled).toBe(1);
+
+      locationService.shouldThrowError = false;
+      locationService.setCoordinates(-23.5505, -46.6333);
+
+      result.current.tryGetListAgain();
+
+      await waitFor(() => {
+        expect(locationService.getCurrentPositionCalled).toBe(2);
+      });
+
+      await waitFor(() => {
+        expect(result.current.recommendations.length).toBeGreaterThan(0);
+        expect(result.current.placeList.length).toBeGreaterThan(0);
+      });
+
+      expect(result.current.error).toBe(false);
+    });
   });
 });
 

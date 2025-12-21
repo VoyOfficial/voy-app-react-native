@@ -36,6 +36,7 @@ const useHome = ({
   >([]);
   const [placeList, setPlaceList] = useState<Array<Place>>([]);
   const [finding, setFinding] = useState(true);
+  const [locationError, setLocationError] = useState(false);
   const [userLocation, setUserLocation] = useState<{
     lat: string;
     long: string;
@@ -58,7 +59,9 @@ const useHome = ({
         lat: coordinates.latitude.toString(),
         long: coordinates.longitude.toString(),
       });
+      setLocationError(false);
     } catch (error) {
+      setLocationError(true);
       setUserLocation({
         lat: '',
         long: '',
@@ -114,14 +117,17 @@ const useHome = ({
   };
 
   const getError = useCallback(() => {
-    const listsAreEmpty = !!(
-      placeList.length === 0 && recommendations.length === 0
-    );
+    if (locationError) return true;
+    if (finding) return false;
 
-    return listsAreEmpty && !finding;
-  }, [placeList, recommendations, finding]);
+    return placeList.length === 0 && recommendations.length === 0;
+  }, [locationError, finding, placeList, recommendations]);
 
   const tryGetListAgain = async () => {
+    if (locationError) {
+      await getUserLocation();
+      return;
+    }
     await getLists();
   };
 
