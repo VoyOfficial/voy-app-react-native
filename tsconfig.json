@@ -31,6 +31,9 @@
       "~/domain/enums": [
         "src/domain/enums"
       ],
+      "~/domain/protocols": [
+        "src/domain/protocols"
+      ],
       "~/data": [
         "src/data"
       ],

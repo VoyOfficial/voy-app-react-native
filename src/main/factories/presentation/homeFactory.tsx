@@ -1,6 +1,7 @@
 import React from 'react';
 import { RouteProp } from '@react-navigation/native';
 import { AxiosAdapter } from '~/infra/http';
+import { GeolocationAdapter } from '~/infra/location';
 import { RemoteListPlaces, RemoteListRecommendations } from '~/data/useCases';
 import { FirebaseAnalyticsAdapter } from '~/infra/analytics';
 import { Actions, Routes, navigator } from '../../../../src/main/navigation';
@@ -25,6 +26,7 @@ const HomeFactory = ({}: Props) => {
       new AxiosAdapter(),
       new FirebaseAnalyticsAdapter(),
     ),
+    locationService: new GeolocationAdapter(),
   });
   return <Home {...viewModel} />;
 };

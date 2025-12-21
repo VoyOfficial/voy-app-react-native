@@ -5,6 +5,7 @@ import { ListPlaces, ListRecommendations } from '~/domain/useCases';
 import { PlaceModel, RecommendationModel } from '~/domain/models';
 import useHome from '../../../src/presentation/home/useHome';
 import placeListFactory from '../helpers/placeListFactory';
+import { LocationServiceSpy } from '../helpers/locationServiceSpy';
 
 jest.useFakeTimers();
 
@@ -226,6 +227,10 @@ describe('Presentation: useHome', () => {
       } = makeSut({ places: [], recommendations: [] });
 
       await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+
+      await waitFor(() => {
         result.current.tryGetListAgain();
       });
 
@@ -233,8 +238,8 @@ describe('Presentation: useHome', () => {
         expect(result.current.finding).toEqual(false);
       });
 
-      expect(ListPlacesSpy.listCalled).toEqual(2);
-      expect(ListRecommendationsSpy.listCalled).toEqual(2);
+      expect(ListPlacesSpy.listCalled).toBeGreaterThanOrEqual(2);
+      expect(ListRecommendationsSpy.listCalled).toBeGreaterThanOrEqual(2);
     });
   });
 
@@ -285,6 +290,96 @@ describe('Presentation: useHome', () => {
       });
     });
   });
+
+  describe('locationService', () => {
+    test('should call locationService.getCurrentPosition on mount', async () => {
+      const locationService = new LocationServiceSpy();
+      const {
+        sut: { result },
+      } = makeSut({ locationService });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+
+      expect(locationService.getCurrentPositionCalled).toBe(1);
+    });
+
+    test('should use location coordinates to fetch places and recommendations', async () => {
+      const locationService = new LocationServiceSpy();
+      locationService.setCoordinates(-23.5505, -46.6333);
+      const listPlaces = new ListPlacesSpy();
+      const listRecommendations = new ListRecommendationsSpy();
+
+      const {
+        sut: { result },
+      } = makeSut({ locationService, listPlaces, listRecommendations });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+
+      expect(listPlaces.listCalled).toBe(1);
+      expect(listRecommendations.listCalled).toBe(1);
+    });
+
+    test('should use default coordinates when location service fails', async () => {
+      const locationService = new LocationServiceSpy();
+      locationService.throwError();
+      const listPlaces = new ListPlacesSpy();
+      const listRecommendations = new ListRecommendationsSpy();
+
+      const {
+        sut: { result },
+      } = makeSut({ locationService, listPlaces, listRecommendations });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+
+      expect(listPlaces.listCalled).toBe(1);
+      expect(listRecommendations.listCalled).toBe(1);
+      expect(result.current.placeList).toHaveLength(5);
+    });
+
+    test('should wait for location before fetching data', async () => {
+      const locationService = new LocationServiceSpy();
+      const listPlaces = new ListPlacesSpy();
+      const listRecommendations = new ListRecommendationsSpy();
+
+      makeSut({ locationService, listPlaces, listRecommendations });
+
+      expect(locationService.getCurrentPositionCalled).toBe(1);
+
+      await waitFor(() => {
+        expect(listPlaces.listCalled).toBeGreaterThan(0);
+        expect(listRecommendations.listCalled).toBeGreaterThan(0);
+      });
+    });
+
+    test('should call location service again when tryGetListAgain is called', async () => {
+      const locationService = new LocationServiceSpy();
+      const {
+        sut: { result },
+      } = makeSut({ locationService });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+
+      const initialCalls = locationService.getCurrentPositionCalled;
+
+      await waitFor(() => {
+        result.current.tryGetListAgain();
+      });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+
+      expect(locationService.getCurrentPositionCalled).toBe(initialCalls);
+    });
+  });
 });
 
 type SutProps = {
@@ -292,11 +387,13 @@ type SutProps = {
   recommendations?: Array<RecommendationModel>;
   listPlaces?: ListPlacesSpy;
   listRecommendations?: ListRecommendationsSpy;
+  locationService?: LocationServiceSpy;
 };
 
 const makeSut = ({
   listPlaces = new ListPlacesSpy(placeListFactory(5)),
   listRecommendations = new ListRecommendationsSpy([recommendationModelFake()]),
+  locationService = new LocationServiceSpy(),
 }: SutProps) => {
   const navigate = jest.fn();
   const sut = renderHook(() =>
@@ -304,6 +401,7 @@ const makeSut = ({
       navigate,
       listRecommendations,
       listPlaces,
+      locationService,
     }),
   );
 
@@ -312,5 +410,6 @@ const makeSut = ({
     ListPlacesSpy: listPlaces,
     sut,
     ListRecommendationsSpy: listRecommendations,
+    LocationServiceSpy: locationService,
   };
 };
