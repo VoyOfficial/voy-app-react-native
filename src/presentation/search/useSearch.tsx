@@ -43,7 +43,7 @@ const useSearch = ({
     result.forEach((place) => {
       auxPlaceList.push({
         amountOfReviews: place.amountOfReviews,
-        imageUrl: place.imageUrl,
+        imageUri: place.imageUri,
         location: place.location,
         myDistanceOfLocal: place.myDistanceOfLocal,
         rating: place.rating,

@@ -11,7 +11,7 @@ import {
 
 export type Place = {
   id: number;
-  imageUrl: string;
+  imageUri: string;
   title: string;
   location: string;
   myDistanceOfLocal: string;
@@ -73,7 +73,7 @@ const factoryListCard = (
       index={index}
       id={place.id}
       title={place.title}
-      imageUrl={place.imageUrl}
+      imageUri={place.imageUri}
       location={place.location}
       myDistanceOfLocal={place.myDistanceOfLocal}
       amountOfReviews={place.amountOfReviews}

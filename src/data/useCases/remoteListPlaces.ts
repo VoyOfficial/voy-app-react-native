@@ -11,6 +11,13 @@ export default class RemoteListPlaces implements ListPlaces {
     private readonly httpGetClient: HttpGetClient,
     private readonly analytics: AnalyticsTracker,
   ) {}
+
+  private formatBase64Image(base64String: string): string {
+    if (!base64String) return '';
+    if (base64String.startsWith('data:')) return base64String;
+    return `data:image/png;base64,${base64String}`;
+  }
+
   list = async (
     location: Location,
     nextPageToken?: string,
@@ -33,7 +40,9 @@ export default class RemoteListPlaces implements ListPlaces {
         const places: Array<PlaceModel> = placesArray.map(
           (apiPlace: any, index: number) => ({
             id: index,
-            imageUrl: apiPlace.photoReference || '',
+            imageUri: this.formatBase64Image(
+              apiPlace.photo || apiPlace.photoReference || '',
+            ),
             title: apiPlace.name || '',
             location: apiPlace.address || '',
             myDistanceOfLocal: '0',

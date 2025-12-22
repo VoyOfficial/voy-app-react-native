@@ -68,7 +68,7 @@ describe('Components: CardList', () => {
       } = getPlaceDetails(index, getByTestId);
 
       expect(imageOfPlace).toEqual({
-        uri: place.imageUrl,
+        uri: place.imageUri,
       });
       expect(title).toEqual(place.title);
       expect(location).toEqual(place.location);

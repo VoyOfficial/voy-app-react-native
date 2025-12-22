@@ -44,46 +44,46 @@ describe('Components: ListCard', () => {
   });
 
   test('should show image of local with success', () => {
-    const imageUrl = faker.image.imageUrl();
-    const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
+    const imageUri = faker.image.imageUrl();
+    const { getByTestId } = makeSut('', '', '', '', '', imageUri);
 
     expect(getByTestId('image_of_place_0_id').props.source).toEqual({
-      uri: imageUrl,
+      uri: imageUri,
     });
   });
 
-  test('should show location icon with success', () => {
-    const imageUrl = faker.image.imageUrl();
-    const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
+  test('should press show more details button with success', () => {
+    const imageUri = faker.image.imageUrl();
+    const { getByTestId } = makeSut('', '', '', '', '', imageUri);
 
     expect(getByTestId('location_icon_id')).toBeTruthy();
   });
 
   test('should show walking icon with success', () => {
-    const imageUrl = faker.image.imageUrl();
-    const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
+    const imageUri = faker.image.imageUrl();
+    const { getByTestId } = makeSut('', '', '', '', '', imageUri);
 
     expect(getByTestId('walking_icon_id')).toBeTruthy();
   });
 
   test('should show star icon with success', () => {
-    const imageUrl = faker.image.imageUrl();
-    const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
+    const imageUri = faker.image.imageUrl();
+    const { getByTestId } = makeSut('', '', '', '', '', imageUri);
 
     expect(getByTestId('star_icon_id')).toBeTruthy();
   });
 
   test('should show save to favorites button', () => {
-    const imageUrl = faker.image.imageUrl();
-    const { getByTestId } = makeSut('', '', '', '', '', imageUrl);
+    const imageUri = faker.image.imageUrl();
+    const { getByTestId } = makeSut('', '', '', '', '', imageUri);
 
     expect(getByTestId('save_button_0_id')).toBeTruthy();
   });
 
   test('should save to favorites when pressing favorite button', () => {
     const favorite = jest.fn();
-    const imageUrl = faker.image.imageUrl();
-    const { getByTestId } = makeSut('', '', '', '', '', imageUrl, favorite);
+    const imageUri = faker.image.imageUrl();
+    const { getByTestId } = makeSut('', '', '', '', '', imageUri, favorite);
 
     const saveButton = getByTestId('save_button_0_id');
 
@@ -95,14 +95,14 @@ describe('Components: ListCard', () => {
   test('should call showMoreDetails function when press the component', () => {
     const showMoreDetails = jest.fn();
     const favorite = () => {};
-    const imageUrl = faker.image.imageUrl();
+    const imageUri = faker.image.imageUrl();
     const { getByTestId } = makeSut(
       '',
       '',
       '',
       '',
       '',
-      imageUrl,
+      imageUri,
       favorite,
       showMoreDetails,
     );
@@ -121,7 +121,7 @@ const makeSut = (
   myDistanceOfLocal = '',
   amountOfReviews = '',
   rating = '',
-  imageUrl = '',
+  imageUri = '',
   favorite = () => {},
   showMoreDetails = () => {},
 ) => {
@@ -129,7 +129,7 @@ const makeSut = (
     <ListCard
       id={0}
       index={0}
-      imageUrl={imageUrl}
+      imageUri={imageUri}
       title={title}
       location={location}
       myDistanceOfLocal={myDistanceOfLocal}

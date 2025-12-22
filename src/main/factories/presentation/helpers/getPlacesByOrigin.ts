@@ -11,7 +11,7 @@ export class RecommendationsMapper {
     return this.recommendations.map((recommendation) => {
       return {
         amountOfReviews: '',
-        imageUrl: recommendation.imageUrl,
+        imageUri: recommendation.imageUrl,
         location: recommendation.location,
         myDistanceOfLocal: recommendation.myDistanceOfLocal,
         rating: recommendation.rating,

@@ -8,6 +8,7 @@ export type ApiPlaceResponse = {
   rating: number;
   userRatingsTotal: number;
   photoReference: string;
+  photo: string;
   latitude: number;
   longitude: number;
 };
@@ -24,6 +25,7 @@ export const mockApiPlace = (): ApiPlaceResponse => ({
   }),
   userRatingsTotal: faker.datatype.number({ min: 0, max: 1000 }),
   photoReference: faker.datatype.uuid(),
+  photo: faker.image.dataUri(),
   latitude: faker.datatype.float({ min: -90, max: 90, precision: 0.000001 }),
   longitude: faker.datatype.float({ min: -180, max: 180, precision: 0.000001 }),
 });

@@ -78,6 +78,13 @@ describe('Data: RemoteListPlaces', () => {
       expect(place.amountOfReviews).toBe(
         String(apiPlaces[index].userRatingsTotal),
       );
+      const expectedImage =
+        apiPlaces[index].photo || apiPlaces[index].photoReference;
+      expect(place.imageUri).toBe(
+        expectedImage && expectedImage.startsWith('data:')
+          ? expectedImage
+          : `data:image/png;base64,${expectedImage || ''}`,
+      );
     });
   });
 
