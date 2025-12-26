@@ -1,16 +1,15 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { RouteProp } from '@react-navigation/native';
 import { Actions, Routes, navigator } from '~/main/navigation';
 import { AxiosAdapter } from '~/infra/http';
 import { RemoteListPlaces, RemoteListRecommendations } from '~/data/useCases';
 import { FirebaseAnalyticsAdapter } from '~/infra/analytics';
-import { Place } from '../../../presentation/components/cardList';
+import { GeolocationAdapter } from '~/infra/location';
 import { StackParams } from '../../navigation/navigation';
 import PlaceList from '../../../../src/presentation/placeList';
 import usePlaceList, {
   Origin,
 } from '../../../../src/presentation/placeList/usePlaceList';
-import getPlacesByOrigin from './helpers/getPlacesByOrigin';
 
 type Props = {
   route: RouteProp<StackParams, Routes>;
@@ -18,49 +17,32 @@ type Props = {
 };
 
 const PlaceListFactory = ({ route: { params }, navigation }: Props) => {
-  const [places, setPlaces] = useState<Place[]>([]);
+  const origin =
+    params && 'by' in params ? (params.by as Origin) : Origin.Places;
 
-  const setTitle = () => {
-    const origin = params?.by as Origin;
+  useLayoutEffect(() => {
     if (origin === Origin.Places) {
       navigation.setOptions({ title: 'Descobrir' });
     }
-
     if (origin === Origin.Recommendations) {
       navigation.setOptions({ title: 'Todas as recomendações' });
     }
-  };
-
-  const getPlaces = async () => {
-    const response = await getPlacesByOrigin(
-      params?.by as Origin,
-      new RemoteListRecommendations(
-        'http://localhost:3000/recommendations',
-        new AxiosAdapter(),
-        new FirebaseAnalyticsAdapter(),
-      ),
-      new RemoteListPlaces(
-        'http://localhost:3000/places',
-        new AxiosAdapter(),
-        new FirebaseAnalyticsAdapter(),
-      ),
-      { lat: '', long: '' },
-    );
-
-    setPlaces(response);
-  };
-
-  useLayoutEffect(() => {
-    setTitle();
-  }, []);
-
-  useEffect(() => {
-    getPlaces();
-  }, []);
+  }, [origin, navigation]);
 
   const viewModel = usePlaceList({
     navigate: new Actions(navigator).navigate,
-    places,
+    origin,
+    listRecommendations: new RemoteListRecommendations(
+      'http://localhost:8080/api/registration/v1/places/recommendations',
+      new AxiosAdapter(),
+      new FirebaseAnalyticsAdapter(),
+    ),
+    listPlaces: new RemoteListPlaces(
+      'http://localhost:8080/api/registration/v1/places',
+      new AxiosAdapter(),
+      new FirebaseAnalyticsAdapter(),
+    ),
+    locationService: new GeolocationAdapter(),
   });
   return <PlaceList {...viewModel} />;
 };
