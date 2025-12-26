@@ -46,7 +46,8 @@ export class GetPlaceDetailsSpy implements GetPlaceDetails {
     distance: faker.datatype.number().toString(),
     fullLocation: faker.address.streetAddress(),
     location: faker.address.cityName(),
-    photoOfReviewProfiles: [faker.image.imageUrl()],
+    photoOfReviewProfiles: [],
+    gallerySummaryImages: [faker.image.imageUrl()],
     rating: faker.datatype.number({ min: 1, max: 5 }).toString(),
   };
   id = 0;
@@ -68,7 +69,7 @@ export class GetPlaceDetailsSpy implements GetPlaceDetails {
 
 describe('Presentation: usePlaceDetails', () => {
   test('should update the backgroundImage correctly when call pressSummaryImageFromGallery function', async () => {
-    const { result } = makeSut({ id: 0, gallerySummaryImages: [''] });
+    const { result } = makeSut({ id: 0 });
 
     expect(result.current.backgroundImage).toEqual('');
 
@@ -81,7 +82,7 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should update isOpenImagesGallery to true when call pressSummaryImageFromGallery with showInGallery true', async () => {
-    const { result } = makeSut({ id: 0, gallerySummaryImages: [''] });
+    const { result } = makeSut({ id: 0 });
 
     expect(result.current.isOpenImagesGallery).toEqual(false);
 
@@ -96,7 +97,7 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should update isOpenImagesGallery to false when call closeImagesGallery', async () => {
-    const { result } = makeSut({ id: 0, gallerySummaryImages: [''] });
+    const { result } = makeSut({ id: 0 });
 
     const image = faker.image.imageUrl();
 
@@ -114,14 +115,16 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should update backgroundImage when initialize', async () => {
-    const backgroundImage = faker.image.imageUrl();
+    const getPlaceDetails = new GetPlaceDetailsSpy();
     const { result } = makeSut({
       id: 0,
-      gallerySummaryImages: [backgroundImage],
+      getPlaceDetails,
     });
 
     await waitFor(() => {
-      expect(result.current.backgroundImage).toEqual(backgroundImage);
+      expect(result.current.backgroundImage).toEqual(
+        getPlaceDetails.placeDetails.gallerySummaryImages[0],
+      );
     });
   });
 
@@ -131,7 +134,6 @@ describe('Presentation: usePlaceDetails', () => {
 
     makeSut({
       id,
-      gallerySummaryImages: [faker.image.imageUrl()],
       getPlaceDetails,
     });
 
@@ -146,7 +148,6 @@ describe('Presentation: usePlaceDetails', () => {
 
     const { result } = makeSut({
       id,
-      gallerySummaryImages: [faker.image.imageUrl()],
       getPlaceDetails,
     });
 
@@ -176,6 +177,9 @@ describe('Presentation: usePlaceDetails', () => {
       expect(result.current.photoOfReviewProfiles).toEqual(
         getPlaceDetails.placeDetails.photoOfReviewProfiles,
       );
+      expect(result.current.gallerySummaryImages).toEqual(
+        getPlaceDetails.placeDetails.gallerySummaryImages,
+      );
       expect(result.current.businessHoursSummary).toEqual(
         'Diariamente - Acesso livre (24 horas)',
       );
@@ -189,7 +193,6 @@ describe('Presentation: usePlaceDetails', () => {
 
     const { result } = makeSut({
       id,
-      gallerySummaryImages: [faker.image.imageUrl()],
       getPlaceDetails,
     });
 
@@ -289,18 +292,15 @@ describe('Presentation: usePlaceDetails', () => {
 
 type SutProps = {
   id: number;
-  gallerySummaryImages?: Array<string>;
   getPlaceDetails?: GetPlaceDetails;
 };
 
 const makeSut = ({
   id,
-  gallerySummaryImages = [faker.image.imageUrl()],
   getPlaceDetails = new GetPlaceDetailsSpy(),
 }: SutProps) => {
   return renderHook(() =>
     usePlaceDetails({
-      gallerySummaryImages,
       getPlaceDetails,
       id,
     }),

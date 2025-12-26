@@ -1,9 +1,6 @@
 import { PermissionsAndroid, Platform } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
-import {
-  Coordinates,
-  LocationService,
-} from '~/domain/protocols/locationService';
+import { Coordinates, LocationService } from '~/domain/protocols';
 
 export class GeolocationAdapter implements LocationService {
   async requestPermission(): Promise<boolean> {

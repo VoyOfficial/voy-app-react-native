@@ -11,6 +11,7 @@ type PlaceDetailsModel = {
   fullLocation: string;
   contact: string;
   photoOfReviewProfiles: Array<string>;
+  gallerySummaryImages: Array<string>;
 };
 
 export default PlaceDetailsModel;

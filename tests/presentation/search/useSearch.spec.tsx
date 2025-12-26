@@ -120,7 +120,7 @@ describe('Presentation: useSearch', () => {
     searchPlaces.list.forEach((place) => {
       list.push({
         amountOfReviews: place.amountOfReviews,
-        imageUrl: place.imageUrl,
+        imageUri: place.imageUri,
         location: place.location,
         myDistanceOfLocal: place.myDistanceOfLocal,
         rating: place.rating,

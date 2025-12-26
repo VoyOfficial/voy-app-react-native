@@ -2,6 +2,7 @@ import { GetPlaceDetails } from '~/domain/useCases';
 import { PlaceDetailsModel } from '~/domain/models';
 import { AnalyticsTracker } from '~/domain/analytics';
 import { HttpGetClient, HttpStatusCode } from '../http';
+import { formatBase64Image } from '../helpers';
 import {
   NotHaveAccessToPlaceDetailsError,
   PlaceDetailsNotFoundError,
@@ -16,12 +17,12 @@ export default class RemoteGetPlaceDetails implements GetPlaceDetails {
   ) {}
   get = async (id: string): Promise<PlaceDetailsModel> => {
     const { statusCode, body } = await this.httpGetClient.get({
-      url: `${this.url}?id=${id}`,
+      url: `${this.url}/${id}`,
     });
 
     switch (statusCode) {
       case HttpStatusCode.ok:
-        const placeDetails = body as PlaceDetailsModel;
+        const placeDetails = this.mapToPlaceDetailsModel(body);
         this.trackPlaceDetailsEvent(placeDetails);
         return placeDetails;
       case HttpStatusCode.notFound:
@@ -32,6 +33,27 @@ export default class RemoteGetPlaceDetails implements GetPlaceDetails {
         throw new UnexpectedError();
     }
   };
+
+  private mapToPlaceDetailsModel(data: any): PlaceDetailsModel {
+    const photos =
+      data.photos?.map((photo: any) =>
+        formatBase64Image(photo.imageBase64 || ''),
+      ) || [];
+
+    return {
+      title: data.name || '',
+      description: data.about || '',
+      location: data.address || '',
+      fullLocation: data.address || '',
+      distance: '',
+      amountOfReviews: data.userRatingsTotal?.toString() || '0',
+      rating: data.rating?.toString() || '0',
+      businessHoursSummary: data.businessHours || [],
+      contact: data.contact || '',
+      photoOfReviewProfiles: [],
+      gallerySummaryImages: photos,
+    };
+  }
 
   private trackPlaceDetailsEvent(placeDetails: PlaceDetailsModel): void {
     this.analytics.trackEvent('place_details', {

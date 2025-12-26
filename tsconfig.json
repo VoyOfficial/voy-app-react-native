@@ -46,6 +46,9 @@
       "~/data/http": [
         "src/data/http"
       ],
+      "~/data/helpers": [
+        "src/data/helpers"
+      ],
       "~/infra/http": [
         "src/infra/http"
       ],

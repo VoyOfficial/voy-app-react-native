@@ -3,7 +3,6 @@ import { GetPlaceDetails } from '~/domain/useCases';
 import { PlaceDetailsViewModel } from './placeDetails';
 
 type Props = {
-  gallerySummaryImages: Array<string>;
   getPlaceDetails: GetPlaceDetails;
   id: number;
 };
@@ -35,7 +34,6 @@ const emptyPlaceDetails = {
 };
 
 const usePlaceDetails = ({
-  gallerySummaryImages,
   getPlaceDetails,
   id,
 }: Props): PlaceDetailsViewModel => {
@@ -43,10 +41,10 @@ const usePlaceDetails = ({
   const [isOpenImagesGallery, setIsOpenImagesGallery] = useState(false);
   const [placeDetails, setPlaceDetails] =
     useState<PlaceDetails>(emptyPlaceDetails);
+  const [galleryImages, setGalleryImages] = useState<Array<string>>([]);
   const [finding, setFinding] = useState(true);
 
   useEffect(() => {
-    setBackgroundImage(gallerySummaryImages[0]);
     updatePlaceDetails();
   }, []);
 
@@ -66,6 +64,8 @@ const usePlaceDetails = ({
         rating: response.rating + '/5',
         title: response.title,
       });
+      setGalleryImages(response.gallerySummaryImages);
+      setBackgroundImage(response.gallerySummaryImages[0] || '');
     } catch (error) {
       setPlaceDetails(emptyPlaceDetails);
     } finally {
@@ -110,7 +110,7 @@ const usePlaceDetails = ({
     contact: placeDetails.contact,
     description: placeDetails.description,
     fullLocation: placeDetails.fullLocation,
-    gallerySummaryImages,
+    gallerySummaryImages: galleryImages,
     location: placeDetails.location,
     myDistanceOfLocal: placeDetails.myDistanceOfLocal,
     photoOfReviewProfiles: placeDetails.photoOfReviewProfiles,

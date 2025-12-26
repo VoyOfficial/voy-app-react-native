@@ -6,7 +6,6 @@ import {
   UnexpectedError,
 } from '~/data/errors';
 import { RemoteGetPlaceDetails } from '~/data/useCases';
-import { PlaceDetailsModel } from '~/domain/models';
 import { makeUrl } from '../helpers/testFactories';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import AnalyticsTrackerSpy from '../analytics/analyticsTrackerSpy';
@@ -22,61 +21,59 @@ describe('Data: RemoteGetPlaceDetails', () => {
     const id = faker.datatype.uuid();
     sut.get(id);
 
-    expect(httpClient.url).toEqual(`${url}?id=${id}`);
+    expect(httpClient.url).toEqual(`${url}/${id}`);
   });
 
   test('should get with httpGetClient returning the place details with success', async () => {
-    const placeDetailsResponse = {
-      title: faker.company.name(),
-      amountOfReviews: faker.datatype.number().toString(),
-      businessHoursSummary: {
-        sunday: {
-          start: '08:00',
-          end: '12:00',
-        },
-        monday: {
-          start: '08:00',
-          end: '12:00',
-        },
-        tuesday: {
-          start: '08:00',
-          end: '12:00',
-        },
-        wednesday: {
-          start: '08:00',
-          end: '12:00',
-        },
-        thursday: {
-          start: '08:00',
-          end: '12:00',
-        },
-        friday: {
-          start: '08:00',
-          end: '12:00',
-        },
-        saturday: {
-          start: '08:00',
-          end: '12:00',
-        },
+    const mockApiResponse = {
+      name: faker.company.name(),
+      about: faker.lorem.paragraph(),
+      address: faker.address.streetAddress(),
+      rating: faker.datatype.number({ min: 1, max: 5 }),
+      userRatingsTotal: faker.datatype.number(),
+      businessHours: {
+        sunday: { start: '08:00', end: '12:00' },
+        monday: { start: '08:00', end: '12:00' },
+        tuesday: { start: '08:00', end: '12:00' },
+        wednesday: { start: '08:00', end: '12:00' },
+        thursday: { start: '08:00', end: '12:00' },
+        friday: { start: '08:00', end: '12:00' },
+        saturday: { start: '08:00', end: '12:00' },
       },
       contact: faker.phone.number(),
-      description: faker.lorem.paragraph(),
-      distance: faker.datatype.number().toString(),
-      fullLocation: faker.address.streetAddress(),
-      location: faker.address.cityName(),
-      photoOfReviewProfiles: [faker.image.imageUrl()],
-      rating: faker.datatype.number().toString(),
+      photos: [
+        {
+          imageBase64:
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+        },
+      ],
     };
     const url = makeUrl();
     const httpClient = new HttpClientSpy();
-    httpClient.completeWithSuccess(HttpStatusCode.ok, placeDetailsResponse);
+    httpClient.completeWithSuccess(HttpStatusCode.ok, mockApiResponse);
 
     const sut = new RemoteGetPlaceDetails(url, httpClient, analyticsTrackerSpy);
 
     const id = faker.datatype.uuid();
     const placeDetails = await sut.get(id);
 
-    expect(placeDetails).toEqual(placeDetailsResponse);
+    expect(placeDetails.title).toEqual(mockApiResponse.name);
+    expect(placeDetails.description).toEqual(mockApiResponse.about);
+    expect(placeDetails.location).toEqual(mockApiResponse.address);
+    expect(placeDetails.fullLocation).toEqual(mockApiResponse.address);
+    expect(placeDetails.rating).toEqual(mockApiResponse.rating.toString());
+    expect(placeDetails.amountOfReviews).toEqual(
+      mockApiResponse.userRatingsTotal.toString(),
+    );
+    expect(placeDetails.contact).toEqual(mockApiResponse.contact);
+    expect(placeDetails.businessHoursSummary).toEqual(
+      mockApiResponse.businessHours,
+    );
+    expect(placeDetails.photoOfReviewProfiles).toEqual([]);
+    expect(placeDetails.gallerySummaryImages).toHaveLength(1);
+    expect(placeDetails.gallerySummaryImages[0]).toContain(
+      'data:image/png;base64',
+    );
   });
 
   test('must try get the place details through of httpGetClient, returning exception unexpected', async () => {
@@ -137,56 +134,38 @@ describe('Data: RemoteGetPlaceDetails', () => {
 
       expect(analytics.event).toEqual('place_details');
       expect(analytics.params).toEqual({
-        place_title: placeDetails.title,
-        place_location: placeDetails.fullLocation,
-        place_rating: placeDetails.rating,
-        place_distance: placeDetails.distance,
-        place_amount_of_reviews: placeDetails.amountOfReviews,
+        place_title: placeDetails.name,
+        place_location: placeDetails.address,
+        place_rating: placeDetails.rating.toString(),
+        place_distance: '',
+        place_amount_of_reviews: placeDetails.userRatingsTotal.toString(),
       });
     });
   });
 });
 
-const mockRemotePlaceDetails = (): PlaceDetailsModel => {
+const mockRemotePlaceDetails = (): any => {
   return {
-    title: faker.company.name(),
-    amountOfReviews: faker.datatype.number().toString(),
-    businessHoursSummary: {
-      sunday: {
-        start: '08:00',
-        end: '12:00',
-      },
-      monday: {
-        start: '08:00',
-        end: '12:00',
-      },
-      tuesday: {
-        start: '08:00',
-        end: '12:00',
-      },
-      wednesday: {
-        start: '08:00',
-        end: '12:00',
-      },
-      thursday: {
-        start: '08:00',
-        end: '12:00',
-      },
-      friday: {
-        start: '08:00',
-        end: '12:00',
-      },
-      saturday: {
-        start: '08:00',
-        end: '12:00',
-      },
+    name: faker.company.name(),
+    about: faker.lorem.paragraph(),
+    address: faker.address.streetAddress(),
+    rating: faker.datatype.number({ min: 1, max: 5 }),
+    userRatingsTotal: faker.datatype.number(),
+    businessHours: {
+      sunday: { start: '08:00', end: '12:00' },
+      monday: { start: '08:00', end: '12:00' },
+      tuesday: { start: '08:00', end: '12:00' },
+      wednesday: { start: '08:00', end: '12:00' },
+      thursday: { start: '08:00', end: '12:00' },
+      friday: { start: '08:00', end: '12:00' },
+      saturday: { start: '08:00', end: '12:00' },
     },
     contact: faker.phone.number(),
-    description: faker.lorem.paragraph(),
-    distance: faker.datatype.number().toString(),
-    fullLocation: faker.address.streetAddress(),
-    location: faker.address.cityName(),
-    photoOfReviewProfiles: [faker.image.imageUrl()],
-    rating: faker.datatype.number({ min: 1, max: 5 }).toString(),
+    photos: [
+      {
+        imageBase64:
+          'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+      },
+    ],
   };
 };

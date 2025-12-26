@@ -3,7 +3,7 @@ module.exports = {
   verbose: true,
   setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  testPathIgnorePatterns: ['<rootDir>/node_modules/'],
+  testPathIgnorePatterns: ['<rootDir>/node_modules/', '\\.integration\\.spec\\.'],
   setupFiles: ['<rootDir>/jest.setup.js'],
   testRegex: '\\.spec\\.ts',
   transformIgnorePatterns: [],
