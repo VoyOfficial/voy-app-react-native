@@ -7,6 +7,7 @@ import { themes } from '../presentation/theme/theme';
 import Navigation, { StackParams } from './navigation/navigation';
 import { Routes, getScreensStack, setTopLevelNavigator } from './navigation';
 import stores from './stores';
+import '../infra/debug/reactotronConfig';
 
 type Props = {
   initialRouteName?: keyof StackParams;

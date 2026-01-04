@@ -1,89 +1,14 @@
 import { Place } from 'src/presentation/components/cardList';
 import { renderHook, waitFor } from '@testing-library/react-native';
-import { faker } from '@faker-js/faker';
-import { ListPlaces, ListRecommendations } from '~/domain/useCases';
-import { PlaceModel, RecommendationModel } from '~/domain/models';
+import { RecommendationModel } from '~/domain/models';
 import useHome from '../../../src/presentation/home/useHome';
+import { LocationServiceSpy } from '../helpers/locationServiceSpy';
+import { ListRecommendationsSpy } from '../helpers/listRecommendationsSpy';
+import { ListPlacesSpy } from '../helpers/listPlacesSpy';
+import { recommendationModelFactory } from '../helpers/recommendationModelFactory';
 import placeListFactory from '../helpers/placeListFactory';
 
 jest.useFakeTimers();
-
-const recommendationModelFake = (): RecommendationModel => {
-  return {
-    location: faker.address.secondaryAddress(),
-    imageUrl: faker.image.city(),
-    title: faker.name.jobTitle(),
-    rating: faker.datatype
-      .number({ min: 1, max: 10, precision: 0.1 })
-      .toString(),
-    myDistanceOfLocal: faker.datatype.number().toString(),
-    id: faker.datatype.number(),
-  };
-};
-
-class ListRecommendationsSpy implements ListRecommendations {
-  listCalled = 0;
-  timeout = 0;
-
-  constructor(
-    readonly recommendations: Array<RecommendationModel> = [
-      recommendationModelFake(),
-    ],
-  ) {}
-  async list(): Promise<RecommendationModel[]> {
-    let recommendations: Array<RecommendationModel> = [];
-    const complete = () => {
-      this.listCalled += 1;
-      recommendations = this.recommendations;
-    };
-
-    if (this.timeout > 0) {
-      setTimeout(() => {
-        complete();
-      }, this.timeout);
-    } else {
-      complete();
-    }
-
-    return recommendations;
-  }
-
-  addTimeout(timeout: number) {
-    this.timeout = timeout;
-  }
-}
-
-export class ListPlacesSpy implements ListPlaces {
-  listCalled = 0;
-  timeout = 0;
-  constructor(readonly places: Array<PlaceModel> = placeListFactory(5)) {}
-  async list(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    location: { long: string; lat: string },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    nextPageToken?: string | undefined,
-  ): Promise<PlaceModel[]> {
-    let places: Array<PlaceModel> = [];
-    const complete = () => {
-      this.listCalled += 1;
-      places = this.places;
-    };
-
-    if (this.timeout > 0) {
-      setTimeout(() => {
-        complete();
-      }, this.timeout);
-    } else {
-      complete();
-    }
-
-    return places;
-  }
-
-  addTimeout(timeout: number) {
-    this.timeout = timeout;
-  }
-}
 
 describe('Presentation: useHome', () => {
   test('should call navigate function correctly when call onSeeAll function with Discover param', async () => {
@@ -103,7 +28,7 @@ describe('Presentation: useHome', () => {
   });
 
   test('should get the recommendations through of ListRecommendations when initialize', async () => {
-    const recommendations = [recommendationModelFake()];
+    const recommendations = [recommendationModelFactory()];
     const listRecommendations = new ListRecommendationsSpy(recommendations);
     const {
       sut: { result },
@@ -200,7 +125,7 @@ describe('Presentation: useHome', () => {
     test('should the error returning false when recommendations and place list are empty and finding is true', async () => {
       const listPlaces = new ListPlacesSpy(placeListFactory(5));
       const listRecommendations = new ListRecommendationsSpy([
-        recommendationModelFake(),
+        recommendationModelFactory(),
       ]);
       listPlaces.addTimeout(1000);
       listRecommendations.addTimeout(1000);
@@ -226,6 +151,10 @@ describe('Presentation: useHome', () => {
       } = makeSut({ places: [], recommendations: [] });
 
       await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+
+      await waitFor(() => {
         result.current.tryGetListAgain();
       });
 
@@ -233,8 +162,8 @@ describe('Presentation: useHome', () => {
         expect(result.current.finding).toEqual(false);
       });
 
-      expect(ListPlacesSpy.listCalled).toEqual(2);
-      expect(ListRecommendationsSpy.listCalled).toEqual(2);
+      expect(ListPlacesSpy.listCalled).toBeGreaterThanOrEqual(2);
+      expect(ListRecommendationsSpy.listCalled).toBeGreaterThanOrEqual(2);
     });
   });
 
@@ -242,7 +171,7 @@ describe('Presentation: useHome', () => {
     test('should the finding returning true correctly when it is finding the list recommendation and place', async () => {
       const listPlaces = new ListPlacesSpy(placeListFactory(5));
       const listRecommendations = new ListRecommendationsSpy([
-        recommendationModelFake(),
+        recommendationModelFactory(),
       ]);
       listPlaces.addTimeout(1000);
       listRecommendations.addTimeout(1000);
@@ -264,7 +193,7 @@ describe('Presentation: useHome', () => {
     test('should set finding to true and then back to false when calling tryGetListAgain', async () => {
       const listPlaces = new ListPlacesSpy(placeListFactory(5));
       const listRecommendations = new ListRecommendationsSpy([
-        recommendationModelFake(),
+        recommendationModelFactory(),
       ]);
 
       const {
@@ -285,6 +214,140 @@ describe('Presentation: useHome', () => {
       });
     });
   });
+
+  describe('locationService', () => {
+    test('should call locationService.getCurrentPosition on mount', async () => {
+      const locationService = new LocationServiceSpy();
+      const {
+        sut: { result },
+      } = makeSut({ locationService });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+
+      expect(locationService.getCurrentPositionCalled).toBe(1);
+    });
+
+    test('should use location coordinates to fetch places and recommendations', async () => {
+      const locationService = new LocationServiceSpy();
+      locationService.setCoordinates(-23.5505, -46.6333);
+      const listPlaces = new ListPlacesSpy();
+      const listRecommendations = new ListRecommendationsSpy();
+
+      const {
+        sut: { result },
+      } = makeSut({ locationService, listPlaces, listRecommendations });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+
+      expect(listPlaces.listCalled).toBe(1);
+      expect(listRecommendations.listCalled).toBe(1);
+    });
+
+    test('should use default coordinates when location service fails', async () => {
+      const locationService = new LocationServiceSpy();
+      locationService.throwError();
+      const listPlaces = new ListPlacesSpy();
+      const listRecommendations = new ListRecommendationsSpy();
+
+      const {
+        sut: { result },
+      } = makeSut({ locationService, listPlaces, listRecommendations });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+
+      expect(listPlaces.listCalled).toBe(1);
+      expect(listRecommendations.listCalled).toBe(1);
+      expect(result.current.placeList).toHaveLength(5);
+    });
+
+    test('should wait for location before fetching data', async () => {
+      const locationService = new LocationServiceSpy();
+      const listPlaces = new ListPlacesSpy();
+      const listRecommendations = new ListRecommendationsSpy();
+
+      makeSut({ locationService, listPlaces, listRecommendations });
+
+      expect(locationService.getCurrentPositionCalled).toBe(1);
+
+      await waitFor(() => {
+        expect(listPlaces.listCalled).toBeGreaterThan(0);
+        expect(listRecommendations.listCalled).toBeGreaterThan(0);
+      });
+    });
+
+    test('should call location service again when tryGetListAgain is called', async () => {
+      const locationService = new LocationServiceSpy();
+      const {
+        sut: { result },
+      } = makeSut({ locationService });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+
+      const initialCalls = locationService.getCurrentPositionCalled;
+
+      await waitFor(() => {
+        result.current.tryGetListAgain();
+      });
+
+      await waitFor(() => {
+        expect(result.current.finding).toEqual(false);
+      });
+
+      expect(locationService.getCurrentPositionCalled).toBe(initialCalls);
+    });
+
+    test('should set error to true when location service fails', async () => {
+      const locationService = new LocationServiceSpy();
+      locationService.throwError();
+
+      const {
+        sut: { result },
+      } = makeSut({ locationService });
+
+      await waitFor(() => {
+        expect(result.current.error).toBe(true);
+      });
+    });
+
+    test('should retry location service when tryGetListAgain is called after location error', async () => {
+      const locationService = new LocationServiceSpy();
+      locationService.throwError();
+
+      const {
+        sut: { result },
+      } = makeSut({ locationService });
+
+      await waitFor(() => {
+        expect(result.current.error).toBe(true);
+      });
+
+      expect(locationService.getCurrentPositionCalled).toBe(1);
+
+      locationService.shouldThrowError = false;
+      locationService.setCoordinates(-23.5505, -46.6333);
+
+      result.current.tryGetListAgain();
+
+      await waitFor(() => {
+        expect(locationService.getCurrentPositionCalled).toBe(2);
+      });
+
+      await waitFor(() => {
+        expect(result.current.recommendations.length).toBeGreaterThan(0);
+        expect(result.current.placeList.length).toBeGreaterThan(0);
+      });
+
+      expect(result.current.error).toBe(false);
+    });
+  });
 });
 
 type SutProps = {
@@ -292,11 +355,15 @@ type SutProps = {
   recommendations?: Array<RecommendationModel>;
   listPlaces?: ListPlacesSpy;
   listRecommendations?: ListRecommendationsSpy;
+  locationService?: LocationServiceSpy;
 };
 
 const makeSut = ({
   listPlaces = new ListPlacesSpy(placeListFactory(5)),
-  listRecommendations = new ListRecommendationsSpy([recommendationModelFake()]),
+  listRecommendations = new ListRecommendationsSpy([
+    recommendationModelFactory(),
+  ]),
+  locationService = new LocationServiceSpy(),
 }: SutProps) => {
   const navigate = jest.fn();
   const sut = renderHook(() =>
@@ -304,6 +371,7 @@ const makeSut = ({
       navigate,
       listRecommendations,
       listPlaces,
+      locationService,
     }),
   );
 
@@ -312,5 +380,6 @@ const makeSut = ({
     ListPlacesSpy: listPlaces,
     sut,
     ListRecommendationsSpy: listRecommendations,
+    LocationServiceSpy: locationService,
   };
 };

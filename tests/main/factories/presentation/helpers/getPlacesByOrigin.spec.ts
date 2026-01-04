@@ -5,7 +5,7 @@ import getPlacesByOrigin, {
   RecommendationsMapper,
 } from '../../../../../src/main/factories/presentation/helpers/getPlacesByOrigin';
 import placeListFactory from '../../../../presentation/helpers/placeListFactory';
-import { ListPlacesSpy } from '../../../../presentation/home/useHome.spec';
+import { ListPlacesSpy } from '../../../../presentation/helpers/listPlacesSpy';
 import { Origin } from '../../../../../src/presentation/placeList/usePlaceList';
 
 export const recommendationModelFake = (): RecommendationModel => {
@@ -43,7 +43,15 @@ describe('getListByOrigin', () => {
     );
     expect(places).toEqual(
       recommendations.map((recommendation) => {
-        return { ...recommendation, amountOfReviews: '' };
+        return {
+          id: recommendation.id,
+          imageUri: recommendation.imageUrl,
+          location: recommendation.location,
+          myDistanceOfLocal: recommendation.myDistanceOfLocal,
+          rating: recommendation.rating,
+          title: recommendation.title,
+          amountOfReviews: '',
+        };
       }),
     );
   });
@@ -78,7 +86,15 @@ describe('getListByOrigin', () => {
       const recommendations = [recommendationModelFake()];
       expect(new RecommendationsMapper(recommendations).toPlaces()).toEqual(
         recommendations.map((recommendation) => {
-          return { ...recommendation, amountOfReviews: '' };
+          return {
+            id: recommendation.id,
+            imageUri: recommendation.imageUrl,
+            location: recommendation.location,
+            myDistanceOfLocal: recommendation.myDistanceOfLocal,
+            rating: recommendation.rating,
+            title: recommendation.title,
+            amountOfReviews: '',
+          };
         }),
       );
     });

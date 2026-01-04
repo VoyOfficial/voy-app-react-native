@@ -1,8 +1,9 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import Error, {
   ErrorContent,
 } from '../../../../src/presentation/components/error';
+import { renderWithTheme } from '../../helpers/renderWithTheme';
 
 describe('Components: Error', () => {
   test('should show error content correctly', () => {
@@ -10,7 +11,7 @@ describe('Components: Error', () => {
       message: 'any_message',
       title: 'any_title',
     };
-    const { getByText } = render(
+    const { getByText } = renderWithTheme(
       <Error content={content} tryAgain={() => {}} />,
     );
 
@@ -23,7 +24,7 @@ describe('Components: Error', () => {
       message: '',
       title: '',
     };
-    const { getByText } = render(
+    const { getByText } = renderWithTheme(
       <Error content={content} tryAgain={() => {}} />,
     );
 
@@ -36,7 +37,7 @@ describe('Components: Error', () => {
       message: '',
       title: '',
     };
-    const { getByTestId } = render(
+    const { getByTestId } = renderWithTheme(
       <Error content={content} tryAgain={() => {}} />,
     );
 
@@ -49,7 +50,7 @@ describe('Components: Error', () => {
       message: '',
       title: '',
     };
-    const { getByTestId } = render(
+    const { getByTestId } = renderWithTheme(
       <Error content={content} tryAgain={tryAgain} />,
     );
 

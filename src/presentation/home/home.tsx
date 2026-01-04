@@ -60,22 +60,26 @@ const Home = ({
               />
             </TouchableOpacity>
           </View>
-          <ListRecommendation
-            showMoreDetails={showMoreDetails}
-            recommendations={recommendations}
-            onSeeAll={onSeeAll}
-            seeAllBy={Origin.Recommendations}
-            handleSaveLocation={() => {}}
-          />
-          <CardList
-            showSeeAllButton
-            favorite={favorite}
-            placeList={placeList}
-            seeAll={onSeeAll}
-            title="Descobrir"
-            showMoreDetails={showMoreDetails}
-            seeAllBy={Origin.Places}
-          />
+          {recommendations.length > 0 && (
+            <ListRecommendation
+              showMoreDetails={showMoreDetails}
+              recommendations={recommendations}
+              onSeeAll={onSeeAll}
+              seeAllBy={Origin.Recommendations}
+              handleSaveLocation={() => {}}
+            />
+          )}
+          {placeList.length > 0 && (
+            <CardList
+              showSeeAllButton
+              favorite={favorite}
+              placeList={placeList}
+              seeAll={onSeeAll}
+              title="Descobrir"
+              showMoreDetails={showMoreDetails}
+              seeAllBy={Origin.Places}
+            />
+          )}
         </>
       )}
     </View>

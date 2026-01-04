@@ -1,11 +1,6 @@
 import React from 'react';
 import { ReactTestInstance } from 'react-test-renderer';
-import {
-  fireEvent,
-  render,
-  renderHook,
-  waitFor,
-} from '@testing-library/react-native';
+import { fireEvent, renderHook, waitFor } from '@testing-library/react-native';
 import {
   TextMatch,
   TextMatchOptions,
@@ -19,6 +14,7 @@ import filterOptionsFactory from '../helpers/filterOptionsFactory';
 import Filter, {
   getOptions,
 } from '../../../../src/presentation/search/model/Filter';
+import { renderWithTheme } from '../../helpers/renderWithTheme';
 
 describe('Search: FilterModal', () => {
   test('should show order by selected correctly', () => {
@@ -739,7 +735,7 @@ const makeSut = ({
   changeShowOfFilterList,
   changeShowOfOrderList,
 }: Props) => {
-  const sut = render(
+  const sut = renderWithTheme(
     <FilterModal
       filterOptions={filterOptions}
       selectOrder={selectOrder}

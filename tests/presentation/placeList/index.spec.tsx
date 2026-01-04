@@ -1,8 +1,9 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { getPlaceDetails } from '../components/cardList/index.spec';
 import placeListFactory from '../helpers/placeListFactory';
 import PlaceList from '../../../src/presentation/placeList';
+import { renderWithTheme } from '../helpers/renderWithTheme';
 
 describe('Presentation: PlaceList', () => {
   test('should list places correctly', () => {
@@ -21,7 +22,7 @@ describe('Presentation: PlaceList', () => {
       } = getPlaceDetails(index, getByTestId);
 
       expect(imageOfPlace).toEqual({
-        uri: place.imageUrl,
+        uri: place.imageUri,
       });
       expect(title).toEqual(place.title);
       expect(location).toEqual(place.location);
@@ -76,7 +77,7 @@ const makeSut = () => {
   const favoriteSpy = jest.fn();
 
   const list = placeListFactory(5);
-  const sut = render(
+  const sut = renderWithTheme(
     <PlaceList
       list={list}
       favorite={favoriteSpy}

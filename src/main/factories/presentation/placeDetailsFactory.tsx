@@ -31,14 +31,17 @@ const getId = (route: RouteProp<StackParams, Routes>): number => {
 };
 
 const PlaceDetailsFactory = ({ route }: Props) => {
+  const placeId = getId(route);
+
+  const getPlaceDetails = new RemoteGetPlaceDetails(
+    `http://localhost:8080/api/registration/v1/places`,
+    new AxiosAdapter(),
+    new FirebaseAnalyticsAdapter(),
+  );
+
   const viewModel = usePlaceDetails({
-    gallerySummaryImages: [],
-    id: getId(route),
-    getPlaceDetails: new RemoteGetPlaceDetails(
-      `http://localhost:3000/placeDetails/${getId(route)}`,
-      new AxiosAdapter(),
-      new FirebaseAnalyticsAdapter(),
-    ),
+    id: placeId,
+    getPlaceDetails,
   });
 
   return <PlaceDetails {...viewModel} />;

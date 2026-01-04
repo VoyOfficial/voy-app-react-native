@@ -31,6 +31,9 @@
       "~/domain/enums": [
         "src/domain/enums"
       ],
+      "~/domain/protocols": [
+        "src/domain/protocols"
+      ],
       "~/data": [
         "src/data"
       ],
@@ -43,11 +46,17 @@
       "~/data/http": [
         "src/data/http"
       ],
+      "~/data/helpers": [
+        "src/data/helpers"
+      ],
       "~/infra/http": [
         "src/infra/http"
       ],
       "~/infra/analytics": [
         "src/infra/analytics"
+      ],
+      "~/infra/location": [
+        "src/infra/location"
       ],
       "~/presentation/components": [
         "src/presentation/components"

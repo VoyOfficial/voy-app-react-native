@@ -1,10 +1,11 @@
 import React from 'react';
 import { Provider } from 'mobx-react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import Filter from '../../../src/presentation/search/model/Filter';
 import placeListFactory from '../helpers/placeListFactory';
 import { Place } from '../../../src/presentation/components/cardList';
 import { Search } from '../../../src/presentation/search';
+import { renderWithTheme } from '../helpers/renderWithTheme';
 
 describe('Presentation: Search', () => {
   test('should show input of search with success', () => {
@@ -172,7 +173,7 @@ const makeSut = (
 ) => {
   const showMoreDetailsSpy = jest.fn();
 
-  const sut = render(
+  const sut = renderWithTheme(
     <Provider {...{ filter: new Filter() }}>
       <Search
         searchValue={searchValue}

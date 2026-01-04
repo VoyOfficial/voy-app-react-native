@@ -3,32 +3,50 @@ import { NoPermissionError, UnexpectedError } from '~/data/errors';
 import { RemoteListRecommendations } from '~/data/useCases';
 import { HttpClientSpy } from '../http/httpClientSpy';
 import { makeUrl } from '../helpers/testFactories';
-import { mockRemoteListPlace } from '../mocks/mockRemotePlaces';
+import { mockApiListRecommendations } from '../mocks/mockApiRecommendations';
 import AnalyticsTrackerSpy from '../analytics/analyticsTrackerSpy';
+
+const location = { long: '-50.877608', lat: '-29.385436' };
 
 describe('Data: ListRecommendations', () => {
   test('should list with httpGetClient calling correct url', () => {
     const url = makeUrl();
     const { sut, httpClient } = makeSut(url);
-    sut.list();
-    expect(httpClient.url).toEqual(url);
+    sut.list(location);
+    expect(httpClient.url).toEqual(
+      url + '?latitude=' + location.lat + '&longitude=' + location.long,
+    );
   });
 
   test('should return a list of recommendations if HttpGetClient returns ok', async () => {
-    const httpResult = mockRemoteListPlace();
+    const apiRecommendations = mockApiListRecommendations(3);
     const { sut, httpClient } = makeSut();
-    httpClient.completeWithSuccess(HttpStatusCode.ok, httpResult);
-    const listRecommendations = await sut.list();
+    httpClient.completeWithSuccess(HttpStatusCode.ok, {
+      data: apiRecommendations,
+    });
+    const listRecommendations = await sut.list(location);
 
+    expect(listRecommendations.length).toBe(apiRecommendations.length);
     for (let index = 0; index < listRecommendations.length; index++) {
-      expect(listRecommendations[index]).toEqual(httpResult[index]);
+      expect(listRecommendations[index].id).toEqual(
+        apiRecommendations[index].id,
+      );
+      expect(listRecommendations[index].title).toEqual(
+        apiRecommendations[index].name,
+      );
+      expect(listRecommendations[index].location).toEqual(
+        apiRecommendations[index].address,
+      );
+      expect(listRecommendations[index].myDistanceOfLocal).toEqual(
+        apiRecommendations[index].distanceFromUserLocation,
+      );
     }
   });
 
   test('should throw UnexpectedError if HttpGetClient returns 500', async () => {
     const { sut, httpClient } = makeSut();
     httpClient.completeWithUnexpectedError();
-    const promise = sut.list();
+    const promise = sut.list(location);
 
     await expect(promise).rejects.toThrow(new UnexpectedError());
   });
@@ -36,7 +54,7 @@ describe('Data: ListRecommendations', () => {
   test('should throw UnexpectedError if HttpGetClient returns 500', async () => {
     const { sut, httpClient } = makeSut();
     httpClient.completeWithUnexpectedError();
-    const promise = sut.list();
+    const promise = sut.list(location);
 
     await expect(promise).rejects.toThrow(new UnexpectedError());
   });
@@ -44,7 +62,7 @@ describe('Data: ListRecommendations', () => {
   test('should return an empty list if HttpGetClient returns no content', async () => {
     const { sut, httpClient } = makeSut();
     httpClient.completeWithNoContentError();
-    const httpResult = await sut.list();
+    const httpResult = await sut.list(location);
 
     expect(httpResult).toEqual([]);
   });
@@ -55,25 +73,25 @@ describe('Data: ListRecommendations', () => {
       statusCode: HttpStatusCode.forbidden,
     };
 
-    const promise = sut.list();
+    const promise = sut.list(location);
 
     await expect(promise).rejects.toThrow(new NoPermissionError());
   });
 
   describe('Analytics', () => {
     test('should track the list recommendations event with correct parameters', async () => {
-      const httpResult = mockRemoteListPlace();
+      const apiRecommendations = mockApiListRecommendations(2);
       const { sut, httpClient, analytics } = makeSut();
-      httpClient.completeWithSuccess(HttpStatusCode.ok, httpResult);
+      httpClient.completeWithSuccess(HttpStatusCode.ok, {
+        data: apiRecommendations,
+      });
 
-      await sut.list();
+      await sut.list(location);
 
       expect(analytics.event).toBe('list_recommendations');
       expect(analytics.params).toEqual({
-        recommendations_title: httpResult.map(
-          (recommendation) => recommendation.title,
-        ),
-        recommendation_count: httpResult.length,
+        recommendations_title: apiRecommendations.map((rec) => rec.name),
+        recommendation_count: apiRecommendations.length,
       });
     });
   });
@@ -85,13 +103,10 @@ describe('Data: ListRecommendations', () => {
       body: null,
     };
 
-    await sut.list();
+    await sut.list(location);
 
-    expect(analytics.event).toBe('list_recommendations');
-    expect(analytics.params).toEqual({
-      recommendations_title: [],
-      recommendation_count: 0,
-    });
+    expect(analytics.event).toBe('');
+    expect(analytics.params).toEqual({});
   });
 
   test.each([HttpStatusCode.noContent, HttpStatusCode.forbidden])(
@@ -104,7 +119,7 @@ describe('Data: ListRecommendations', () => {
       };
 
       if (statusCode === HttpStatusCode.forbidden)
-        await expect(sut.list()).rejects.toThrow();
+        await expect(sut.list(location)).rejects.toThrow();
 
       expect(analytics.event).toBe('');
       expect(analytics.params).toEqual({});

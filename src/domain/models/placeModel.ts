@@ -1,6 +1,6 @@
 type PlaceModel = {
   id: number;
-  imageUrl: string;
+  imageUri: string;
   title: string;
   location: string;
   myDistanceOfLocal: string;

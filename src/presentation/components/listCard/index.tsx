@@ -20,7 +20,7 @@ import {
 type Props = {
   id: number;
   index: number;
-  imageUrl: string;
+  imageUri: string;
   title: string;
   location: string;
   myDistanceOfLocal: string;
@@ -33,7 +33,7 @@ type Props = {
 const ListCard = ({
   id,
   index,
-  imageUrl,
+  imageUri,
   title,
   location,
   myDistanceOfLocal,
@@ -51,7 +51,7 @@ const ListCard = ({
             id,
             title,
             amountOfReviews,
-            imageUrl,
+            imageUri,
             location,
             myDistanceOfLocal,
             rating,
@@ -60,7 +60,7 @@ const ListCard = ({
       >
         <ImagePlace
           testID={`image_of_place_${index}_id`}
-          source={{ uri: imageUrl }}
+          source={{ uri: imageUri }}
         />
         <ContentWrapper>
           <Title testID={`title_${index}_id`}>{title}</Title>

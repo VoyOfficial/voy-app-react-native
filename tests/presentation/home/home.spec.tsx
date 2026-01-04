@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react-native';
+import { fireEvent } from '@testing-library/react-native';
 import { faker } from '@faker-js/faker';
 import { RecommendationModel } from '~/domain/models';
 import { Origin } from '../../../src/presentation/placeList/usePlaceList';
@@ -7,6 +7,7 @@ import CardList from '../../../src/presentation/components/cardList';
 import { Home } from '../../../src/presentation/home';
 import { ListRecommendation } from '../../../src/presentation/recommendation/components';
 import placeListFactory from '../helpers/placeListFactory';
+import { renderWithTheme } from '../helpers/renderWithTheme';
 
 describe('Presentation: Home', () => {
   test('should show ListRecommendation component with correct props', () => {
@@ -160,7 +161,7 @@ const makeSut = ({
   const showMoreDetails = () => {};
   const placeList = placeListFactory(5);
   const recommendations = [recommendationModelFake()];
-  const sut = render(
+  const sut = renderWithTheme(
     <Home
       recommendations={recommendations}
       onSeeAll={onSeeAll}

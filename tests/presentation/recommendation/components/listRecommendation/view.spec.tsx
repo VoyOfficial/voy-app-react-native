@@ -1,7 +1,8 @@
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { fireEvent, waitFor } from '@testing-library/react-native';
 import placeListFactory from '../../../helpers/placeListFactory';
 import { ListRecommendation } from '../../../../../src/presentation/recommendation/components';
+import { renderWithTheme } from '../../../helpers/renderWithTheme';
 
 describe('Components: ListRecommendation', () => {
   test('should render list of recommendations', () => {
@@ -66,7 +67,7 @@ describe('Components: ListRecommendation', () => {
     const showMoreDetails = jest.fn();
     const handleSaveLocation = jest.fn();
 
-    const sut = render(
+    const sut = renderWithTheme(
       <ListRecommendation
         onSeeAll={onSeeAll}
         recommendations={recommendations}
