@@ -1,0 +1,391 @@
+---
+alwaysApply: true
+---
+
+# PRINCÍPIOS SOLID E BOAS PRÁTICAS DE DESENVOLVIMENTO
+
+> **Versão**: 1.0.0
+> **Status**: Ativo
+
+Este documento descreve os princípios SOLID e boas práticas de desenvolvimento de software aplicados ao projeto voy-app-react-native.
+
+## 📚 Índice
+
+1. [Princípios SOLID](#princípios-solid)
+2. [SOLID e Clean Architecture](#solid-e-clean-architecture)
+3. [Padrões de Refatoração](#padrões-de-refatoração)
+4. [Checklist de Qualidade](#checklist-de-qualidade)
+
+---
+
+## 🎯 Princípios SOLID
+
+### S - Single Responsibility Principle (Princípio da Responsabilidade Única)
+
+**Definição**: Uma classe/função deve ter apenas uma razão para mudar. Cada módulo deve ter responsabilidade sobre uma única parte da funcionalidade.
+
+#### ✅ Aplicação Correta
+
+```typescript
+// ✅ BOM: Cada função tem uma única responsabilidade
+
+const fetchUser = async (userId: string): Promise<User> => {
+  const response = await api.get(`/users/${userId}`)
+  return response.data
+}
+
+const validateUser = (user: User): boolean => {
+  return !!(user.email && user.name)
+}
+
+const formatUser = (user: User): FormattedUser => {
+  return {
+    ...user,
+    fullName: `${user.firstName} ${user.lastName}`,
+    age: calculateAge(user.birthDate)
+  }
+}
+
+const saveUser = async (user: FormattedUser): Promise<void> => {
+  await database.save('users', user)
+}
+
+const processUserData = async (userId: string): Promise<FormattedUser> => {
+  const user = await fetchUser(userId)
+
+  if (!validateUser(user)) {
+    throw new Error('Invalid user')
+  }
+
+  const formattedUser = formatUser(user)
+  await saveUser(formattedUser)
+
+  return formattedUser
+}
+```
+
+Na Clean Architecture, este princípio se traduz diretamente em **um UseCase por ação de negócio** (ver `.cursor/rules/architecture.mdc`).
+
+### O - Open/Closed Principle (Princípio Aberto/Fechado)
+
+**Definição**: Entidades de software devem estar abertas para extensão, mas fechadas para modificação.
+
+#### ✅ Aplicação Correta
+
+```typescript
+// ✅ BOM: Usa Strategy Pattern para extensibilidade
+
+interface PaymentStrategy {
+  process(amount: number): Promise<PaymentResult>
+  validate(data: any): boolean
+}
+
+class CreditCardPayment implements PaymentStrategy {
+  async process(amount: number): Promise<PaymentResult> {
+    return { success: true, transactionId: '123' }
+  }
+
+  validate(data: any): boolean {
+    return !!(data.cardNumber && data.cvv)
+  }
+}
+
+class PixPayment implements PaymentStrategy {
+  async process(amount: number): Promise<PaymentResult> {
+    return { success: true, qrCode: 'xxx' }
+  }
+
+  validate(data: any): boolean {
+    return !!data.pixKey
+  }
+}
+
+class PaymentProcessor {
+  private strategies: Map<string, PaymentStrategy> = new Map()
+
+  registerStrategy(type: string, strategy: PaymentStrategy) {
+    this.strategies.set(type, strategy)
+  }
+
+  async process(type: string, amount: number): Promise<PaymentResult> {
+    const strategy = this.strategies.get(type)
+
+    if (!strategy) {
+      throw new Error(`Payment method ${type} not supported`)
+    }
+
+    return strategy.process(amount)
+  }
+}
+
+// Uso: Adicionar novo método sem modificar código existente
+const processor = new PaymentProcessor()
+processor.registerStrategy('creditCard', new CreditCardPayment())
+processor.registerStrategy('pix', new PixPayment())
+```
+
+### L - Liskov Substitution Principle (Princípio da Substituição de Liskov)
+
+**Definição**: Objetos de uma superclasse devem poder ser substituídos por objetos de suas subclasses sem quebrar a aplicação.
+
+#### ✅ Aplicação Correta
+
+```typescript
+// ✅ BOM: Usar composição ao invés de herança
+
+interface Shape {
+  getArea(): number
+}
+
+class Rectangle implements Shape {
+  constructor(private width: number, private height: number) {}
+
+  getArea(): number {
+    return this.width * this.height
+  }
+}
+
+class Square implements Shape {
+  constructor(private side: number) {}
+
+  getArea(): number {
+    return this.side * this.side
+  }
+}
+
+const calculateTotalArea = (shapes: Shape[]): number => {
+  return shapes.reduce((total, shape) => total + shape.getArea(), 0)
+}
+```
+
+### I - Interface Segregation Principle (Princípio da Segregação de Interface)
+
+**Definição**: Clientes não devem ser forçados a depender de interfaces que não utilizam.
+
+#### ✅ Aplicação Correta
+
+```typescript
+// ✅ BOM: Interfaces pequenas e específicas
+
+interface PlaceReader {
+  fetchPlace(id: string): Promise<Place>
+}
+
+interface PlaceWriter {
+  savePlace(place: Place): Promise<void>
+  deletePlace(id: string): Promise<void>
+}
+
+interface PlaceExporter {
+  exportToCSV(): Promise<string>
+}
+
+class PlaceViewer implements PlaceReader {
+  async fetchPlace(id: string): Promise<Place> {
+    return await api.get(`/places/${id}`)
+  }
+}
+
+class PlaceEditor implements PlaceReader, PlaceWriter {
+  async fetchPlace(id: string): Promise<Place> {
+    return await api.get(`/places/${id}`)
+  }
+
+  async savePlace(place: Place): Promise<void> {
+    await api.post('/places', place)
+  }
+
+  async deletePlace(id: string): Promise<void> {
+    await api.delete(`/places/${id}`)
+  }
+}
+```
+
+### D - Dependency Inversion Principle (Princípio da Inversão de Dependência)
+
+**Definição**: Módulos de alto nível não devem depender de módulos de baixo nível. Ambos devem depender de abstrações.
+
+#### ✅ Aplicação Correta
+
+```typescript
+// ✅ BOM: Depende de abstração, não de implementação concreta
+
+interface NotificationService {
+  send(to: string, message: string): Promise<void>
+}
+
+class EmailNotificationService implements NotificationService {
+  async send(to: string, message: string): Promise<void> {
+    console.log(`Email sent to ${to}: ${message}`)
+  }
+}
+
+class SMSNotificationService implements NotificationService {
+  async send(to: string, message: string): Promise<void> {
+    console.log(`SMS sent to ${to}: ${message}`)
+  }
+}
+
+class UserRegistration {
+  constructor(private notificationService: NotificationService) {}
+
+  async register(user: User) {
+    await saveUser(user)
+    await this.notificationService.send(user.email, 'Welcome!')
+  }
+}
+
+// Uso: Injetar a dependência
+const emailService = new EmailNotificationService()
+const registration = new UserRegistration(emailService)
+```
+
+---
+
+## 🏗️ SOLID e Clean Architecture
+
+O DIP (Dependency Inversion) é o princípio que sustenta a Clean Architecture usada neste projeto (ver `.cursor/rules/architecture.mdc`):
+
+- O contrato (`Repository` **interface**) vive em `domain/repositories/` — módulo de alto nível.
+- A implementação concreta (`RepositoryImpl`) vive em `data/repositories/` — módulo de baixo nível, que depende da abstração do `domain`, nunca o contrário.
+- UseCases (domain) recebem o `Repository` (interface) via construtor/factory — nunca instanciam a implementação diretamente.
+
+```typescript
+// domain/repositories/PlaceRepository.ts (abstração - alto nível)
+export interface PlaceRepository {
+  getList(): Promise<PlaceEntity[]>
+}
+
+// data/repositories/PlaceRepositoryImpl.ts (implementação - baixo nível)
+export class PlaceRepositoryImpl implements PlaceRepository { /* ... */ }
+
+// domain/usecases/GetPlaceListUseCase.ts (depende da abstração)
+export class GetPlaceListUseCase {
+  constructor(private readonly repository: PlaceRepository) {}
+}
+```
+
+---
+
+## 🔄 Padrões de Refatoração
+
+### 1. Refatoração Guiada por Testes (TDD)
+
+**Processo recomendado:**
+
+1. **Escrever testes abrangentes** para comportamento atual
+2. **Executar testes** para garantir que passam
+3. **Refatorar código** aplicando princípios SOLID
+4. **Executar testes novamente** para garantir que comportamento não mudou
+5. **Adicionar novos testes** para novos casos de uso
+
+### 2. Extract Function (Extrair Função)
+
+```typescript
+// ❌ Antes: Função longa com múltiplas responsabilidades
+const processBooking = (booking: Booking) => {
+  if (!booking.items || booking.items.length === 0) {
+    throw new Error('Booking must have items')
+  }
+
+  let total = 0
+  for (const item of booking.items) {
+    total += item.price * item.quantity
+  }
+
+  if (booking.coupon) {
+    const discount = total * (booking.coupon.percentage / 100)
+    total -= discount
+  }
+
+  database.save(booking)
+  notificationService.send(booking.customer.email, 'Booking confirmed')
+}
+
+// ✅ Depois: Funções extraídas com responsabilidades únicas
+const validateBooking = (booking: Booking): void => {
+  if (!booking.items || booking.items.length === 0) {
+    throw new Error('Booking must have items')
+  }
+}
+
+const calculateTotal = (items: BookingItem[]): number => {
+  return items.reduce((total, item) => {
+    return total + (item.price * item.quantity)
+  }, 0)
+}
+
+const applyDiscount = (total: number, coupon?: Coupon): number => {
+  if (!coupon) return total
+
+  const discount = total * (coupon.percentage / 100)
+  return total - discount
+}
+
+const processBooking = (booking: Booking): void => {
+  validateBooking(booking)
+
+  const subtotal = calculateTotal(booking.items)
+  const total = applyDiscount(subtotal, booking.coupon)
+
+  database.save({ ...booking, total })
+  notificationService.send(booking.customer.email, 'Booking confirmed')
+}
+```
+
+---
+
+## ✅ Checklist de Qualidade
+
+### Antes de Submeter Código
+
+Use este checklist para garantir qualidade:
+
+#### Single Responsibility
+- [ ] Cada função/classe/UseCase tem apenas uma razão para mudar?
+- [ ] O nome descreve claramente sua única responsabilidade?
+- [ ] A função tem menos de 20 linhas?
+- [ ] Não há comentários explicando "seções" da função?
+
+#### Open/Closed
+- [ ] Posso adicionar novo comportamento sem modificar código existente?
+- [ ] Usei interfaces/abstrações para permitir extensão?
+- [ ] Evitei switches/ifs baseados em tipo?
+
+#### Liskov Substitution
+- [ ] Subclasses podem substituir classes base sem quebrar funcionalidade?
+- [ ] Não modifiquei comportamento esperado em subclasses?
+- [ ] Considerei composição ao invés de herança?
+
+#### Interface Segregation
+- [ ] Minhas interfaces são pequenas e focadas?
+- [ ] Clientes não são forçados a implementar métodos que não usam?
+- [ ] Dividi interfaces grandes em menores e específicas?
+
+#### Dependency Inversion
+- [ ] Módulos de alto nível (domain) dependem apenas de abstrações?
+- [ ] Repository interface está em `domain`, implementação em `data`?
+- [ ] Evitei instanciar dependências concretas diretamente dentro de UseCases (`new`)?
+
+#### Testes
+- [ ] Escrevi testes antes da refatoração?
+- [ ] Todos os testes passam após refatoração?
+- [ ] Cobertura de testes está acima de 80%?
+- [ ] Testei casos extremos e erros?
+
+---
+
+## 🎓 Conclusão
+
+Aplicar os princípios SOLID não é sobre seguir regras rigidamente, mas sobre escrever código que seja:
+
+- **Fácil de entender** - Responsabilidades claras
+- **Fácil de manter** - Mudanças isoladas
+- **Fácil de testar** - Dependências controláveis
+- **Fácil de estender** - Sem modificar código existente
+
+Lembre-se: **Refatore incrementalmente**. Não tente aplicar todos os princípios de uma vez. Comece pequeno, escreva testes, e melhore continuamente.
+
+---
+
+> Esta documentação deve ser atualizada conforme o time adquire mais experiência e identifica novos padrões no projeto.

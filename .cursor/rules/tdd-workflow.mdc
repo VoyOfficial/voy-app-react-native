@@ -1,0 +1,110 @@
+---
+alwaysApply: false
+description: Mandatory TDD Red-Green-Refactor workflow to follow when implementing features, fixing bugs, or refactoring.
+---
+
+# TDD Workflow
+
+> Load this when implementing features, fixing bugs, or refactoring.
+> These rules are MANDATORY for this user.
+
+---
+
+## 🔴 TDD: RED → GREEN → REFACTOR
+
+**Always write the test first. Always.**
+
+```
+🔴 RED    → Write failing test
+🟢 GREEN  → Minimal code to pass
+🔵 REFACTOR → Improve while staying green
+```
+
+### Applies to EVERYTHING
+
+- New features
+- Bug fixes
+- Refactoring
+- Entities, UseCases, Repositories, DataSources, ViewModels, Views
+
+### Workflow
+
+**RED — Write test first:**
+
+```typescript
+// usePlaceDetail.test.ts
+test('should return formatted distance from current location', () => {
+	const place = { latitude: -22.9, longitude: -43.2 }
+	const result = formatDistance(place, userLocation)
+	expect(result).toBe('2.3 km')
+})
+// Run: yarn test → MUST FAIL
+```
+
+**GREEN — Minimal implementation:**
+
+```typescript
+// formatDistance.ts
+function formatDistance(place: Coordinates, from: Coordinates): string {
+	const distanceKm = calculateDistanceKm(place, from)
+	return `${distanceKm.toFixed(1)} km`
+}
+// Run: yarn test → MUST PASS
+```
+
+**REFACTOR — Improve with confidence:**
+
+```typescript
+const DECIMAL_PLACES = 1
+const DISTANCE_UNIT = 'km'
+
+const formatDistance = (place: Coordinates, from: Coordinates): string =>
+	`${calculateDistanceKm(place, from).toFixed(DECIMAL_PLACES)} ${DISTANCE_UNIT}`
+// Run: yarn test → STILL PASSES
+```
+
+### Bug Fix Pattern
+
+```typescript
+// 1. Write test that reproduces the bug (RED)
+test('should format zero distance correctly', () => {
+	expect(formatDistance(sameLocation, sameLocation)).toBe('0.0 km')
+})
+// Run → FAIL (confirms bug exists)
+
+// 2. Fix the code (GREEN)
+// 3. Run test → PASS (confirms fix)
+// 4. Refactor if needed
+```
+
+### Anti-patterns
+
+```typescript
+// ❌ Code before test
+// ❌ Skip RED (if test passes immediately, you're not testing the right thing)
+// ❌ Refactor without green tests
+// ❌ Fix bug without a reproducing test
+```
+
+---
+
+## 🎯 Feature is DONE When
+
+```
+Unit tests (domain) ✅ + Integration tests (data/presentation) ✅ = DONE
+```
+
+E2E is not a gate today (no E2E framework configured yet — see `.cursor/rules/validation-pyramid.mdc`). When E2E is introduced, it becomes the final gate again.
+
+## 🧱 TDD por Camada (Clean Architecture)
+
+- **domain** (Entities/UseCases): teste puro, sem mock de React/RN — mock apenas o `Repository` (interface).
+- **data** (Repository/DataSource): teste com `DataSource` mockado, validando o mapeamento DTO → Entity.
+- **presentation** (ViewModel/View): teste com o UseCase (ou a factory de `di/`) mockado.
+
+## 🔗 Related Commit Policy
+
+Commit strategy, naming rules, and examples are centralized in:
+
+- `AGENTS.md` (section "Commits")
+- `.cursor/rules/harness-engineering.mdc` (workflow reference)

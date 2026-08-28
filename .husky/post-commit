@@ -1,0 +1,47 @@
+#!/bin/sh
+# graphify-hook-start
+# Marks graph state stale and rebuilds code-only graph after each commit.
+# Installed by: graphify hook install
+
+CHANGED=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || git diff --name-only HEAD 2>/dev/null || true)
+if [ -z "$CHANGED" ]; then
+    exit 0
+fi
+
+
+# Shared graphify hook helpers. Hooks are advisory and must not block git.
+graphify_has_state() {
+    [ -f ".graphify/graph.json" ] || [ -f "graphify-out/graph.json" ] || [ -d ".graphify" ] || [ -d "graphify-out" ]
+}
+
+graphify_mark_stale() {
+    GRAPHIFY_STALE_REASON=${1:-hook}
+    mkdir -p ".graphify"
+    printf "1\n" > ".graphify/needs_update"
+    if graphify_detect_cmd; then
+        $GRAPHIFY_CMD hook-mark-stale "$GRAPHIFY_STALE_REASON" >/dev/null 2>&1 || true
+    fi
+}
+
+graphify_detect_cmd() {
+    if command -v graphify >/dev/null 2>&1; then
+        GRAPHIFY_CMD="graphify"
+        return 0
+    fi
+    if command -v npx >/dev/null 2>&1; then
+        GRAPHIFY_CMD="npx graphify"
+        return 0
+    fi
+    echo "[graphify hook] graphify not found. Install with: npm install -g graphifyy"
+    return 1
+}
+
+graphify_rebuild_code() {
+    graphify_detect_cmd || return 0
+    $GRAPHIFY_CMD hook-rebuild >/dev/null 2>&1 || true
+}
+
+graphify_mark_stale "post-commit"
+export GRAPHIFY_CHANGED="$CHANGED"
+graphify_rebuild_code
+# graphify-hook-end

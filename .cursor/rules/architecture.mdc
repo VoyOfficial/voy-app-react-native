@@ -1,0 +1,359 @@
+---
+alwaysApply: true
+---
+
+# ARCHITECTURE - Clean Architecture + MVVM + DDD (voy-app-react-native)
+
+> **Versão**: 1.0.0
+> **Status**: Ativo
+
+Este documento contém a estrutura de pastas e os templates para implementar novas features seguindo **Clean Architecture**, com **MVVM** na camada de apresentação e princípios de **DDD** no domínio.
+
+## 📐 Princípio Central: Regra de Dependência
+
+```
+presentation ──┐
+               ├──> domain (nao depende de nada)
+data ──────────┘
+```
+
+- `domain` é puro TypeScript: **nunca** importa React, React Native, axios/fetch, AsyncStorage, ou qualquer coisa de `data`/`presentation`.
+- `data` implementa os contratos (interfaces) definidos em `domain`.
+- `presentation` consome `domain` (via UseCases) e nunca acessa `data` diretamente.
+- Cada feature é um **bounded context (DDD)**: pode ter suas próprias entidades mesmo que outra feature tenha um conceito parecido — não force compartilhamento prematuro.
+
+## 📁 Folder Structure Template
+
+Para qualquer nova feature, use esta estrutura:
+
+```
+src/features/[featureName]/
+├── domain/
+│   ├── entities/
+│   │   └── [Nome]Entity.ts
+│   ├── repositories/
+│   │   └── [Nome]Repository.ts        # interface (contrato)
+│   └── usecases/
+│       ├── Get[Nome]UseCase.ts
+│       └── [Verbo][Nome]UseCase.ts     # um arquivo por acao de negocio
+├── data/
+│   ├── datasources/
+│   │   └── [Nome]RemoteDataSource.ts
+│   ├── models/
+│   │   └── [Nome]Dto.ts                # DTO + mapper para/da Entity
+│   └── repositories/
+│       └── [Nome]RepositoryImpl.ts     # implementa a interface do domain
+├── presentation/
+│   ├── screens/
+│   │   └── [FeatureName]Screen.tsx     # View: fábrica + render puro
+│   ├── components/
+│   │   └── [ComponentName]/
+│   └── viewmodels/
+│       └── use[FeatureName].ts         # ViewModel: hook que chama UseCases
+└── __tests__/
+    ├── domain/
+    ├── data/
+    └── presentation/
+```
+
+Código usado por 2+ features vai para `src/shared/` com as mesmas subpastas (`domain/`, `data/`, `presentation/`, mais `utils/`). Composição/DI e configuração técnica global ficam em `src/core/`.
+
+## 🛠️ File Templates
+
+### 1. Entity (domain/entities)
+
+```typescript
+// domain/entities/PlaceEntity.ts
+export interface PlaceEntity {
+  id: string
+  name: string
+  description: string
+  coordinates: Coordinates
+}
+
+export interface Coordinates {
+  latitude: number
+  longitude: number
+}
+```
+
+### 2. Repository - Interface (domain/repositories)
+
+```typescript
+// domain/repositories/PlaceRepository.ts
+import { PlaceEntity } from '../entities/PlaceEntity'
+
+export interface PlaceRepository {
+  getList(): Promise<PlaceEntity[]>
+  getById(id: string): Promise<PlaceEntity | null>
+}
+```
+
+### 3. UseCase (domain/usecases)
+
+```typescript
+// domain/usecases/GetPlaceListUseCase.ts
+import { PlaceEntity } from '../entities/PlaceEntity'
+import { PlaceRepository } from '../repositories/PlaceRepository'
+
+export class GetPlaceListUseCase {
+  constructor(private readonly placeRepository: PlaceRepository) {}
+
+  async execute(): Promise<PlaceEntity[]> {
+    return this.placeRepository.getList()
+  }
+}
+```
+
+**Regra:** um UseCase resolve uma única ação de negócio. Se precisar de "e" na descrição (ex.: "busca lugares e atualiza favoritos"), provavelmente são dois UseCases.
+
+### 4. DataSource (data/datasources)
+
+```typescript
+// data/datasources/PlaceRemoteDataSource.ts
+import { PlaceDto } from '../models/PlaceDto'
+import { httpClient } from '@core/http/httpClient'
+
+export class PlaceRemoteDataSource {
+  async fetchList(): Promise<PlaceDto[]> {
+    const response = await httpClient.get<PlaceDto[]>('/places')
+    return response.data
+  }
+}
+```
+
+### 5. Model/DTO + Mapper (data/models)
+
+```typescript
+// data/models/PlaceDto.ts
+import { PlaceEntity } from '../../domain/entities/PlaceEntity'
+
+export interface PlaceDto {
+  id: string
+  name: string
+  description: string
+  lat: number
+  lng: number
+}
+
+export const toPlaceEntity = (dto: PlaceDto): PlaceEntity => ({
+  id: dto.id,
+  name: dto.name,
+  description: dto.description,
+  coordinates: { latitude: dto.lat, longitude: dto.lng }
+})
+```
+
+### 6. Repository - Implementação (data/repositories)
+
+```typescript
+// data/repositories/PlaceRepositoryImpl.ts
+import { PlaceEntity } from '../../domain/entities/PlaceEntity'
+import { PlaceRepository } from '../../domain/repositories/PlaceRepository'
+import { PlaceRemoteDataSource } from '../datasources/PlaceRemoteDataSource'
+import { toPlaceEntity } from '../models/PlaceDto'
+
+export class PlaceRepositoryImpl implements PlaceRepository {
+  constructor(private readonly remoteDataSource: PlaceRemoteDataSource) {}
+
+  async getList(): Promise<PlaceEntity[]> {
+    const dtos = await this.remoteDataSource.fetchList()
+    return dtos.map(toPlaceEntity)
+  }
+
+  async getById(id: string): Promise<PlaceEntity | null> {
+    const list = await this.getList()
+    return list.find((place) => place.id === id) ?? null
+  }
+}
+```
+
+### 7. Composição / DI simples (core/di)
+
+Sem lib pesada de DI (YAGNI). Uma factory function por feature basta:
+
+```typescript
+// features/place/di/placeContainer.ts
+import { PlaceRemoteDataSource } from '../data/datasources/PlaceRemoteDataSource'
+import { PlaceRepositoryImpl } from '../data/repositories/PlaceRepositoryImpl'
+import { GetPlaceListUseCase } from '../domain/usecases/GetPlaceListUseCase'
+
+export const makeGetPlaceListUseCase = () => {
+  const dataSource = new PlaceRemoteDataSource()
+  const repository = new PlaceRepositoryImpl(dataSource)
+  return new GetPlaceListUseCase(repository)
+}
+```
+
+### 8. ViewModel Hook (presentation/viewmodels)
+
+```typescript
+// presentation/viewmodels/usePlaceList.ts
+import { useCallback, useEffect, useState } from 'react'
+import { PlaceEntity } from '../../domain/entities/PlaceEntity'
+import { makeGetPlaceListUseCase } from '../../di/placeContainer'
+
+interface UsePlaceListResult {
+  places: PlaceEntity[]
+  isLoading: boolean
+  error: string | null
+  refetch: () => Promise<void>
+}
+
+const usePlaceList = (): UsePlaceListResult => {
+  const [places, setPlaces] = useState<PlaceEntity[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const fetchPlaces = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      const useCase = makeGetPlaceListUseCase()
+      const result = await useCase.execute()
+      setPlaces(result)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchPlaces()
+  }, [fetchPlaces])
+
+  return { places, isLoading, error, refetch: fetchPlaces }
+}
+
+export default usePlaceList
+```
+
+**Nota:** o ViewModel nunca instancia `DataSource`/`RepositoryImpl` diretamente — sempre via factory (`di/`) ou UseCase já pronto, para manter a View/ViewModel isolados de detalhes de `data`.
+
+### 9. View/Screen (presentation/screens)
+
+```typescript
+// presentation/screens/PlaceListScreen.tsx
+import React from 'react'
+import { FlatList, Text, View } from 'react-native'
+import usePlaceList from '../viewmodels/usePlaceList'
+import { styles } from './styles'
+
+const PlaceListScreen = () => {
+  const { places, isLoading, error } = usePlaceList()
+
+  if (error) {
+    return <Text style={styles.error}>{error}</Text>
+  }
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={places}
+        keyExtractor={(place) => place.id}
+        refreshing={isLoading}
+        renderItem={({ item }) => <Text>{item.name}</Text>}
+      />
+    </View>
+  )
+}
+
+export default PlaceListScreen
+```
+
+### 10. Templates de Teste por Camada
+
+**Domain (isolado, sem mocks de RN):**
+
+```typescript
+// __tests__/domain/GetPlaceListUseCase.test.ts
+import { GetPlaceListUseCase } from '../../domain/usecases/GetPlaceListUseCase'
+import { PlaceRepository } from '../../domain/repositories/PlaceRepository'
+
+const mockRepository: jest.Mocked<PlaceRepository> = {
+  getList: jest.fn(),
+  getById: jest.fn()
+}
+
+test('should return places from repository', async () => {
+  mockRepository.getList.mockResolvedValue([{ id: '1', name: 'Rio', description: '', coordinates: { latitude: 0, longitude: 0 } }])
+
+  const useCase = new GetPlaceListUseCase(mockRepository)
+  const result = await useCase.execute()
+
+  expect(result).toHaveLength(1)
+})
+```
+
+**Data (mockando o datasource):**
+
+```typescript
+// __tests__/data/PlaceRepositoryImpl.test.ts
+import { PlaceRepositoryImpl } from '../../data/repositories/PlaceRepositoryImpl'
+import { PlaceRemoteDataSource } from '../../data/datasources/PlaceRemoteDataSource'
+
+jest.mock('../../data/datasources/PlaceRemoteDataSource')
+
+test('should map dto list to entity list', async () => {
+  const dataSource = new PlaceRemoteDataSource() as jest.Mocked<PlaceRemoteDataSource>
+  dataSource.fetchList.mockResolvedValue([{ id: '1', name: 'Rio', description: '', lat: 0, lng: 0 }])
+
+  const repository = new PlaceRepositoryImpl(dataSource)
+  const result = await repository.getList()
+
+  expect(result[0].coordinates).toEqual({ latitude: 0, longitude: 0 })
+})
+```
+
+**Presentation (mockando o UseCase/container):**
+
+```typescript
+// __tests__/presentation/usePlaceList.test.ts
+import { renderHook, waitFor } from '@testing-library/react-native'
+import usePlaceList from '../../presentation/viewmodels/usePlaceList'
+import * as container from '../../di/placeContainer'
+
+test('should load places on mount', async () => {
+  jest.spyOn(container, 'makeGetPlaceListUseCase').mockReturnValue({
+    execute: jest.fn().mockResolvedValue([])
+  } as any)
+
+  const { result } = renderHook(() => usePlaceList())
+
+  await waitFor(() => expect(result.current.isLoading).toBe(false))
+})
+```
+
+## 📋 Implementation Checklist
+
+Ao implementar uma nova feature:
+
+- [ ] Criar estrutura de pastas `domain/`, `data/`, `presentation/`
+- [ ] Definir Entities em `domain/entities/`
+- [ ] Definir Repository (interface) em `domain/repositories/`
+- [ ] Implementar UseCases em `domain/usecases/` (um por ação)
+- [ ] Implementar DataSource(s) em `data/datasources/`
+- [ ] Implementar Repository (implementação) em `data/repositories/`
+- [ ] Criar factory/composição em `di/` (ou `core/di/` se compartilhado)
+- [ ] Implementar ViewModel (`use[FeatureName].ts`) em `presentation/viewmodels/`
+- [ ] Implementar Screen/View em `presentation/screens/`
+- [ ] Escrever testes por camada (domain isolado, data com datasource mockado, presentation com usecase mockado)
+
+## 🚫 Anti-patterns
+
+- ❌ `domain` importando de `data`, `presentation`, React ou React Native
+- ❌ View/Screen chamando `Repository`/`DataSource` diretamente (deve passar pelo ViewModel → UseCase)
+- ❌ UseCase com mais de uma responsabilidade de negócio
+- ❌ Lógica de mapeamento DTO→Entity espalhada fora de `data/models`
+- ❌ Repository interface e implementação no mesmo arquivo/camada
+- ❌ Usar `React.FC`
+- ❌ Definir props de View fora de `types.ts`/inline no próprio arquivo do componente sem necessidade
+
+## 📝 Naming Conventions
+
+Ver `.cursor/rules/code-conventions.mdc` seção 1.4 para nomenclatura completa de Entity/UseCase/Repository/DataSource/ViewModel.
+
+---
+
+> Use estes templates como ponto de partida. Adapte aos requisitos específicos da feature mantendo a regra de dependência.
