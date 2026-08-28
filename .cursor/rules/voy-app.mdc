@@ -1,0 +1,170 @@
+---
+alwaysApply: true
+---
+
+# ORIENTATIONS - voy-app-react-native
+
+This file is the implementation playbook for this repository.
+
+Use it to validate whether a change follows project standards in three moments:
+1. Before implementing
+2. During implementation
+3. After implementation
+
+If a change passes this playbook checklist, it is compliant with the project baseline.
+
+---
+
+## Purpose Of This File
+
+This file should be concise and operational.
+
+- It defines what to validate and when.
+- It does not duplicate deep technical details from specialized instruction files.
+- It points to specialized files when deeper rules are needed.
+
+---
+
+## Instruction Map (Minimum Necessary)
+
+| Topic | File | When to load |
+|------|------|--------------|
+| Clean Architecture + MVVM + DDD templates | `#architecture.mdc` | Always |
+| Code conventions & naming | `#code-conventions.mdc` | Always |
+| Validation pyramid | `#validation-pyramid.mdc` | Always |
+| TDD workflow & commits | `#tdd-workflow.mdc` | Behavior changes/refactor |
+| SOLID principles | `#solid-principles.mdc` | Architecture-heavy changes |
+| Memory / session system | `#memory-system.mdc` | Session/work documentation |
+
+Quick rule: use the minimum necessary set of instructions for the current task while preserving architectural safety.
+
+---
+
+## Operational Flow
+
+### Phase 1 - Before Implementation (Feedforward)
+
+1. Understand scope and acceptance criteria (GitHub Issue).
+2. Search reuse opportunities before creating new code.
+3. Define which feature/bounded context this belongs to (or if it's shared).
+4. Define where code belongs by layer (domain/data/presentation, feature vs shared).
+5. Define test strategy before coding (domain/data/presentation).
+
+Expected output before coding:
+- Reuse vs creation decision
+- Target folders/files (by layer)
+- Test plan by layer
+
+### Phase 2 - During Implementation (Execution)
+
+1. Keep Clean Architecture boundaries:
+   - `domain` = business rules only (Entities, Repository interfaces, UseCases) - no React/RN
+   - `data` = Repository implementations + DataSources + DTO mapping
+   - `presentation` = View (Screen) + ViewModel (`use*.ts` hook)
+2. Use path aliases (`@...`) instead of deep relative imports.
+3. Use project constants/tokens instead of hardcoded values.
+4. Keep API base URLs and endpoints centralized (e.g. `core/http` or a `constants` module), never inline in a DataSource.
+5. Add/update tests mirroring the layer structure (domain/data/presentation).
+
+### Phase 3 - After Implementation (Feedback)
+
+1. Validate architecture boundaries (dependency rule, domain purity).
+2. Validate tests and coverage impact.
+3. Validate conventions and anti-patterns.
+
+Definition of done:
+- Behavior works as expected
+- Required tests pass (unit + integration; E2E when configured)
+- Architecture/conventions/placement are compliant
+- No unresolved anti-pattern violations
+
+---
+
+## Reuse-First Rule (Mandatory)
+
+Before creating a new component/hook/usecase/repository, search first in:
+- `src/shared/presentation/components/`
+- `src/shared/presentation/hooks/`
+- `src/shared/domain/` and `src/shared/data/`
+- Target feature internals (`domain/`, `data/`, `presentation/`)
+
+Only create new when reuse/adaptation is not viable.
+
+---
+
+## Placement Guide (Short)
+
+| What | Where |
+|------|-------|
+| Business entity / value object | `src/features/{feature}/domain/entities/` |
+| Repository contract | `src/features/{feature}/domain/repositories/` |
+| Business action (usecase) | `src/features/{feature}/domain/usecases/` |
+| API/local data access | `src/features/{feature}/data/datasources/` |
+| DTO + mapper | `src/features/{feature}/data/models/` |
+| Repository implementation | `src/features/{feature}/data/repositories/` |
+| Screen / View | `src/features/{feature}/presentation/screens/` |
+| ViewModel hook | `src/features/{feature}/presentation/viewmodels/` |
+| Feature-specific component | `src/features/{feature}/presentation/components/` |
+| Reusable UI (2+ features) | `src/shared/presentation/components/` |
+| Shared entity/contract (2+ features) | `src/shared/domain/` |
+| Shared datasource/repository | `src/shared/data/` |
+| Shared utility | `src/shared/utils/` |
+| DI/composition, navigation, env config | `src/core/` |
+
+---
+
+## Quality Gates (Go / No-Go)
+
+### Architecture (Clean Architecture)
+
+- [ ] `domain` has no import from `data`, `presentation`, React or React Native
+- [ ] Repository has an interface in `domain` and implementation in `data`
+- [ ] Each UseCase resolves a single business action
+- [ ] View only talks to its ViewModel (no direct Repository/DataSource access)
+- [ ] Code placed in the correct layer and scope (feature vs shared)
+
+### Conventions
+
+- [ ] Path aliases used consistently
+- [ ] No hardcoded endpoint URL (centralized in `core`/constants)
+- [ ] Avoid `any` when domain typing is possible
+- [ ] Naming follows `code-conventions.mdc` (Entity/UseCase/Repository/DataSource suffixes)
+
+### Tests
+
+- [ ] UseCase logic validated in domain tests (no RN mocks needed)
+- [ ] Repository implementation validated with DataSource mocked
+- [ ] ViewModel validated with UseCase mocked
+- [ ] View behavior validated with ViewModel mocked
+
+No-Go if any mandatory item above is unresolved.
+
+---
+
+## Quick Anti-Patterns
+
+- Business logic inside the View layer
+- Domain importing from data/presentation (breaks dependency rule)
+- Creating a shared component for one-feature-only usage
+- Calling a DataSource/Repository directly from a ViewModel bypassing the UseCase
+- Hardcoded endpoints/colors/fonts in new code
+- Testing business logic only via UI tests (without UseCase/domain tests)
+
+---
+
+## Single-Page Implementation Checklist
+
+Copy and fill before closing task:
+
+- Scope/AC reviewed: [ ]
+- Reuse search done: [ ]
+- Feature/bounded context identified: [ ]
+- Code placement defined (layer + scope): [ ]
+- Clean Architecture boundaries respected: [ ]
+- Constants/config centralized: [ ]
+- Required tests passing (per layer): [ ]
+- Anti-pattern check passed: [ ]
+
+---
+
+This file intentionally stays high-level. For detailed implementation rules, consult the mapped specialized instruction files.

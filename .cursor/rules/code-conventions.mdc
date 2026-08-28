@@ -1,0 +1,116 @@
+---
+alwaysApply: true
+---
+
+# Code Conventions - voy-app-react-native
+
+Este documento define convenções de código para o projeto.
+
+## 1. Nomenclatura
+
+### 1.1 Arquivos e pastas
+
+- Componentes React: `PascalCase` (ex.: `PlaceCard.tsx`).
+- Hooks, helpers e utils: `camelCase` (ex.: `usePlaceList.ts`, `formatCurrency.ts`).
+- Pastas: `camelCase`.
+- Testes: mesmo nome do alvo + `.test` (ex.: `PlaceCard.test.tsx`).
+
+### 1.2 Símbolos
+
+- Variáveis e funções: `camelCase`.
+- Componentes e classes: `PascalCase`.
+- Constantes: `UPPER_SNAKE_CASE`.
+- Booleanos com prefixo semântico: `is`, `has`, `can`, `should`.
+
+### 1.3 Tipos
+
+- Interfaces e types em `PascalCase`.
+- Não usar prefixo `I` em interfaces.
+
+### 1.4 Camadas de Clean Architecture
+
+- Entity: `[Nome]Entity` (ex.: `PlaceEntity`) — em `domain/entities/`.
+- Value Object: `[Nome]ValueObject` ou nome direto do conceito (ex.: `Coordinates`) — em `domain/entities/` ou `domain/value-objects/`.
+- Repository (contrato): `[Nome]Repository` (interface) — em `domain/repositories/`.
+- Repository (implementação): `[Nome]RepositoryImpl` — em `data/repositories/`.
+- UseCase: `[Verbo][Nome]UseCase` (ex.: `GetPlaceListUseCase`, `AddPlaceToWishlistUseCase`) — um arquivo por ação de negócio, em `domain/usecases/`.
+- DataSource: `[Nome][Remote|Local]DataSource` (ex.: `PlaceRemoteDataSource`) — em `data/datasources/`.
+- Model/DTO: `[Nome]Dto` ou `[Nome]Model` — em `data/models/`, com mapper explícito `to[Nome]Entity()` / `from[Nome]Entity()`.
+- ViewModel: `use[FeatureName]` (hook) — em `presentation/viewmodels/`.
+- View/Screen: `[FeatureName]Screen` — em `presentation/screens/`.
+
+## 2. Estrutura de módulo
+
+Ver `.cursor/rules/architecture.mdc` para a estrutura completa de pastas (Clean Architecture + DDD) e templates de cada camada.
+
+Resumo rápido por feature em `src/features/[featureName]/`:
+
+- `domain/entities/`, `domain/repositories/`, `domain/usecases/`
+- `data/datasources/`, `data/models/`, `data/repositories/`
+- `presentation/screens/`, `presentation/components/`, `presentation/viewmodels/`
+
+Código compartilhado por 2+ features vive em `src/shared/` (mesmas subpastas `domain/`, `data/`, `presentation/`, mais `utils/`). Configuração técnica global (DI, navegação, env) vive em `src/core/`.
+
+## 3. Ordem de imports
+
+Manter esta ordem:
+
+1. `react` e `react-native`
+2. Bibliotecas externas
+3. Aliases do projeto (`@...`)
+4. Imports relativos
+5. `styles` por último
+
+Dentro de cada grupo, manter ordem alfabética quando possível.
+
+## 4. TypeScript
+
+- Preferir inferência de tipo quando o tipo é óbvio.
+- Tipar explicitamente:
+  - parâmetros de função
+  - retorno de funções públicas (especialmente UseCases e métodos de Repository)
+  - props de componentes
+  - estruturas não inferíveis
+- Evitar `any`; usar `unknown` + type guard quando necessário.
+- Preferir union types literais para estados simples (ex.: `'idle' | 'loading' | 'error'`).
+
+## 5. React / React Native
+
+- Usar componentes funcionais.
+- Não usar `React.FC`.
+- Tipar props com interface/type explícito.
+- Desestruturar props na assinatura do componente.
+- Usar `StyleSheet.create` como padrão de estilo.
+- Nenhuma regra de negócio na View; a View só chama o ViewModel (hook) e renderiza o estado retornado.
+- Em elementos interativos relevantes para teste, incluir `testID`.
+
+## 6. Gerenciamento de Estado
+
+O projeto ainda não adota uma lib de estado específica. Até que isso seja decidido:
+
+- ViewModel = hook React (`useState`/`useReducer`/`useEffect`) que orquestra UseCases do `domain` e expõe dados prontos para a View.
+- Estado compartilhado entre features: preferir `Context` local ao `shared/presentation` antes de introduzir uma lib externa (Redux, Zustand, etc.).
+- Se uma lib de estado global for adotada no futuro, ela entra apenas na camada `presentation` (nunca em `domain`).
+
+## 7. Testes (convenções de escrita)
+
+- Preferir `test()` com nome descritivo iniciando com `should`.
+- Nome do teste deve descrever comportamento observável.
+- Evitar comentários óbvios dentro do teste.
+- Evitar lógica complexa no teste; manter arranjo claro e objetivo.
+- Testes de `domain` (entities/usecases) não devem importar nada de React/React Native.
+
+## 8. Princípios de simplicidade
+
+- Aplicar YAGNI: implementar apenas o necessário para o requisito atual.
+- Preferir soluções curtas e diretas quando não houver perda de legibilidade.
+- Evitar abstrações prematuras e generalizações sem caso de uso real.
+
+## 9. Anti-patterns
+
+- Comentários redundantes que repetem o código.
+- `console.log` sem controle de ambiente.
+- Valores mágicos/hardcoded quando deveriam ser constantes nomeadas.
+- Lógica de negócio diretamente em componentes de view.
+- Import de `data`/`presentation` dentro de `domain` (viola a regra de dependência da Clean Architecture).
+- UseCase que faz mais de uma ação de negócio (viola Single Responsibility).
