@@ -27,14 +27,28 @@ echo ""
 echo "Pre-push: validando mensagens de commit no range do push..."
 
 upstream_branch=$(git rev-parse --abbrev-ref @{upstream} 2>/dev/null | sed 's@^origin/@@' || true)
-if [ -n "$upstream_branch" ]; then
-  base_branch="$upstream_branch"
-else
-  base_branch=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || true)
-  [ -z "$base_branch" ] && base_branch="main"
-fi
 
-merge_base=$(git merge-base HEAD "origin/$base_branch" 2>/dev/null || true)
+if [ -n "$upstream_branch" ]; then
+  merge_base=$(git merge-base HEAD "origin/$upstream_branch" 2>/dev/null || true)
+else
+  # New branch, no upstream yet: pick whichever integration branch (develop, main)
+  # gives the SMALLEST commit range - that's the actual point this branch forked from.
+  # (Blindly defaulting to origin/HEAD's default branch can pick a much older common
+  # ancestor when develop and main have diverged, sweeping in unrelated legacy commits.)
+  merge_base=""
+  best_count=""
+  for candidate in develop main; do
+    if git rev-parse -q --verify "origin/$candidate" >/dev/null 2>&1; then
+      candidate_base=$(git merge-base HEAD "origin/$candidate" 2>/dev/null || true)
+      [ -z "$candidate_base" ] && continue
+      candidate_count=$(git rev-list --count "$candidate_base..HEAD" 2>/dev/null || true)
+      if [ -n "$candidate_count" ] && { [ -z "$best_count" ] || [ "$candidate_count" -lt "$best_count" ]; }; then
+        best_count="$candidate_count"
+        merge_base="$candidate_base"
+      fi
+    fi
+  done
+fi
 
 if [ -z "$merge_base" ]; then
   echo "  Nao foi possivel determinar o range (branch nova/sem upstream), pulando validacao de commits."
