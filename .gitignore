@@ -70,3 +70,17 @@ android/app/google-services.json
 
 # iOS
 ios/GoogleService-Info.plist
+
+### Cursor MCP secrets ###
+.cursor/mcp.env
+
+### Obsidian vault (local editor state) ###
+docs/obsidian/.obsidian/
+
+### Graphify (auto-regenerated local knowledge graph) ###
+.graphify/
+
+### Stryker (mutation testing - relatorios/sandbox locais) ###
+.stryker-tmp/
+reports/mutation/
+stryker.log
