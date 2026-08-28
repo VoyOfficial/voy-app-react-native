@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "github": {
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "figma": {
+      "url": "https://mcp.figma.com/mcp"
+    },
+    "reactotron": {
+      "command": "npx",
+      "args": ["-y", "reactotron-mcp@latest"]
+    },
+    "obsidian": {
+      "command": "uvx",
+      "args": ["mcp-obsidian"],
+      "envFile": "${workspaceFolder}/.cursor/mcp.env"
+    },
+    "graphify": {
+      "command": "graphify",
+      "args": ["serve", "${workspaceFolder}/.graphify/graph.json"]
+    }
+  }
+}
