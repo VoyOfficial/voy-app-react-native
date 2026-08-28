@@ -1,4 +1,56 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Harness - pre-commit gate (Feedback Sensors - Fast)
+#
+# 1. TypeScript: bloqueia so se um arquivo STAGED aparecer nos erros do tsc.
+#    (o projeto tem debito de tipagem pre-existente; nao bloqueamos commits
+#    nao relacionados por causa dele - ver .cursor/rules/pre-commit-hooks.mdc)
+# 2. jscpd: duplicacao de codigo nos arquivos staged (limite 7%, .jscpd.json)
+# 3. lint-staged: eslint --fix + prettier --write + jest --findRelatedTests
+#
+# Nota: husky roda este arquivo com `sh -e`, entao todo comando que pode
+# legitimamente retornar != 0 (grep sem match, etc) precisa de `|| true`
+# ou estar dentro de um `if`.
+#
+# See: AGENTS.md, .cursor/rules/pre-commit-hooks.mdc, .cursor/rules/validation-pyramid.mdc
+
+STAGED_TS=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null | grep -E '\.tsx?$' || true)
+
+if [ -n "$STAGED_TS" ]; then
+  echo ""
+  echo "Pre-commit: checando tipos nos arquivos staged (tsc --noEmit)..."
+  TSC_OUTPUT=$(yarn typecheck 2>&1 || true)
+  NEW_ERRORS=""
+  for f in $STAGED_TS; do
+    if echo "$TSC_OUTPUT" | grep -qF "$f("; then
+      NEW_ERRORS="$NEW_ERRORS $f"
+    fi
+  done
+  if [ -n "$NEW_ERRORS" ]; then
+    echo ""
+    echo "Commit bloqueado: erro(s) de tipo em arquivo(s) staged:"
+    for f in $NEW_ERRORS; do
+      echo "$TSC_OUTPUT" | grep -F "$f(" || true
+    done
+    echo ""
+    exit 1
+  fi
+fi
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null | grep -E '\.(tsx?|jsx?)$' | tr '\n' ' ' || true)
+
+if [ -n "$STAGED_FILES" ]; then
+  echo ""
+  echo "Pre-commit: checando duplicacao de codigo (jscpd, limite 7%)..."
+  if ! yarn jscpd $STAGED_FILES --config .jscpd.json --silent; then
+    echo ""
+    echo "Commit bloqueado: duplicacao de codigo acima do limite nos arquivos staged."
+    echo ""
+    exit 1
+  fi
+fi
+
+echo ""
+echo "Pre-commit: lint-staged (eslint + prettier + testes relacionados)..."
 yarn precommit

@@ -1,0 +1,7 @@
+{
+  "threshold": 7,
+  "minLines": 5,
+  "minTokens": 50,
+  "format": ["javascript", "typescript", "tsx", "jsx"],
+  "ignore": ["**/node_modules/**", "**/__tests__/**", "tests/**"]
+}
