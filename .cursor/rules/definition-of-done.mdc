@@ -1,0 +1,166 @@
+---
+alwaysApply: false
+description: Definition of Done (DoD) mandatory quality gate checklist to run before considering any task/PR complete.
+---
+
+# Definition of Done (DoD) Harness
+
+> **Versao**: 1.0.0
+> **Contexto**: Gate de qualidade obrigatorio para qualquer trabalho neste repositorio
+
+---
+
+## 🎯 Regra de Ouro
+
+```
+❌ Nao existe "done" sem passar por TODOS os gates ativos
+```
+
+**Aplicavel a:** Features, Bugfixes, Refactorings
+
+---
+
+## 📋 Os Gates (BLOCKING)
+
+### Gate 1: Testes
+
+**Comando:**
+```bash
+yarn test --coverage
+```
+
+**Criterios:**
+- [ ] Unit tests: 100% passando
+- [ ] Integration tests: 100% passando
+- [ ] Coverage > 80% para codigo novo
+- [ ] TypeScript e ESLint sem erros
+
+---
+
+### Gate 2: E2E (N/A por enquanto) 🚧
+
+O projeto ainda nao tem framework de E2E configurado. Este gate fica **suspenso** ate que um framework seja adotado.
+
+Quando E2E for configurado:
+- Criar `.cursor/rules/e2e-testing.mdc`
+- Reativar este gate como BLOCKING (final gate)
+
+---
+
+### Gate 3: Code Review
+
+**Comando:**
+```bash
+/code-reviewer revisar branch [branch-name] contra main
+```
+
+**Criterios:**
+- [ ] Sem issues BLOCKING
+- [ ] Clean Architecture (regra de dependencia) + SOLID validados
+- [ ] Sem hardcoded values que deveriam ser constantes
+- [ ] Sem memory leaks
+
+**Se issues:** Corrigir → Re-rodar Gate 1 → Re-review.
+
+---
+
+### Gate 4: Documentacao Obsidian
+
+**Arquivos obrigatorios:**
+```
+docs/obsidian/Work Items/[tipo]/ISSUE-<n>.md
+docs/obsidian/Sessions/ISSUE-<n>-[topic-slug].md
+```
+
+**Criterios:**
+- [ ] Work Item criado com YAML frontmatter
+- [ ] Session criada com YAML frontmatter
+- [ ] Links bidirecionais funcionando
+- [ ] CURRENT_WORK.md atualizado
+
+**Detalhes:** Ver `.cursor/rules/obsidian-integration.mdc`
+
+---
+
+### Gate 5: PR no GitHub
+
+**Acoes:**
+```bash
+# 1. Gather context (TODAS as sessions, nao so a ultima)
+find docs/obsidian/Sessions/ -name "ISSUE-<n>-*.md"
+
+# 2. Criar PR
+/github criar PR para a Issue #<n>
+
+# 3. Atualizar states
+# - Issue: aplicar label "ready-for-review"
+# - Sessions: status: closed
+# - CURRENT_WORK.md: Active → Recently Completed
+```
+
+**Criterios:**
+- [ ] PR criado com contexto completo
+- [ ] Issue linkada no PR (ex.: `Closes #<n>`)
+- [ ] Documentacao fechada (status: closed)
+
+---
+
+## 🔒 Enforcement
+
+### Relacao com Hooks (Nao e Duplicacao)
+
+```
+commit-msg (Husky):    Formato Conventional Commits
+pre-commit (Husky):    TypeScript (escopado) + jscpd + lint-staged (ESLint/Prettier/Jest related)
+pre-push (Husky):      Revalida commits + ESLint completo + suite unitaria
+DoD Harness (manual, antes PR): yarn test --coverage + integration + Review + Docs
+```
+
+Hooks = **preventivo** (fast feedback, automatico). DoD = **gate final** (comprehensive, manual antes do PR). O `yarn test --coverage` completo e os `test:integration` NAO rodam automaticamente no pre-push (ver `.cursor/rules/pre-commit-hooks.mdc` - secao "Debitos Conhecidos"), por isso continuam sendo parte obrigatoria do Gate 1 manual abaixo.
+
+### Blocking Conditions
+
+**NAO prosseguir se:**
+- ❌ Qualquer teste falhar (unit/integration)
+- ❌ Code Reviewer com issues BLOCKING
+- ❌ Docs Obsidian incompletos ou sem YAML
+- ❌ PR nao criado
+
+---
+
+## 🚀 Como Usar
+
+Checklist manual antes de criar PR:
+
+```
+✅ yarn test --coverage → todos verdes
+✅ @code-reviewer aprovado
+✅ Docs Obsidian com YAML
+✅ Criar PR via @github
+```
+
+---
+
+## 📚 Detalhes e Referencias
+
+**Para aprofundar, consultar:**
+- `.cursor/rules/harness-engineering.mdc` → Workflow integration
+- `.cursor/rules/validation-pyramid.mdc` → Piramide de testes
+- `.cursor/rules/architecture.mdc` → Clean Architecture + MVVM + DDD
+- `.cursor/agents/feature.md` → Feature Agent integration
+
+---
+
+## 🎯 Success Criteria
+
+```
+✅ Gate 1: Testes (unit + integration)
+🚧 Gate 2: E2E (N/A por enquanto)
+✅ Gate 3: Code Review aprovado
+✅ Gate 4: Docs Obsidian completa
+✅ Gate 5: PR criado + Issue atualizada
+
+= TASK DONE ✅
+```
+
+**Se qualquer gate ativo ❌ → task NAO esta done**

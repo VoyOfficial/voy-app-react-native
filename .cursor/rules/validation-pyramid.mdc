@@ -1,0 +1,291 @@
+---
+alwaysApply: false
+description: Validation pyramid strategy (unit, integration, E2E) - feedback sensors for deciding what/how to test.
+---
+
+# 🧪 VALIDATION PYRAMID - Feedback Sensors
+
+> **Versão**: 1.0.0
+> **Contexto**: Harness Engineering - Behaviour Harness
+
+---
+
+## 🎯 Overview
+
+A pirâmide de validação define os **feedback sensors** para o **Behaviour Harness** - a camada que valida se a aplicação funciona conforme esperado.
+
+```
+                 /\
+                /  \     E2E Tests
+               / 🎯 \    Futuro - nao configurado ainda
+              /______\   Sensor: sera o FINAL GATE quando existir
+             /        \
+            / 🔗      \  Integration Tests
+           /   Tests   \ ~20-30% • data + presentation integrados
+          /______________\ Sensor: integracao validada
+         /                \
+        /    🧩 Unit      \  Unit Tests
+       /      Tests        \ ~60-75% • domain (entities/usecases) isolado
+      /____________________\ Sensor: comportamento correto
+
+     ──────────────────────────────────────────────
+        📊 Static Analysis (TypeScript, ESLint)
+        Sensor: Código válido e consistente
+```
+
+**Nota sobre E2E:** o projeto ainda não tem framework de E2E configurado (Detox, Maestro, etc.). Enquanto isso, "done" = unit + integration verdes. Quando um framework de E2E for adotado, criar `.cursor/rules/e2e-testing.mdc` e promover E2E a gate final (como descrito em `tdd-workflow.mdc`).
+
+---
+
+## 🧩 Camada 1: Unit Tests (Feedback Computacional)
+
+### Papel no Harness
+
+- **Tipo**: Feedback Sensor - Computacional
+- **Timing**: Durante desenvolvimento + Pré-commit
+- **Velocidade**: ~10-100ms por teste
+- **Confiabilidade**: 100% determinístico
+
+### O que Valida
+
+- Regras de negócio isoladas (`domain/entities`, `domain/usecases`) — **sem** mocks de React/RN, apenas mock do `Repository` (interface)
+- Helpers e utility functions
+- Transformações de dados (mappers DTO → Entity)
+- ViewModels com UseCase mockado
+
+### Estrutura de Testes
+
+```typescript
+// __tests__/domain/usecases/GetPlaceListUseCase.test.ts
+
+describe('GetPlaceListUseCase', () => {
+	describe('success scenarios', () => {
+		it('should return places from repository', async () => {
+			mockRepository.getList.mockResolvedValue(mockPlaces)
+
+			const useCase = new GetPlaceListUseCase(mockRepository)
+			const result = await useCase.execute()
+
+			expect(result).toEqual(mockPlaces)
+		})
+	})
+
+	describe('error scenarios', () => {
+		it('should propagate repository errors', async () => {
+			mockRepository.getList.mockRejectedValue(new Error('API Error'))
+
+			const useCase = new GetPlaceListUseCase(mockRepository)
+
+			await expect(useCase.execute()).rejects.toThrow('API Error')
+		})
+	})
+})
+```
+
+### Comandos
+
+```bash
+# Rodar testes relacionados a arquivos modificados (pré-commit)
+npx jest --findRelatedTests src/features/place/domain/usecases/GetPlaceListUseCase.ts --no-cache --passWithNoTests
+
+# Rodar suite completa de uma feature
+npx jest src/features/place -c jest.config.js
+
+# Rodar com coverage (feedback de cobertura)
+yarn test --coverage
+```
+
+---
+
+## 🧬 Sensor de Qualidade: Mutation Testing (Stryker)
+
+Mutation testing não é uma camada nova da pirâmide — é um **sensor sobre a Camada 1 (Unit Tests)**: mede se os testes realmente *matam* comportamento incorreto (asserções fortes), não apenas se cobrem linhas/branches (coverage % pode ser alto com asserções fracas).
+
+### Escopo (por que so `src/data`)
+
+| Camada | Roda mutation testing? | Motivo |
+|---|---|---|
+| `domain` | ❌ Não | Neste projeto `domain` é 100% interfaces/models/enums — zero código executável, zero mutantes gerados |
+| `data` | ✅ Sim | UseCases + mappers + error classes: TypeScript puro, lógica real, testes com HTTP mockado |
+| `infra` | ⚠️ Parcial (fora do escopo atual) | Mistura adapter puro (`axiosAdapter.ts`) com adapter que importa módulo nativo RN (`geolocationAdapter.ts`) — reavaliar se algum dia for isolado |
+| `presentation` | ❌ Não | StrykerJS não tem suporte oficial a React Native (só React/CRA) |
+
+### Comando (manual, não é gate automático)
+
+```bash
+yarn mutation:check   # roda `stryker run`, ~25-30min hoje (294 mutantes em src/data)
+```
+
+**Não está no `pre-commit`/`pre-push`**: mutation testing roda a suite inteira uma vez por mutante — lento por natureza. É um comando manual/periódico, ideal para rodar antes de fechar uma feature que toca `data/` ou como job agendado de CI (não bloqueante no início).
+
+### Configuração (`stryker.conf.json`)
+
+- `testRunner: jest`, `coverageAnalysis: "off"` — o projeto usa `babel-plugin-root-import` para o alias `~/...` (não `moduleNameMapper`), então o resolver estático do Jest usado por `--findRelatedTests`/`perTest` não enxerga esses imports (`enableFindRelatedTests` precisa ficar `false`, senão o dry-run falha com "no tests found").
+- Sem `checkers: ["typescript"]` — o checker faz um type-check completo do projeto e trava no débito de 38 erros de TS já conhecido (fora de `data`, ver `pre-commit-hooks.mdc`). Como o Jest deste projeto transforma `.ts` via Babel (não `ts-jest`), a ausência do checker não muda o que já era validado em tempo de teste.
+- `thresholds.break: null` — reporta score, não quebra o comando. Ajustar depois de tratar os gaps abaixo.
+
+### Baseline registrado (2026-08-28, `src/data/**`)
+
+**Score geral: 82.31%** (242 mortos / 294 mutantes, 0 timeout, 52 sobreviventes)
+
+| Arquivo/pasta | Score | Observação |
+|---|---|---|
+| `errors/*` (todas as classes de erro) | 33.33% | Mutantes que trocam `this.message`/`this.name` por `""` sobrevivem — os testes não afirmam o texto/nome do erro, só que ele foi lançado |
+| `useCases/remoteGetPlaceDetails.ts` | 79.03% | Vários fallbacks `|| ''` / `|| []` não testados quando o campo vem ausente da API |
+| `useCases/remoteListRecommendations.ts` | 75.51% | Mesmo padrão de fallback não testado |
+| `useCases/remoteGetUser.ts` | 94.44% | 1 mutante real: `throw new UserNotFoundError()` → removido e o teste continua passando (teste não verifica que a exception é lançada) |
+| `useCases/remoteListPlaces.ts`, demais useCases | 86-100% | Gaps pontuais, mesmo padrão de fallback não testado |
+
+Nenhum desses é bloqueante hoje (threshold report-only), mas são candidatos concretos para reforçar asserções na próxima vez que esses arquivos forem tocados.
+
+---
+
+## 🔗 Camada 2: Integration Tests (Feedback Computacional)
+
+### Papel no Harness
+
+- **Tipo**: Feedback Sensor - Computacional
+- **Timing**: Pré-push + PR
+- **Velocidade**: ~100-500ms por teste
+- **Confiabilidade**: 100% determinístico
+
+### O que Valida
+
+- Integração `Repository` implementação ↔ `DataSource` (mapeamento correto)
+- Integração ViewModel ↔ View
+- Fluxos de navegação mockados
+- Chamadas de serviço com respostas mockadas
+
+### Estrutura de Testes
+
+```typescript
+// __tests__/presentation/PlaceListScreen.integration.test.tsx
+
+describe('PlaceListScreen Integration', () => {
+	beforeEach(() => {
+		jest.clearAllMocks()
+	})
+
+	it('should render loading state correctly', () => {
+		mockUseCase.execute.mockReturnValue(new Promise(() => {})) // Never resolves
+
+		const { getByTestId } = render(<PlaceListScreen />)
+
+		expect(getByTestId('loading-skeleton')).toBeTruthy()
+	})
+
+	it('should display data after loading', async () => {
+		mockUseCase.execute.mockResolvedValue(mockPlaces)
+
+		const { findByText } = render(<PlaceListScreen />)
+
+		await findByText(mockPlaces[0].name)
+	})
+})
+```
+
+### Comandos
+
+```bash
+# Rodar integration tests de uma feature
+npx jest src/features/place --testPathPattern='integration.test' -c jest.config.js
+
+# Rodar todos os integration tests
+npx jest --testPathPattern='integration.test' -c jest.config.js
+```
+
+---
+
+## 🎯 Camada 3: E2E Tests (Futuro - Não Configurado)
+
+Sem framework de E2E configurado no momento. Quando um for adotado (Detox, Maestro, etc.):
+
+1. Criar `.cursor/rules/e2e-testing.mdc` com o guia especifico da ferramenta escolhida.
+2. Promover E2E a gate final em `tdd-workflow.mdc`, `definition-of-done.mdc` e `validation-pyramid.mdc`.
+3. Adicionar a camada E2E de volta ao topo desta pirâmide.
+
+---
+
+## 📊 Static Analysis (Feedback Computacional Base)
+
+### TypeScript - Type Safety Sensor
+
+```bash
+# Check pré-commit
+npx tsc --noEmit
+
+# Check strict
+npx tsc --noEmit --strict
+```
+
+### ESLint - Code Quality Sensor
+
+```bash
+# Check completo
+yarn lint
+```
+
+---
+
+## 🔄 Workflow de Validação Completo
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    VALIDATION WORKFLOW - FEEDBACK CHAIN                  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  1️⃣ DURANTE DESENVOLVIMENTO                                             │
+│     ├─→ TypeScript LSP ──→ Erro de tipo? Fix antes de continuar        │
+│     ├─→ ESLint LSP     ──→ Violação? Fix ou ignorar com justificativa  │
+│     └─→ Jest watch     ──→ Teste falhou? TDD: fix código               │
+│                                                                          │
+│  2️⃣ PRÉ-COMMIT (Husky - ver pre-commit-hooks.mdc)                       │
+│     └─→ typecheck (escopado) + jscpd + lint-staged ──→ Falhou? Bloqueado │
+│                                                                          │
+│  3️⃣ PULL REQUEST                                                        │
+│     ├─→ Unit + Integration ──→ Falhou? PR não pode ser merged          │
+│     └─→ Coverage       ──→ Abaixo do threshold? Warning                 │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📋 Checklist de Validação por Feature
+
+```markdown
+## ✅ Validation Checklist - [Issue #NN]
+
+### 🧩 Unit Tests
+
+- [ ] UseCase/domain tests passando
+- [ ] Helper functions tests passando
+- [ ] Edge cases cobertos
+- [ ] Error scenarios cobertos
+- [ ] Coverage > 80% para novo código
+
+### 🔗 Integration Tests
+
+- [ ] Repository + DataSource integration test
+- [ ] ViewModel + View integration test
+- [ ] Interações de usuário testadas
+
+### 📊 Static Analysis
+
+- [ ] TypeScript sem erros
+- [ ] ESLint sem warnings críticos
+- [ ] No circular dependencies
+
+### 📝 Documentation
+
+- [ ] Obsidian Work Item atualizado
+- [ ] Session file atualizado
+```
+
+---
+
+## 🔗 Relacionados
+
+- `harness-engineering.mdc` - Framework geral
+- `architecture.mdc` - Clean Architecture + MVVM + DDD
+- `code-conventions.mdc` - Coding standards

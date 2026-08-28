@@ -1,0 +1,117 @@
+---
+alwaysApply: false
+description: Pre-commit hook feedback sensors - fast computational checks that run before every commit/push (implemented via Husky).
+---
+
+# 🔒 GIT HOOKS (Husky) - Feedback Sensors
+
+> **Versão**: 2.0.0
+> **Harness Role**: Feedback Sensors - Computacional (Fast + Full)
+> **Estado atual**: ✅ **Implementado** (Husky 8 + lint-staged + jscpd + validação de commit)
+
+---
+
+## 🎛️ Papel no Harness Engineering
+
+Git hooks são **Feedback Sensors Computacionais**:
+
+```
+┌────────────────────────────────────────────────────────────┐
+│  PRE-COMMIT / COMMIT-MSG = FAST VALIDATION (<30s)          │
+│  PRE-PUSH = FULL VALIDATION (lint completo + suite unit)   │
+├────────────────────────────────────────────────────────────┤
+│  📊 TIPO: Computacional (100% determinístico)              │
+│  🎯 OBJETIVO: Catch issues BEFORE they reach o repositorio │
+└────────────────────────────────────────────────────────────┘
+```
+
+**Relacionado**: `harness-engineering.mdc`, `validation-pyramid.mdc`, `definition-of-done.mdc`
+
+---
+
+## 📦 Hooks Implementados
+
+| Hook | Bloqueia? | O que roda |
+|------|-----------|------------|
+| `commit-msg` | Sim | Formato Conventional Commits (`AGENTS.md`) |
+| `pre-commit` | Sim | TypeScript (escopado) → jscpd → lint-staged |
+| `pre-push` | Sim | Revalida commits do range → `yarn lint:check` → testes unitários |
+| `post-commit`/`post-checkout`/`post-merge`/`post-rewrite` | Não | Rebuild do grafo `graphify` (advisory) |
+
+### `commit-msg`
+
+Valida o formato definido em `AGENTS.md` (seção "Commits"):
+
+```
+<type>(<module>/<file>): <description>
+```
+
+- Tipos válidos: `feat`, `fix`, `refactor`, `test`, `docs`, `style`, `chore`, `perf`
+- Sem caracteres não-ASCII (descrição em inglês)
+- Sem corpo de mensagem (uma linha só)
+- Merge commits são ignorados (mensagem padrão do git)
+
+### `pre-commit`
+
+1. **TypeScript (escopado)** — roda `tsc --noEmit` mas só bloqueia se um **arquivo staged** aparecer nos erros. O projeto tem débito de tipagem pré-existente (ver seção "Débitos Conhecidos" abaixo); não bloqueamos commits não relacionados por causa dele.
+2. **jscpd** — duplicação de código nos arquivos staged (`.tsx?`/`.jsx?`), limite **7%** (`.jscpd.json`).
+3. **lint-staged** — por arquivo `*.{js,jsx,ts,tsx}` staged: `eslint --fix` → `prettier --write` → `yarn test:staged` (jest `--findRelatedTests`).
+
+### `pre-push`
+
+1. Revalida **todas** as mensagens de commit no range `merge-base(origin/<branch>)..HEAD` (pega commits que entraram via rebase/cherry-pick e escaparam do `commit-msg`).
+2. `yarn lint:check` — ESLint completo, sem `--fix` (checagem, não correção).
+3. Suite de testes **unitários** (`npx jest --passWithNoTests --no-cache --runInBand`) — sem coverage gate (ver "Débitos Conhecidos").
+
+**Integration tests (`yarn test:integration`) NÃO rodam no pre-push**: dependem do `json-server` local (`yarn server`) rodando, o que é frágil para um git hook automático. Rodar manualmente antes do PR ou integrar numa pipeline de CI futura.
+
+---
+
+## ⚠️ Débitos Conhecidos (não escondidos, documentados para ação futura)
+
+Estes itens existiam **antes** da implementação dos hooks e não foram corrigidos automaticamente (fora do escopo de configurar o harness):
+
+1. **TypeScript**: ~38 erros de tipo pré-existentes em ~18 arquivos (rode `yarn typecheck` para ver a lista atual). Até serem corrigidos, o pre-commit só bloqueia erros em arquivos que você está staged, não o débito antigo.
+2. **Coverage**: `yarn test --coverage` falha hoje (branches ~88% vs 90% exigido em `jest.config.js`), mesmo com 100% dos testes passando. O pre-push roda os testes **sem** `--coverage` por esse motivo. Ajustar o threshold ou fechar a lacuna de cobertura é um trabalho separado.
+3. **`yarn test:integration`**: dependem do `json-server` local (`yarn server`) já estar rodando em outro terminal.
+
+**Ação recomendada**: abrir issues de débito técnico para os itens 1 e 2, e reavaliar o threshold do jest quando resolvidos.
+
+---
+
+## 🔧 Scripts Relacionados (`package.json`)
+
+```json
+{
+	"lint": "eslint '*/**/*.{js,jsx,ts,tsx}' --fix",
+	"lint:check": "eslint '*/**/*.{js,jsx,ts,tsx}'",
+	"typecheck": "tsc --noEmit",
+	"duplication:check": "jscpd src --config .jscpd.json",
+	"test:staged": "jest --passWithNoTests --findRelatedTests --no-cache --runInBand"
+}
+```
+
+---
+
+## 🚫 Bypass (Use com Cuidado)
+
+```bash
+# Bypass pre-commit/pre-push/commit-msg (EVITE)
+git commit --no-verify -m "emergency fix"
+git push --no-verify
+
+# Bypass de hooks via variavel de ambiente
+HUSKY=0 git push
+```
+
+**⚠️ AVISO**: Bypass deve ser exceção (ex.: hotfix crítico em produção). Se isso virar rotina, ajuste de processo/configuração é necessário. Ver `AGENTS.md` regra 5.5 (nunca usar `--no-verify`/`HUSKY=0` sem justificativa forte).
+
+---
+
+## 🔗 Relacionados
+
+- `harness-engineering.mdc` - Framework geral
+- `validation-pyramid.mdc` - Todas as camadas de testes
+- `definition-of-done.mdc` - Gate manual antes do PR (complementa, não duplica, os hooks)
+- `code-conventions.mdc` - Regras de código
+- `AGENTS.md` - Formato de commit (seção "Commits")
