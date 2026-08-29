@@ -1,0 +1,17 @@
+{
+  "name": "Voy (React Native)",
+  "install": "yarn install --frozen-lockfile",
+  "terminals": [
+    {
+      "name": "metro",
+      "command": "yarn start",
+      "description": "Metro bundler dev server for the React Native app. Serves the JS bundle at http://localhost:8081/index.bundle?platform=<android|ios>&dev=true; check http://localhost:8081/status for readiness."
+    }
+  ],
+  "ports": [
+    {
+      "name": "Metro bundler",
+      "port": 8081
+    }
+  ]
+}
