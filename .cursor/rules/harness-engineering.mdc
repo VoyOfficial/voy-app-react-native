@@ -1,20 +1,22 @@
 ---
-alwaysApply: false
+alwaysApply: true
 description: Standard end-to-end harness engineering workflow (session startup, feedforward, execution, feedback/quality gates) for any work in this repository.
 ---
 
 # Harness Engineering - Workflow Padrao
 
-> Versao: 1.0.0
-> Baseado em: Harness Engineering para agentes de codigo
+> Versao: 1.1.0
+> Fonte unica do workflow operacional deste repositorio.
 
-Este documento define o workflow padrao para qualquer trabalho neste repositorio.
+Este documento define o workflow padrao para qualquer trabalho neste repositorio. `AGENTS.md` apenas aponta para ca.
 
 ## Regra Principal
 
 - Harness Engineering e o fluxo default para feature, bugfix, refactor e manutencao.
 - Nao iniciar implementacao sem executar Session Startup + Feedforward.
+- Desenhar a solucao inteira antes da primeira edicao.
 - Nao considerar tarefa concluida sem passar pelo gate de validacao.
+- Quem implementa nao declara a conclusao sozinho. No fluxo lean, a conclusao e `/speckit.verify` num contexto novo.
 
 ## 1) Session Startup (obrigatorio no primeiro prompt)
 
@@ -22,10 +24,12 @@ Execute estes passos no inicio de cada sessao:
 
 1. Descobrir branch atual com `git branch --show-current`.
 2. Identificar a Issue relacionada pelo nome da branch quando existir (ex.: `feature/12-nome-da-feature`).
-3. Ler `CURRENT_WORK.md` para contexto de ativo/bloqueado/concluido.
+3. Ler `CURRENT_WORK.md` para contexto de ativo/bloqueado/concluido. Nao commitar esse arquivo, nem `CONTEXT.md`.
 4. Buscar sessoes anteriores por Issue em `docs/obsidian/Sessions/`.
 5. Se houver Issue pai, carregar sessao relacionada.
 6. Se nao houver contexto em Obsidian, seguir como nova sessao sem usar `docs/memory/session/`.
+
+Board da org: [Project #1](https://github.com/orgs/VoyOfficial/projects/1). Issues especificam a tarefa; o board e a fila. Ao criar ou atualizar Issue/PR, sincronizar pelo skill `.cursor/skills/github/SKILL.md`.
 
 Saida esperada para o usuario:
 
@@ -39,22 +43,19 @@ Antes de editar codigo:
 1. Ler a Issue no GitHub (`gh issue view <n>`) - titulo, descricao e acceptance criteria.
 2. Confirmar escopo tecnico com instrucoes aplicaveis da pasta `.cursor/rules/`.
 3. Validar padrao Clean Architecture + MVVM (`architecture.mdc`) e convencoes do projeto.
-4. Definir plano minimo de implementacao + testes por camada (domain/data/presentation).
+4. Desenhar a solucao por inteiro: fluxo, camadas, arquivos alvo e testes que provam cada comportamento.
+5. Para feature nova de um modulo, preferir Spec Lean (`spec-lean.mdc`): `/speckit.lean-plan` e, apos revisao humana, `/speckit.lean-checks`. Reservar `speckit.specify` / `plan` / `tasks` para feature grande ou multi-modulo.
 
 Checklist de entrada:
 
 - Requisito funcional compreendido.
 - Criterios de aceite listados.
-- Arquivos alvo mapeados (por camada).
+- Solucao desenhada (fluxo + arquivos por camada) antes da primeira edicao.
 - Estrategia de teste definida (unit/integration).
 
-## 3) Implementacao (TDD + sensores rapidos)
+## 3) Implementacao
 
-Fluxo recomendado:
-
-1. RED: criar/ajustar teste para falhar.
-2. GREEN: implementar o minimo para passar.
-3. REFACTOR: melhorar legibilidade/arquitetura mantendo verde.
+Implementar o bloco desenhado no feedforward. Testes sao obrigatorios e acompanham o comportamento que protegem (`testing-workflow.mdc`). Nao rodar o ciclo RED → GREEN → REFACTOR dentro do loop do agente.
 
 Sensores durante implementacao:
 
@@ -62,31 +63,56 @@ Sensores durante implementacao:
 - ESLint/formatacao
 - Jest focado em arquivos alterados
 
+Isolamento de fase no fluxo lean: a implementacao comeca numa janela de contexto zerada. Entrada = `plan.md` + `checks.md`. Nao carregar o chat de planejamento.
+
 ## 4) Feedback e Gate de Qualidade
 
 Ordem de validacao:
 
 1. Unit tests (domain - base da piramide).
 2. Integration tests (data + presentation).
-3. E2E - ainda nao configurado (ver `validation-pyramid.mdc`); quando existir, vira gate final.
+3. E2E - ainda nao configurado (ver `validation-pyramid.mdc`); quando existir, vira gate final. Playwright e web-only e nao substitui esse gate.
 
 Regra de pronto:
 
-- Feature/bugfix pode ser marcada como done quando unit + integration estiverem verdes (E2E entra como gate adicional apenas quando configurado).
+- Feature/bugfix pode ser marcada como done quando unit + integration estiverem verdes (E2E entra como gate adicional apenas quando configurado) e, no fluxo lean, `/speckit.verify` tiver passado.
 - Nao criar PR com testes obrigatorios pendentes.
+- O autor da implementacao nao assina o proprio done.
 
 **Definition of Done (DoD) Harness:**
 
 Antes de considerar a task concluida, executar validacao completa via DoD Harness:
 
+- **Script**: `./scripts/validate-dod.sh --task <id>`
 - **Referencia obrigatoria**: `.cursor/rules/definition-of-done.mdc`
 - **Gates ativos**: Codigo/Testes → Code Review → Documentacao → PR
 - **Enforcement**: BLOCK se qualquer gate ativo falhar
 
 ## 5) Commit e Rastreabilidade
 
-- Seguir a politica central de commits em `AGENTS.md` (secao "Commits").
-- Este arquivo define apenas a ordem operacional do workflow; regras de formato e exemplos de commit ficam centralizados para evitar duplicacao.
+Padrao obrigatorio: **Conventional Commits em ingles**, uma linha, sem corpo:
+
+```
+<type>(<module>/<file>): <description>
+```
+
+Tipos: `feat`, `fix`, `refactor`, `test`, `docs`, `style`, `chore`, `perf`.
+
+1. Escopo = pasta/modulo + arquivo principal (ex.: `place/getplacelistusecase`).
+2. Descricao em ingles, minuscula, imperativo.
+3. Commits atomicos (1-3 arquivos quando possivel), na ordem `domain` → `data` → `presentation` → testes.
+4. Nunca usar `--no-verify` ou `HUSKY=0`. Se o hook falhar, corrigir o codigo.
+5. Nunca commitar `CURRENT_WORK.md` nem `CONTEXT.md`. `docs/obsidian/` pode ser versionado.
+
+Exemplos validos:
+
+- `feat(place/getplacelistusecase): add usecase to fetch place list`
+- `fix(checkout/paymentusecase): handle null card token before charging`
+
+Exemplos invalidos:
+
+- `feat: adiciona fallback`
+- `TASK-123: fix bug`
 
 ## 6) Session Save (obrigatorio ao encerrar trabalho significativo)
 
@@ -94,53 +120,53 @@ Ao final da sessao:
 
 1. Atualizar ou criar sessao em `docs/obsidian/Sessions/`.
 2. Registrar: contexto, decisoes, arquivos tocados, proximos passos e status.
-3. Atualizar `CURRENT_WORK.md` (Active, Blocked ou Recently Completed).
+3. Atualizar `CURRENT_WORK.md` (Active, Blocked ou Recently Completed) sem commitar o arquivo.
+
+Consolidacao: uma sessao por bloco coeso, agrupar fixes relacionados, no maximo ~5 sessoes por Issue. Se ja existe sessao do mesmo dia, atualizar a existente.
 
 Ao finalizar a task (normalmente abertura de PR):
 
-1. Garantir Issue do GitHub com label/status apropriado.
+1. Garantir Issue do GitHub com label/status apropriado (ex.: `ready-for-review`).
 2. Garantir sessions da task com `status: closed`.
 3. Garantir `parent_session` explicito em todas as sessions (`[[...]]` ou `none`).
 
-Observacao:
-
-- `docs/obsidian/Sessions/` e a fonte de verdade para leitura e escrita de sessoes neste projeto.
+`docs/obsidian/Sessions/` e a fonte de verdade para leitura e escrita de sessoes neste projeto. Decisoes de arquitetura ou de workflow viram ADR em `docs/obsidian/Decisions/`, nao ficam so no chat.
 
 ## Sequencia Operacional (resumo)
 
 1. Session Startup
-2. Feedforward
-3. Implementacao (TDD)
-4. Feedback (piramide de testes)
+2. Feedforward (solucao inteira desenhada)
+3. Implementacao com testes obrigatorios
+4. Feedback (piramide de testes + `/speckit.verify` quando houver `checks.md`)
 5. Commit
 6. Session Save
 
-## Instrucoes Relacionadas (validas neste repo)
+## Instrucoes Relacionadas
 
-Feedforward:
+Sempre ligadas: este arquivo, `voy-app.mdc`, `code-conventions.mdc`.
 
-- `voy-app.mdc`
-- `architecture.mdc`
-- `code-conventions.mdc`
-- `solid-principles.mdc`
+Ao editar `src/**/*.{ts,tsx,js,jsx}`: `architecture.mdc`, `solid-principles.mdc`.
 
-Feedback:
+Sob demanda:
 
-- `definition-of-done.mdc` (DoD Harness - OBRIGATORIO)
-- `tdd-workflow.mdc`
+- `definition-of-done.mdc` (DoD Harness)
+- `testing-workflow.mdc`
+- `spec-lean.mdc`
 - `validation-pyramid.mdc`
 - `pre-commit-hooks.mdc`
-- `.cursor/skills/reactotron/SKILL.md` (opcional para diagnostico de falhas, logs e investigacao)
-
-Suporte:
-
 - `memory-system.mdc`
 - `documentation.mdc`
+- `.cursor/skills/reactotron/SKILL.md` (diagnostico de falhas)
+
+Subagentes sob demanda em `.cursor/agents/`: `/code-reviewer`, `/github`, `/qa`, `/ui`, `/feature`. Skills em `.cursor/skills/`.
 
 ## Anti-Patterns (nao fazer)
 
 - Comecar codificacao sem contexto da task.
+- Comecar a editar sem a solucao desenhada.
+- Rodar RED → GREEN → REFACTOR dentro do loop do agente.
 - Pular validacao em camadas.
+- O autor declarar done sem `/speckit.verify` quando existe `checks.md`.
 - Declarar done sem evidenciar os gates ativos.
 - Referenciar instrucoes inexistentes ou desatualizadas.
-- Atualizar muitos arquivos sem plano/teste focado.
+- Converter subagentes em skills sem um ganho real de carga (eles ja sao sob demanda).

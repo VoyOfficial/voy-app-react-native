@@ -52,7 +52,7 @@ GitHub integration for Issue management and PR automation using the `gh` CLI.
 - ⚠️ Never hardcode Status option names — run `gh project field-list` first, since column/option names can be renamed on the board without notice
 - ⚠️ Always follow the [PR Context Gathering Workflow](references/pr-context-gathering-workflow.md) before creating any PR
 - ⚠️ Only close an Issue after required tests pass and (when relevant) spec-driven-eval score ≥90%
-- ⚠️ Commit messages referenced/quoted in PR descriptions must follow the Conventional Commits format defined in `AGENTS.md`
+- ⚠️ Commit messages referenced/quoted in PR descriptions must follow the Conventional Commits format defined in `.cursor/rules/harness-engineering.mdc`
 
 ## Operational patterns
 

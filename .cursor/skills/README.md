@@ -13,4 +13,4 @@ Skills disponíveis para os agentes neste projeto. Cada skill vive em `.cursor/s
 | `spec-driven-eval` | Avaliar o quão completa está uma implementação frente a um PRD/spec. |
 | `thermo-nuclear-code-quality-review` | Padrão de review extremamente rigoroso, usado pelo `/code-reviewer`. |
 
-Consulte `.cursor/agents/*.md` para os subagentes que usam essas skills, e `AGENTS.md` na raiz para o workflow geral.
+Consulte `.cursor/agents/*.md` para os subagentes que usam essas skills. O workflow operacional está em `.cursor/rules/harness-engineering.mdc` (`AGENTS.md` só aponta para ele).
