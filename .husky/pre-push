@@ -5,8 +5,9 @@
 #
 # 1. Re-validates every commit message in the push range (catches commits that
 #    entered via rebase/cherry-pick and skipped the commit-msg hook).
-# 2. yarn lint:check - full ESLint pass (read-only, no --fix).
-# 3. Unit test suite (no coverage gate - coverage e um check manual do DoD,
+# 2. Duplicacao introduzida pelo range do push (jscpd, limite em .jscpd.json).
+# 3. yarn lint:check - full ESLint pass (read-only, no --fix).
+# 4. Unit test suite (no coverage gate - coverage e um check manual do DoD,
 #    ver .cursor/rules/definition-of-done.mdc Gate 1).
 #
 # Integration tests (yarn test:integration) NAO rodam aqui: dependem do
@@ -16,7 +17,7 @@
 # Nota: husky roda este arquivo com `sh -e`, entao todo comando que pode
 # legitimamente retornar != 0 precisa de `|| true` ou estar dentro de um `if`.
 #
-# See: AGENTS.md (section 5), .cursor/rules/definition-of-done.mdc
+# See: .cursor/rules/harness-engineering.mdc (section 5), .cursor/rules/definition-of-done.mdc
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
 cd "$REPO_ROOT" || exit 1
@@ -78,6 +79,20 @@ else
   fi
 
   echo "  Todos os commits no range estao validos"
+fi
+
+# Duplicacao so do que o push introduz. O agregado de src/ fica no
+# duplication:check manual. Um gate no repo inteiro empurra para --no-verify.
+if [ -n "$merge_base" ]; then
+  echo ""
+  echo "Pre-push: duplicacao introduzida no range..."
+  if ! sh scripts/duplication-check-range.sh "$merge_base"; then
+    echo ""
+    echo "Push bloqueado: duplicacao acima do limite nos arquivos do range."
+    echo "Inspecao manual: yarn duplication:check:range"
+    echo ""
+    exit 1
+  fi
 fi
 
 echo ""

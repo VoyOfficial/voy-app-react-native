@@ -33,14 +33,14 @@ Git hooks são **Feedback Sensors Computacionais**:
 
 | Hook | Bloqueia? | O que roda |
 |------|-----------|------------|
-| `commit-msg` | Sim | Formato Conventional Commits (`AGENTS.md`) |
+| `commit-msg` | Sim | Formato Conventional Commits (`harness-engineering.mdc`) |
 | `pre-commit` | Sim | TypeScript (escopado) → jscpd → lint-staged |
-| `pre-push` | Sim | Revalida commits do range → `yarn lint:check` → testes unitários |
+| `pre-push` | Sim | Revalida commits do range → duplicação do range (jscpd) → `yarn lint:check` → testes unitários |
 | `post-commit`/`post-checkout`/`post-merge`/`post-rewrite` | Não | Rebuild do grafo `graphify` (advisory) |
 
 ### `commit-msg`
 
-Valida o formato definido em `AGENTS.md` (seção "Commits"):
+Valida o formato definido em `harness-engineering.mdc` (seção "Commit e Rastreabilidade"):
 
 ```
 <type>(<module>/<file>): <description>
@@ -60,8 +60,9 @@ Valida o formato definido em `AGENTS.md` (seção "Commits"):
 ### `pre-push`
 
 1. Revalida **todas** as mensagens de commit no range `merge-base(origin/<branch>)..HEAD` (pega commits que entraram via rebase/cherry-pick e escaparam do `commit-msg`).
-2. `yarn lint:check` — ESLint completo, sem `--fix` (checagem, não correção).
-3. Suite de testes **unitários** (`npx jest --passWithNoTests --no-cache --runInBand`) — sem coverage gate (ver "Débitos Conhecidos").
+2. **jscpd no range do push** — só os arquivos de `src/` que o range introduz (`scripts/duplication-check-range.sh`). O agregado do repositório não bloqueia o push: um gate sobre `src/` inteiro empurra para `--no-verify`. Inspeção manual: `yarn duplication:check:range`.
+3. `yarn lint:check` — ESLint completo, sem `--fix` (checagem, não correção).
+4. Suite de testes **unitários** (`npx jest --passWithNoTests --no-cache --runInBand`) — sem coverage gate (ver "Débitos Conhecidos").
 
 **Integration tests (`yarn test:integration`) NÃO rodam no pre-push**: dependem do `json-server` local (`yarn server`) rodando, o que é frágil para um git hook automático. Rodar manualmente antes do PR ou integrar numa pipeline de CI futura.
 
@@ -87,6 +88,7 @@ Estes itens existiam **antes** da implementação dos hooks e não foram corrigi
 	"lint:check": "eslint '*/**/*.{js,jsx,ts,tsx}'",
 	"typecheck": "tsc --noEmit",
 	"duplication:check": "jscpd src --config .jscpd.json",
+	"duplication:check:range": "sh scripts/duplication-check-range.sh",
 	"test:staged": "jest --passWithNoTests --findRelatedTests --no-cache --runInBand"
 }
 ```
@@ -104,14 +106,13 @@ git push --no-verify
 HUSKY=0 git push
 ```
 
-**⚠️ AVISO**: Bypass deve ser exceção (ex.: hotfix crítico em produção). Se isso virar rotina, ajuste de processo/configuração é necessário. Ver `AGENTS.md` regra 5.5 (nunca usar `--no-verify`/`HUSKY=0` sem justificativa forte).
+**⚠️ AVISO**: Bypass deve ser exceção (ex.: hotfix crítico em produção). Se isso virar rotina, ajuste de processo/configuração é necessário. Ver `harness-engineering.mdc` (nunca usar `--no-verify`/`HUSKY=0`).
 
 ---
 
 ## 🔗 Relacionados
 
-- `harness-engineering.mdc` - Framework geral
+- `harness-engineering.mdc` - Framework geral e formato de commit
 - `validation-pyramid.mdc` - Todas as camadas de testes
 - `definition-of-done.mdc` - Gate manual antes do PR (complementa, não duplica, os hooks)
 - `code-conventions.mdc` - Regras de código
-- `AGENTS.md` - Formato de commit (seção "Commits")
