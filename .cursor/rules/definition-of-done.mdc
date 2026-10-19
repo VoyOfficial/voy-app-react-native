@@ -121,7 +121,7 @@ find docs/obsidian/Sessions/ -name "ISSUE-<n>-*.md"
 ```
 commit-msg (Husky):    Formato Conventional Commits
 pre-commit (Husky):    TypeScript (escopado) + jscpd + lint-staged (ESLint/Prettier/Jest related)
-pre-push (Husky):      Revalida commits + ESLint completo + suite unitaria
+pre-push (Husky):      Revalida commits + duplicacao do range + ESLint completo + suite unitaria
 DoD Harness (manual, antes PR): yarn test --coverage + integration + Review + Docs
 ```
 
@@ -139,7 +139,18 @@ Hooks = **preventivo** (fast feedback, automatico). DoD = **gate final** (compre
 
 ## 🚀 Como Usar
 
-Checklist manual antes de criar PR:
+### Metodo 1: Script
+
+```bash
+./scripts/validate-dod.sh --task ISSUE-<n>
+```
+
+Flags: `--skip-tests`, `--skip-e2e`, `--e2e-file`, `--e2e-release`, `--help`.
+Exit codes: `0` gates ativos ok, `1` gate bloqueante falhou, `2` argumento invalido.
+
+Gate 2 fica suspenso (sem framework de E2E). Gate 3 e Gate 5 sao orientados: o script imprime o que rodar e nao falha sozinho.
+
+### Metodo 2: Checklist manual
 
 ```
 ✅ yarn test --coverage → todos verdes
