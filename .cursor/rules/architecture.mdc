@@ -1,5 +1,7 @@
 ---
-alwaysApply: true
+alwaysApply: false
+description: Clean Architecture, MVVM, and DDD templates for feature code. Load when editing application source.
+globs: src/**/*.{ts,tsx,js,jsx}
 ---
 
 # ARCHITECTURE - Clean Architecture + MVVM + DDD (voy-app-react-native)

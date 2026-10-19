@@ -3,10 +3,10 @@
 
 # Harness - commit-msg gate
 #
-# Validates Conventional Commits format defined in AGENTS.md (section "Commits"):
+# Validates Conventional Commits format defined in harness-engineering.mdc:
 #   <type>(<module>/<file>): <description>
 #
-# See: AGENTS.md, .cursor/rules/pre-commit-hooks.mdc
+# See: .cursor/rules/harness-engineering.mdc, .cursor/rules/pre-commit-hooks.mdc
 
 commit_msg_file="$1"
 commit_msg=$(cat "$commit_msg_file")

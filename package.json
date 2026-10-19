@@ -13,6 +13,7 @@
     "lint:check": "eslint '*/**/*.{js,jsx,ts,tsx}'",
     "typecheck": "tsc --noEmit",
     "duplication:check": "jscpd src --config .jscpd.json",
+    "duplication:check:range": "sh scripts/duplication-check-range.sh",
     "mutation:check": "stryker run",
     "pretty": "prettier --config ./.prettierrc.js --write \"*/**/*.{js,jsx,ts,tsx,json}\"",
     "prepare": "husky install",

@@ -13,7 +13,7 @@
 # legitimamente retornar != 0 (grep sem match, etc) precisa de `|| true`
 # ou estar dentro de um `if`.
 #
-# See: AGENTS.md, .cursor/rules/pre-commit-hooks.mdc, .cursor/rules/validation-pyramid.mdc
+# See: .cursor/rules/harness-engineering.mdc, .cursor/rules/pre-commit-hooks.mdc, .cursor/rules/validation-pyramid.mdc
 
 STAGED_TS=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null | grep -E '\.tsx?$' || true)
 

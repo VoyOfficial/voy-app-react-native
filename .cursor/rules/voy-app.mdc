@@ -29,10 +29,10 @@ This file should be concise and operational.
 
 | Topic | File | When to load |
 |------|------|--------------|
-| Clean Architecture + MVVM + DDD templates | `#architecture.mdc` | Always |
+| Clean Architecture + MVVM + DDD templates | `#architecture.mdc` | Editing `src/**/*.{ts,tsx,js,jsx}` |
 | Code conventions & naming | `#code-conventions.mdc` | Always |
-| Validation pyramid | `#validation-pyramid.mdc` | Always |
-| TDD workflow & commits | `#tdd-workflow.mdc` | Behavior changes/refactor |
+| Validation pyramid | `#validation-pyramid.mdc` | Test strategy / gates |
+| Testing workflow & commits | `#testing-workflow.mdc` | Behavior changes/refactor |
 | SOLID principles | `#solid-principles.mdc` | Architecture-heavy changes |
 | Memory / session system | `#memory-system.mdc` | Session/work documentation |
 
@@ -49,6 +49,7 @@ Quick rule: use the minimum necessary set of instructions for the current task w
 3. Define which feature/bounded context this belongs to (or if it's shared).
 4. Define where code belongs by layer (domain/data/presentation, feature vs shared).
 5. Define test strategy before coding (domain/data/presentation).
+6. Draw the whole solution (flow, layers, files) before the first edit.
 
 Expected output before coding:
 - Reuse vs creation decision

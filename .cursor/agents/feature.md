@@ -113,40 +113,24 @@ Before coding:
    - `harness-engineering.mdc` (mandatory)
    - `architecture.mdc` (mandatory - Clean Architecture + MVVM + DDD)
    - `solid-principles.mdc` (if refactoring)
-   - `tdd-workflow.mdc` (mandatory)
+   - `testing-workflow.mdc` (mandatory — tests required, no red-green loop)
    - `validation-pyramid.mdc` (mandatory)
 2. ✅ Define which feature/bounded context this belongs to
 3. ✅ Define minimal implementation plan by layer (domain → data → presentation)
 4. ✅ Map test strategy (unit for domain, integration for data/presentation)
 
-**Step 4.3: TDD Implementation**
+**Step 4.3: Implementation with required tests**
 
-Follow RED-GREEN-REFACTOR cycle, layer by layer:
-
-**RED Phase:**
-
-```bash
-# Create failing test first
-# File: __tests__/[layer]/[feature]/[component].test.ts
-```
-
-**GREEN Phase:**
+The solution from feedforward is already drawn (flow, layers, files, proofs). Implement that block. Tests are mandatory and must fail when the behavior breaks. Do not run a RED → GREEN → REFACTOR loop inside the agent (`testing-workflow.mdc`).
 
 ```typescript
-// Implement minimal code to pass test
-// Follow Clean Architecture: domain -> data -> presentation
-```
-
-**REFACTOR Phase:**
-
-```typescript
-// Clean up while keeping tests green
-// Extract helpers, improve naming, remove duplication
+// domain -> data -> presentation
+// each behavior has a test in the matching layer
 ```
 
 **Continuous Validation:**
 
-- Run `jest --watch` for instant feedback
+- Run Jest on the files you touched
 - Fix TypeScript errors immediately
 - Run ESLint before commits
 
@@ -328,7 +312,7 @@ Final documentation update:
 
 1. `.cursor/rules/harness-engineering.mdc` ⭐ MANDATORY
 2. `.cursor/rules/definition-of-done.mdc` ⭐ DoD HARNESS - MANDATORY
-3. `.cursor/rules/tdd-workflow.mdc` ⭐ MANDATORY
+3. `.cursor/rules/testing-workflow.mdc` ⭐ MANDATORY
 4. `.cursor/rules/validation-pyramid.mdc` ⭐ MANDATORY
 5. `.cursor/rules/memory-system.mdc` ⭐ MANDATORY (for Obsidian docs)
 6. `.cursor/rules/architecture.mdc` ⭐ MANDATORY
@@ -342,7 +326,7 @@ Final documentation update:
 Feature Agent completes successfully ONLY when:
 
 ✅ All 7 phases executed
-✅ Implementation follows Clean Architecture + MVVM + DDD + SOLID + TDD
+✅ Implementation follows Clean Architecture + MVVM + DDD + SOLID + required tests
 ✅ **DoD Harness executed: all active gates passing**
   - Gate 1: Código e Testes (unit + integration + TS + lint)
   - Gate 2: E2E (N/A hoje)

@@ -18,7 +18,7 @@ This agent applies the `thermo-nuclear-code-quality-review` skill (Pass 2) toget
 
 **Usage:** `/code-reviewer <target-branch>` (default target branch: `main`)
 
-**Relationship to Cursor `/code-review`:** `/code-review` is optional pre-PR triage. `/code-reviewer` is the **formal Gate 3** and already incorporates Pass 1 — do not skip Pass 1 even if `/code-review` ran earlier.
+**Relationship to Cursor `/code-review`:** `/code-review` is optional pre-PR triage. `/code-reviewer` is the **formal Gate 3** and the only structural review checklist. `/speckit.verify` delegates here. Do not keep a second copy of this checklist.
 
 ## 🎯 Review Philosophy
 
@@ -195,14 +195,29 @@ git diff origin/<target>...origin/<source> --stat
 
 **Validate:** Reasonable file count, test files present, no unexpected files
 
-### 5️⃣ Check Code Reuse
+### 5️⃣ Reuse-First Gate (BLOCKING)
 
-Search for duplicates before approving new components/hooks/usecases:
+Search the **current tree**, not only the diff hunks. A new feature file can duplicate a shared unit that this branch did not touch.
 
 ```bash
-git diff origin/<target>...origin/<source> -- 'src/shared/**'
-git diff origin/<target>...origin/<source> -- 'src/features/**/domain/**'
+# Files this branch adds
+git diff --name-only --diff-filter=A origin/<target>...HEAD
+
+# For each new component, hook, helper, or service, search the repo as it is now
+git grep -n -I -w "<Symbol>" -- src/shared src/features
+
+# How many features consume a shared symbol (one directory under src/features = one feature)
+git grep -l "<Symbol>" -- src/features | awk -F/ 'NF>2 {print $3}' | sort -u
 ```
+
+Treat these paths as reusable units: `src/shared/presentation/components/`, `src/shared/presentation/hooks/`, `src/shared/utils/`, `src/shared/domain/`, `src/shared/data/`, and the matching folders inside a feature (`presentation/components/`, `presentation/viewmodels/use*.ts`, `domain/usecases/`).
+
+**BLOCKING:**
+
+- A new file under `src/features/**` matches an existing shared component, hook, helper, or service by name or by behavior. Reuse the shared unit.
+- A new file under `src/shared/**` is referenced from only one feature. Keep it in that feature.
+
+A similar name in another bounded context is not a duplicate when the behavior differs. Say which behavior you compared. Do not approve while either blocking case stands.
 
 ### 6️⃣ Analyze Files
 
@@ -354,6 +369,8 @@ Treat these as **BLOCKING** unless author can justify clearly:
 - 🚫 PR adds ad-hoc branching that tangles existing flow
 - 🚫 PR scatters feature checks across shared code
 - 🚫 PR adds unnecessary abstraction/wrapper/cast-heavy contract
+- 🚫 PR adds a feature component, hook, helper, or service that already exists in `src/shared`
+- 🚫 PR puts a component, hook, helper, or service in `src/shared` that only one feature uses
 - 🚫 PR duplicates existing helper or misplaces logic in wrong layer
 - 🚫 PR breaks the domain→data/presentation dependency rule
 - 🚫 PR adds comments explaining code behavior
@@ -382,6 +399,11 @@ Treat these as **BLOCKING** unless author can justify clearly:
 - File Size Issues: N files >1000 lines
 - Spaghetti Growth: N instances
 - Unnecessary Abstractions: N
+
+**Reuse-First:** ✅/⚠️/❌
+- New files checked: N
+- Duplicates of shared: N
+- Shared used by a single feature: N
 
 **Architecture Compliance:** ✅/⚠️/❌
 **Total Issues:** N (Pass 1: X high, Y medium | Pass 2: Z blocking)
@@ -480,6 +502,8 @@ Use `[BLOCKER]` for structural blockers; otherwise `[WARNING]`.
 - [ ] Spaghetti growth (ad-hoc conditionals in wrong places)
 - [ ] Unnecessary abstraction (wrapper with no value)
 - [ ] Duplication when canonical helper exists
+- [ ] New feature unit duplicates an existing `src/shared` unit
+- [ ] New `src/shared` unit is used by only one feature
 - [ ] Logic in the wrong layer
 
 **Pass 2 — Standard Blockers:**
@@ -520,7 +544,7 @@ git show origin/<source>:<file>                    # Full file
 2. Fetch updates: `git fetch origin`
 3. View commits & validate format (atomic, conventional commit)
 4. Check statistics (file count, test presence)
-5. Check code reuse (no duplicate hooks/use cases/helpers)
+5. **Reuse-First gate (BLOCKING):** list added files (`--diff-filter=A`) and, for each new component/hook/helper/service, search the current tree with `git grep`. Do not duplicate `src/shared`. Do not put a single-feature unit in `src/shared`.
 6. Analyze every file via git diff — **Pass 1:** bugs, security, tests, UI/navigation contracts, memory leaks
 7. Validate Clean Architecture dependency rule (BLOCKING if violated)
 8. **Pass 2 — STRUCTURAL GATE:** For each file, run Code Judo + file size + spaghetti growth + abstraction quality

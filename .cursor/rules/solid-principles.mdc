@@ -1,5 +1,7 @@
 ---
-alwaysApply: true
+alwaysApply: false
+description: SOLID principles applied to this codebase. Load when editing application source.
+globs: src/**/*.{ts,tsx,js,jsx}
 ---
 
 # PRINCÍPIOS SOLID E BOAS PRÁTICAS DE DESENVOLVIMENTO
@@ -269,7 +271,9 @@ export class GetPlaceListUseCase {
 
 ## 🔄 Padrões de Refatoração
 
-### 1. Refatoração Guiada por Testes (TDD)
+### 1. Refatoração Guiada por Testes
+
+O loop do agente nao exige RED → GREEN → REFACTOR. Testes continuam obrigatorios e protegem a refatoracao. Ver `testing-workflow.mdc`.
 
 **Processo recomendado:**
 

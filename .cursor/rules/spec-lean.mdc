@@ -1,0 +1,31 @@
+---
+alwaysApply: false
+description: Spec Lean default flow (plan, checks, independent verify). Use for a single-module feature. Keep traditional speckit for large or multi-module work.
+---
+
+# Spec Lean
+
+Fluxo default para feature de um modulo. Os comandos tradicionais (`/speckit.specify`, `/speckit.plan`, `/speckit.tasks`, `/speckit.implement`) continuam no repositorio para feature grande ou multi-modulo.
+
+## Quando usar
+
+- Default: `/speckit.lean-plan` → revisao humana → `/speckit.lean-checks` → implementacao → `/speckit.verify`.
+- Tradicional: feature que atravessa varios modulos, ou quando o plano lean nao cabe numa pagina.
+
+## Pecas
+
+- `plan.md` — Problem, Flow, Impact, Relations, Surface, Landing, Criteria. Sem catalogo de componentes.
+- `checks.md` — cada criterio vira claim + prova, mais Coverage e Handoff.
+- `/speckit.verify` — verificador novo, nunca o autor, sobre `base..HEAD`. O review estrutural fica com `/code-reviewer`.
+
+## Isolamento de fase
+
+A implementacao comeca numa janela de contexto zerada. A unica entrada e `plan.md` + `checks.md`. Nao continuar no mesmo chat que fez o planejamento.
+
+## Independencia
+
+Quem implementa nao declara a conclusao. Com `checks.md` presente, done exige `/speckit.verify` executado por um agente que nao escreveu o codigo. O verify delega a estrutura ao `/code-reviewer` (porta unica de review). Nao duplicar o checklist de review em outro arquivo.
+
+## Validacao visual
+
+Playwright e web-only. Este app nao tem framework de E2E configurado; o gate visual fica suspenso ate Detox ou Maestro (ver `validation-pyramid.mdc`). Nao tratar Playwright como substituto.
