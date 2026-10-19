@@ -135,8 +135,8 @@ revisar fluxo ViewModel -> UseCase -> Repository na tela de busca
 
 ## Integration with test workflow
 
-Reactotron is especially valuable during TDD cycles:
+Reactotron is especially valuable while tests are running:
 
-1. **Red phase**: Use Reactotron to understand why test fails
-2. **Green phase**: Verify action/state correlation matches expectations
-3. **Refactor phase**: Confirm no regressions in action sequence
+1. **Failing test**: Use Reactotron to see which action or state diverged
+2. **Passing test**: Verify action/state correlation matches the claim
+3. **After a refactor**: Confirm the action sequence did not change

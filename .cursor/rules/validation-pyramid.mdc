@@ -33,7 +33,7 @@ A pirâmide de validação define os **feedback sensors** para o **Behaviour Har
         Sensor: Código válido e consistente
 ```
 
-**Nota sobre E2E:** o projeto ainda não tem framework de E2E configurado (Detox, Maestro, etc.). Enquanto isso, "done" = unit + integration verdes. Quando um framework de E2E for adotado, criar `.cursor/rules/e2e-testing.mdc` e promover E2E a gate final (como descrito em `tdd-workflow.mdc`).
+**Nota sobre E2E:** o projeto ainda não tem framework de E2E configurado (Detox, Maestro, etc.). Enquanto isso, "done" = unit + integration verdes. Quando um framework de E2E for adotado, criar `.cursor/rules/e2e-testing.mdc` e promover E2E a gate final (como descrito em `testing-workflow.mdc`). Playwright é web-only e não cobre este app.
 
 ---
 
@@ -201,7 +201,7 @@ npx jest --testPathPattern='integration.test' -c jest.config.js
 Sem framework de E2E configurado no momento. Quando um for adotado (Detox, Maestro, etc.):
 
 1. Criar `.cursor/rules/e2e-testing.mdc` com o guia especifico da ferramenta escolhida.
-2. Promover E2E a gate final em `tdd-workflow.mdc`, `definition-of-done.mdc` e `validation-pyramid.mdc`.
+2. Promover E2E a gate final em `testing-workflow.mdc`, `definition-of-done.mdc` e `validation-pyramid.mdc`.
 3. Adicionar a camada E2E de volta ao topo desta pirâmide.
 
 ---
@@ -237,7 +237,7 @@ yarn lint
 │  1️⃣ DURANTE DESENVOLVIMENTO                                             │
 │     ├─→ TypeScript LSP ──→ Erro de tipo? Fix antes de continuar        │
 │     ├─→ ESLint LSP     ──→ Violação? Fix ou ignorar com justificativa  │
-│     └─→ Jest watch     ──→ Teste falhou? TDD: fix código               │
+│     └─→ Jest watch     ──→ Teste falhou? Corrigir o comportamento    │
 │                                                                          │
 │  2️⃣ PRÉ-COMMIT (Husky - ver pre-commit-hooks.mdc)                       │
 │     └─→ typecheck (escopado) + jscpd + lint-staged ──→ Falhou? Bloqueado │

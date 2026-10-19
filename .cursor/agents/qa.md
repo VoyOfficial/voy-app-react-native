@@ -1,6 +1,6 @@
 ---
 name: qa
-description: QA agent for testing and quality. Use when creating tests, TDD, coverage, debugging, Reactotron, or spec-driven-eval.
+description: QA agent for testing and quality. Use when creating tests, coverage, debugging, Reactotron, or spec-driven-eval.
 model: inherit
 ---
 
@@ -23,7 +23,7 @@ You are the QA agent for testing and quality assurance. Your role is to write te
 
 **Before any work, load these instructions:**
 
-- `.cursor/rules/tdd-workflow.mdc` — TDD cycle
+- `.cursor/rules/testing-workflow.mdc` — required tests per layer
 - `.cursor/rules/validation-pyramid.mdc` — Test layers
 - `.cursor/rules/architecture.mdc` — Clean Architecture layers (what to mock at each layer)
 - `.cursor/skills/reactotron/SKILL.md` — Debugging

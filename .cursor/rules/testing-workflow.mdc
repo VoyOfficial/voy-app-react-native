@@ -1,0 +1,52 @@
+---
+alwaysApply: false
+description: Required tests for behavior changes. Load when implementing features, fixing bugs, or refactoring.
+---
+
+# Testing Workflow
+
+> Load this when implementing features, fixing bugs, or refactoring.
+> Tests are mandatory. The red-green-refactor loop inside the agent is not.
+
+---
+
+## Design first, then implement
+
+Before the first edit, write down the whole solution:
+
+- flow the user or caller goes through
+- layers and files that will change (`domain` / `data` / `presentation`)
+- which tests prove each behavior
+
+Then implement that block. Do not discover the design one failing test at a time inside the agent loop. That cycle spends many extra turns, breaks differently across models, and does not transfer the human benefits of test-first work.
+
+## Tests stay mandatory
+
+Every behavior change ships with tests that fail when the behavior breaks:
+
+- New features
+- Bug fixes (a test that reproduces the bug)
+- Refactoring (tests that lock the current behavior before the move)
+- Entities, UseCases, Repositories, DataSources, ViewModels, Views
+
+A change is not done while those tests are red.
+
+## Where each test lives
+
+- **domain** (Entities/UseCases): pure test, no React or React Native. Mock only the `Repository` interface.
+- **data** (Repository/DataSource): mock the `DataSource` and assert the DTO → Entity mapping.
+- **presentation** (ViewModel/View): mock the UseCase (or the `di/` factory).
+
+## Feature is DONE when
+
+```
+Unit tests (domain) pass + Integration tests (data/presentation) pass = DONE
+```
+
+E2E is not a gate today (no E2E framework configured — see `validation-pyramid.mdc`). When E2E is introduced, it becomes the final gate.
+
+## Related
+
+- `.cursor/rules/harness-engineering.mdc` — workflow and commit policy
+- `.cursor/rules/validation-pyramid.mdc` — which layer to run
+- `.cursor/rules/definition-of-done.mdc` — gates before a PR
