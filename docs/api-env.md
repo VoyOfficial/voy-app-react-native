@@ -19,6 +19,9 @@ yarn android     # ou yarn ios / yarn start
 
 `react-native-config` lê o `.env` ativo. Overrides privados: use `.env.secrets` (gitignored); não coloque secrets em `.env.local` / `.env.prod`.
 
+- **Android:** `android/app/build.gradle` aplica `dotenv.gradle`.
+- **iOS:** o pod `react-native-config` (autolink + `pod install`) gera `GeneratedDotEnv.m` no build; o `Podfile` aponta `ENVFILE` para o `.env` da raiz. Após clonar ou mudar pods: `cd ios && pod install`.
+
 Factories leem a base só via `src/core` (`getApiUrl` / `apiEndpoints`).
 
 ## Testes de integração
