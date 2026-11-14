@@ -11,7 +11,7 @@ import {
 } from './styles';
 
 export type RecommendationProps = {
-  id: number;
+  id: string;
   imageUrl: string;
   title: string;
   location: string;

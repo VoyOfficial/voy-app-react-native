@@ -33,13 +33,13 @@ export default class RemoteListPlaces implements ListPlaces {
           : responseBody.places || [];
 
         const places: Array<PlaceModel> = placesArray.map((apiPlace: any) => ({
-          id: apiPlace.googlePlaceId,
+          id: String(apiPlace.googlePlaceId || apiPlace.id || ''),
           imageUri: formatBase64Image(
             apiPlace.photo || apiPlace.photoReference || '',
           ),
           title: apiPlace.name || '',
           location: apiPlace.address || '',
-          myDistanceOfLocal: '0',
+          myDistanceOfLocal: apiPlace.distanceFromUserLocation || '0',
           amountOfReviews: String(apiPlace.userRatingsTotal || 0),
           rating: String(apiPlace.rating || 0),
         }));

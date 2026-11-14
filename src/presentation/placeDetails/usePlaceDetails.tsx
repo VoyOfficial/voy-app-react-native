@@ -4,7 +4,7 @@ import { PlaceDetailsViewModel } from './placeDetails';
 
 type Props = {
   getPlaceDetails: GetPlaceDetails;
-  id: number;
+  id: string;
 };
 
 type PlaceDetails = {

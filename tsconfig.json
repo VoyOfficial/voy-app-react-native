@@ -13,6 +13,9 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
+      "~/core": [
+        "src/core"
+      ],
       "~/main": [
         "src/main"
       ],

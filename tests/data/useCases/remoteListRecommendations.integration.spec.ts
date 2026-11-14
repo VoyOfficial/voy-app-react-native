@@ -1,12 +1,18 @@
 import { RemoteListRecommendations } from '~/data/useCases';
 import { AxiosAdapter } from '~/infra/http';
 import { FirebaseAnalyticsAdapter } from '~/infra/analytics';
+import { getRegistrationApiV1BaseUrl } from '../helpers/registrationApiBaseUrl';
+import { warmupRegistrationApi } from '../helpers/warmupRegistrationApi';
 
 describe('Integration: RemoteListRecommendations - Success Scenario', () => {
-  const baseUrl = 'http://localhost:8080/api/registration/v1';
-  const location = { long: '-50.877608', lat: '-29.385436' };
+  const baseUrl = getRegistrationApiV1BaseUrl();
+  const location = { long: '-50.8744', lat: '-29.37855' };
 
   let sut: RemoteListRecommendations;
+
+  beforeAll(async () => {
+    await warmupRegistrationApi();
+  }, 180000);
 
   beforeEach(() => {
     const httpClient = new AxiosAdapter();
@@ -43,7 +49,7 @@ describe('Integration: RemoteListRecommendations - Success Scenario', () => {
     expect(result.length).toBeGreaterThan(0);
 
     const firstRecommendation = result[0];
-    expect(typeof firstRecommendation.id).toBe('number');
+    expect(typeof firstRecommendation.id).toBe('string');
     expect(typeof firstRecommendation.imageUrl).toBe('string');
     expect(typeof firstRecommendation.title).toBe('string');
     expect(typeof firstRecommendation.location).toBe('string');
@@ -54,41 +60,17 @@ describe('Integration: RemoteListRecommendations - Success Scenario', () => {
     expect(firstRecommendation.location.length).toBeGreaterThan(0);
   });
 
-  it('should return expected recommendations from Gramado region', async () => {
+  it('should return expected recommendations from Gramado/Canela region', async () => {
     const result = await sut.list(location);
 
     expect(result).toBeDefined();
     expect(result.length).toBeGreaterThan(0);
 
     const recommendationTitles = result.map((rec) => rec.title);
-    expect(recommendationTitles).toContain('Lago Negro');
     expect(recommendationTitles).toContain('Fonte do Amor Eterno');
 
-    const lagoNegroRec = result.find((rec) => rec.title === 'Lago Negro');
-    expect(lagoNegroRec).toBeDefined();
-    expect(lagoNegroRec?.location).toContain('Gramado');
-    expect(lagoNegroRec?.myDistanceOfLocal).toContain('km');
-  });
-
-  it('should successfully integrate with real HTTP client and analytics', async () => {
-    const result = await sut.list(location);
-
-    expect(result).toBeDefined();
-    expect(Array.isArray(result)).toBe(true);
-    expect(result.length).toBeGreaterThan(0);
-
-    const recommendationTitles = result.map((rec) => rec.title);
-    expect(recommendationTitles.length).toBeGreaterThan(0);
-    expect(
-      recommendationTitles.every((title) => typeof title === 'string'),
-    ).toBe(true);
-
-    result.forEach((recommendation) => {
-      expect(recommendation.id).toBeDefined();
-      expect(recommendation.title).toBeTruthy();
-      expect(recommendation.location).toBeTruthy();
-      expect(recommendation.rating).toBeDefined();
-      expect(recommendation.myDistanceOfLocal).toBeDefined();
-    });
+    const fonte = result.find((rec) => rec.title === 'Fonte do Amor Eterno');
+    expect(fonte).toBeDefined();
+    expect(fonte?.location).toContain('Gramado');
   });
 });

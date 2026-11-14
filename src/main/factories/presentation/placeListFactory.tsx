@@ -1,5 +1,6 @@
 import React, { useLayoutEffect } from 'react';
 import { RouteProp } from '@react-navigation/native';
+import { apiEndpoints } from '~/core';
 import { Actions, Routes, navigator } from '~/main/navigation';
 import { AxiosAdapter } from '~/infra/http';
 import { RemoteListPlaces, RemoteListRecommendations } from '~/data/useCases';
@@ -33,12 +34,12 @@ const PlaceListFactory = ({ route: { params }, navigation }: Props) => {
     navigate: new Actions(navigator).navigate,
     origin,
     listRecommendations: new RemoteListRecommendations(
-      'http://localhost:8080/api/registration/v1/places/recommendations',
+      apiEndpoints.recommendations(),
       new AxiosAdapter(),
       new FirebaseAnalyticsAdapter(),
     ),
     listPlaces: new RemoteListPlaces(
-      'http://localhost:8080/api/registration/v1/places',
+      apiEndpoints.places(),
       new AxiosAdapter(),
       new FirebaseAnalyticsAdapter(),
     ),

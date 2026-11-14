@@ -10,7 +10,7 @@ import {
 } from './styles';
 
 export type Place = {
-  id: number;
+  id: string;
   imageUri: string;
   title: string;
   location: string;

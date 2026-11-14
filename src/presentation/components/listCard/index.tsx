@@ -18,7 +18,7 @@ import {
 } from './styles';
 
 type Props = {
-  id: number;
+  id: string;
   index: number;
   imageUri: string;
   title: string;
