@@ -21,7 +21,7 @@ import {
 
 type Props = {
   index: number;
-  id: number;
+  id: string;
   imageUrl: string;
   title: string;
   location: string;

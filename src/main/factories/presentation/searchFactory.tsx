@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import { RouteProp } from '@react-navigation/native';
+import { apiEndpoints } from '~/core';
 import { Actions, Routes, navigator } from '~/main/navigation';
 import { Filter, Ordination } from '~/domain/enums';
 import { AxiosAdapter } from '~/infra/http';
+import { GeolocationAdapter } from '~/infra/location';
 import { RemoteSearchPlaces } from '~/data/useCases';
 import { FirebaseAnalyticsAdapter } from '~/infra/analytics';
 import { StackParams } from '../../../../src/main/navigation/navigation';
@@ -22,10 +24,11 @@ const SearchFactory = ({}: Props) => {
     },
     nextPageToken: '',
     searchPlaces: new RemoteSearchPlaces(
-      'http://localhost:3000/search',
+      apiEndpoints.search(),
       new AxiosAdapter(),
       new FirebaseAnalyticsAdapter(),
     ),
+    locationService: new GeolocationAdapter(),
     navigate: new Actions(navigator).navigate,
   });
   return <Search {...viewModel} />;

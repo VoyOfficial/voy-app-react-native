@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FilterParam } from '~/domain/params';
+import { LocationService } from '~/domain/protocols';
 import { SearchPlaces } from '~/domain/useCases';
 import { Routes } from '~/main/navigation';
 import { GenericObject } from '../../main/types/genericObject';
@@ -8,6 +9,7 @@ import { SearchViewModel } from './search';
 
 type Props = {
   searchPlaces: SearchPlaces;
+  locationService: LocationService;
   nextPageToken: string;
   filterParam: FilterParam;
   navigate: (routeName: string, params?: GenericObject | undefined) => void;
@@ -15,6 +17,7 @@ type Props = {
 
 const useSearch = ({
   searchPlaces,
+  locationService,
   filterParam,
   nextPageToken,
   navigate,
@@ -33,26 +36,35 @@ const useSearch = ({
 
   const searchTo = async (value: string) => {
     const { ordination, types } = filterParam;
-    const result = await searchPlaces.search(
-      value,
-      { ordination, types },
-      nextPageToken,
-    );
+    try {
+      const coordinates = await locationService.getCurrentPosition();
+      const result = await searchPlaces.search(
+        value,
+        { ordination, types },
+        {
+          lat: coordinates.latitude.toString(),
+          long: coordinates.longitude.toString(),
+        },
+        nextPageToken,
+      );
 
-    const auxPlaceList: Array<Place> = [];
-    result.forEach((place) => {
-      auxPlaceList.push({
-        amountOfReviews: place.amountOfReviews,
-        imageUri: place.imageUri,
-        location: place.location,
-        myDistanceOfLocal: place.myDistanceOfLocal,
-        rating: place.rating,
-        title: place.title,
-        id: place.id,
+      const auxPlaceList: Array<Place> = [];
+      result.forEach((place) => {
+        auxPlaceList.push({
+          amountOfReviews: place.amountOfReviews,
+          imageUri: place.imageUri,
+          location: place.location,
+          myDistanceOfLocal: place.myDistanceOfLocal,
+          rating: place.rating,
+          title: place.title,
+          id: place.id,
+        });
       });
-    });
 
-    setPlaceList(auxPlaceList);
+      setPlaceList(auxPlaceList);
+    } catch {
+      setPlaceList([]);
+    }
   };
 
   const showMoreDetails = (place: Place) => {

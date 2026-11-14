@@ -195,6 +195,6 @@ const recommendationModelFake = (): RecommendationModel => {
       .number({ min: 1, max: 10, precision: 0.1 })
       .toString(),
     myDistanceOfLocal: faker.datatype.number().toString(),
-    id: faker.datatype.number(),
+    id: faker.datatype.uuid(),
   };
 };

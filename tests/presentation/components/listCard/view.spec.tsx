@@ -127,7 +127,7 @@ const makeSut = (
 ) => {
   return renderWithTheme(
     <ListCard
-      id={0}
+      id="place-0"
       index={0}
       imageUri={imageUri}
       title={title}

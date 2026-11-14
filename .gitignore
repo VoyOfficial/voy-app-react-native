@@ -84,3 +84,14 @@ docs/obsidian/.obsidian/
 .stryker-tmp/
 reports/mutation/
 stryker.log
+
+### Agent local session files (do not commit)
+CONTEXT.md
+CURRENT_WORK.md
+
+### Env active file + secret overrides (packages .env.local / .env.prod stay versioned)
+.env
+.env.secrets
+!.env.local
+!.env.prod
+!.env.example

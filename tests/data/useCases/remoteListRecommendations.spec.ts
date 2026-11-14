@@ -22,14 +22,14 @@ describe('Data: ListRecommendations', () => {
     const apiRecommendations = mockApiListRecommendations(3);
     const { sut, httpClient } = makeSut();
     httpClient.completeWithSuccess(HttpStatusCode.ok, {
-      data: apiRecommendations,
+      places: apiRecommendations,
     });
     const listRecommendations = await sut.list(location);
 
     expect(listRecommendations.length).toBe(apiRecommendations.length);
     for (let index = 0; index < listRecommendations.length; index++) {
       expect(listRecommendations[index].id).toEqual(
-        apiRecommendations[index].id,
+        String(apiRecommendations[index].googlePlaceId),
       );
       expect(listRecommendations[index].title).toEqual(
         apiRecommendations[index].name,
@@ -83,7 +83,7 @@ describe('Data: ListRecommendations', () => {
       const apiRecommendations = mockApiListRecommendations(2);
       const { sut, httpClient, analytics } = makeSut();
       httpClient.completeWithSuccess(HttpStatusCode.ok, {
-        data: apiRecommendations,
+        places: apiRecommendations,
       });
 
       await sut.list(location);

@@ -2,8 +2,8 @@ import { faker } from '@faker-js/faker';
 import { PlaceModel } from '~/domain/models';
 
 export const mockRemotePlace = (): PlaceModel => ({
-  id: faker.datatype.number({ min: 1, max: 1000 }),
-  imageUrl: faker.image.city(),
+  id: faker.datatype.uuid(),
+  imageUri: faker.image.city(),
   title: faker.company.name(),
   location: faker.address.streetAddress(),
   myDistanceOfLocal: `${faker.datatype.float({

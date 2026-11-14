@@ -32,18 +32,22 @@ jest.mock('react-native-safe-area-context', () => {
   const React = require('react');
   const inset = { top: 0, right: 0, bottom: 0, left: 0 };
   const frame = { x: 0, y: 0, width: 390, height: 844 };
-  
+
   const SafeAreaContext = React.createContext({
     insets: inset,
     frame,
   });
 
   return {
-    SafeAreaProvider: ({ children }) => 
-      React.createElement(SafeAreaContext.Provider, { 
-        value: { insets: inset, frame } 
-      }, children),
-    SafeAreaConsumer: ({ children }) => 
+    SafeAreaProvider: ({ children }) =>
+      React.createElement(
+        SafeAreaContext.Provider,
+        {
+          value: { insets: inset, frame },
+        },
+        children,
+      ),
+    SafeAreaConsumer: ({ children }) =>
       React.createElement(SafeAreaContext.Consumer, {}, children),
     SafeAreaContext,
     useSafeAreaInsets: () => inset,
@@ -54,7 +58,7 @@ jest.mock('react-native-safe-area-context', () => {
 jest.mock('@react-navigation/elements', () => {
   const React = require('react');
   const originalModule = jest.requireActual('@react-navigation/elements');
-  
+
   return {
     ...originalModule,
     SafeAreaProviderCompat: ({ children }) => children,
@@ -74,3 +78,6 @@ jest.mock('@react-native-community/geolocation', () => ({
 
 jest.mock('./src/infra/debug/reactotronConfig', () => ({}));
 
+jest.mock('react-native-config', () => ({
+  API_URL: 'http://localhost:8080/api/registration',
+}));

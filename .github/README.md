@@ -12,6 +12,7 @@ Welcome to the project architecture documentation! This project follows **Clean 
 - **[Naming Conventions](NAMING_CONVENTIONS.md)** - File, folder, class, and variable naming standards
 - **[Adding New Features](ADDING_FEATURES.md)** - Step-by-step guide to implement new features
 - **[Testing Guide](TESTING.md)** - Testing strategies, patterns, and best practices
+- **[API env (local/prod)](../docs/api-env.md)** - `yarn env:*`, `API_URL`, and integration tests (local vs remote)
 
 ### Quick Reference
 - **[Common Patterns](#common-patterns)** - Frequently used patterns in the codebase

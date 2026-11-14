@@ -1,5 +1,5 @@
 type PlaceModel = {
-  id: number;
+  id: string;
   imageUri: string;
   title: string;
   location: string;

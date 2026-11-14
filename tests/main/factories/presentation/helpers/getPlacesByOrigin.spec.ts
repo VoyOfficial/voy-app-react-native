@@ -10,7 +10,7 @@ import { Origin } from '../../../../../src/presentation/placeList/usePlaceList';
 
 export const recommendationModelFake = (): RecommendationModel => {
   return {
-    id: faker.datatype.number(),
+    id: faker.datatype.uuid(),
     location: faker.address.secondaryAddress(),
     imageUrl: faker.image.city(),
     title: faker.name.jobTitle(),

@@ -50,9 +50,9 @@ export class GetPlaceDetailsSpy implements GetPlaceDetails {
     gallerySummaryImages: [faker.image.imageUrl()],
     rating: faker.datatype.number({ min: 1, max: 5 }).toString(),
   };
-  id = 0;
+  id = '';
   error: { status: boolean; message: string } = { message: '', status: false };
-  get = async (id: number): Promise<PlaceDetailsModel> => {
+  get = async (id: string): Promise<PlaceDetailsModel> => {
     this.getCalled += 1;
     this.id = id;
 
@@ -69,7 +69,7 @@ export class GetPlaceDetailsSpy implements GetPlaceDetails {
 
 describe('Presentation: usePlaceDetails', () => {
   test('should update the backgroundImage correctly when call pressSummaryImageFromGallery function', async () => {
-    const { result } = makeSut({ id: 0 });
+    const { result } = makeSut({ id: '' });
 
     expect(result.current.backgroundImage).toEqual('');
 
@@ -82,7 +82,7 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should update isOpenImagesGallery to true when call pressSummaryImageFromGallery with showInGallery true', async () => {
-    const { result } = makeSut({ id: 0 });
+    const { result } = makeSut({ id: '' });
 
     expect(result.current.isOpenImagesGallery).toEqual(false);
 
@@ -97,7 +97,7 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should update isOpenImagesGallery to false when call closeImagesGallery', async () => {
-    const { result } = makeSut({ id: 0 });
+    const { result } = makeSut({ id: '' });
 
     const image = faker.image.imageUrl();
 
@@ -117,7 +117,7 @@ describe('Presentation: usePlaceDetails', () => {
   test('should update backgroundImage when initialize', async () => {
     const getPlaceDetails = new GetPlaceDetailsSpy();
     const { result } = makeSut({
-      id: 0,
+      id: '',
       getPlaceDetails,
     });
 
@@ -130,7 +130,7 @@ describe('Presentation: usePlaceDetails', () => {
 
   test('should call get of GetPlaceDetails correctly when initialize', async () => {
     const getPlaceDetails = new GetPlaceDetailsSpy();
-    const id = 0;
+    const id = '';
 
     makeSut({
       id,
@@ -144,7 +144,7 @@ describe('Presentation: usePlaceDetails', () => {
 
   test('should get place details with success when initialize', async () => {
     const getPlaceDetails = new GetPlaceDetailsSpy();
-    const id = 0;
+    const id = '';
 
     const { result } = makeSut({
       id,
@@ -187,7 +187,7 @@ describe('Presentation: usePlaceDetails', () => {
   });
 
   test('should get empty place details when GetPlaceDetails get returns error', async () => {
-    const id = 0;
+    const id = '';
     const getPlaceDetails = new GetPlaceDetailsSpy();
     getPlaceDetails.completeGetWithError('ocorreu um erro');
 
@@ -214,7 +214,7 @@ describe('Presentation: usePlaceDetails', () => {
     test('should the error returning true when placeDetails are empty', async () => {
       const getPlaceDetails = new GetPlaceDetailsSpy();
       getPlaceDetails.completeGetWithError('Oops. Houve um erro');
-      const { result } = makeSut({ id: 0, getPlaceDetails });
+      const { result } = makeSut({ id: '', getPlaceDetails });
 
       await waitFor(() => {
         expect(result.current.finding).toEqual(false);
@@ -228,7 +228,7 @@ describe('Presentation: usePlaceDetails', () => {
     test('should call the get from getPlaceDetails when calling the tryGetPlaceDetailsAgain function', async () => {
       const getPlaceDetails = new GetPlaceDetailsSpy();
       getPlaceDetails.completeGetWithError('Oops. Houve um erro');
-      const { result } = makeSut({ id: 0, getPlaceDetails });
+      const { result } = makeSut({ id: '', getPlaceDetails });
 
       await waitFor(() => {
         result.current.tryGetPlaceDetailsAgain();
@@ -241,7 +241,7 @@ describe('Presentation: usePlaceDetails', () => {
       const getPlaceDetails = new GetPlaceDetailsSpy();
       getPlaceDetails.completeGetWithError('Oops. Houve um erro');
       const { result } = makeSut({
-        id: 0,
+        id: '',
         getPlaceDetails,
       });
 
@@ -258,7 +258,7 @@ describe('Presentation: usePlaceDetails', () => {
 
   describe('loading', () => {
     test('should the finding returning true correctly when it is finding the place details', async () => {
-      const { result } = makeSut({ id: 0 });
+      const { result } = makeSut({ id: '' });
 
       await waitFor(() => {
         expect(result.current.finding).toEqual(true);
@@ -272,7 +272,7 @@ describe('Presentation: usePlaceDetails', () => {
     });
 
     test('should set finding to true and then back to false when calling tryGetPlaceDetailsAgain', async () => {
-      const { result } = makeSut({ id: 0 });
+      const { result } = makeSut({ id: '' });
 
       await waitFor(() => {
         expect(result.current.finding).toBe(false);
@@ -291,7 +291,7 @@ describe('Presentation: usePlaceDetails', () => {
 });
 
 type SutProps = {
-  id: number;
+  id: string;
   getPlaceDetails?: GetPlaceDetails;
 };
 

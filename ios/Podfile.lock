@@ -319,6 +319,10 @@ PODS:
     - glog
   - react-native-blur (4.3.2):
     - React-Core
+  - react-native-config (1.5.3):
+    - react-native-config/App (= 1.5.3)
+  - react-native-config/App (1.5.3):
+    - React-Core
   - react-native-geolocation (3.4.0):
     - React-Core
   - react-native-safe-area-context (4.7.4):
@@ -425,6 +429,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
+  - react-native-config (from `../node_modules/react-native-config`)
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -500,6 +505,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
+  react-native-config:
+    :path: "../node_modules/react-native-config"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
   react-native-safe-area-context:
@@ -571,6 +578,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 31e53f048cc8f32605de36981903a7bbf9456892
   React-logger: 9a6c684d5cd56c4129e0c2842dba75c4bfb1e981
   react-native-blur: cfdad7b3c01d725ab62a8a729f42ea463998afa2
+  react-native-config: aa47e487f8850a747bf849bb6a398a0bba93fbbd
   react-native-geolocation: e535ecd762e6d789ecb00fb6167a1febd667b0e9
   react-native-safe-area-context: 2cd91d532de12acdb0a9cbc8d43ac72a8e4c897c
   React-perflogger: 281c34e42f13245c7a4d6932364d9182f8655e1a
@@ -591,6 +599,6 @@ SPEC CHECKSUMS:
   RNVectorIcons: 8b5bb0fa61d54cd2020af4f24a51841ce365c7e9
   Yoga: 236056dd74cda4d9d76c20306fd8c20bb087614d
 
-PODFILE CHECKSUM: 6b998f09be11f3c8bf235eceb47ced0f222f5b97
+PODFILE CHECKSUM: df88bed597ace5d0c780a1034ba3cebd1130cf43
 
 COCOAPODS: 1.12.1

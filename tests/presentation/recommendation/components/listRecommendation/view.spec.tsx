@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react-native';
-import placeListFactory from '../../../helpers/placeListFactory';
+import { recommendationModelFactory } from '../../../helpers/recommendationModelFactory';
 import { ListRecommendation } from '../../../../../src/presentation/recommendation/components';
 import { renderWithTheme } from '../../../helpers/renderWithTheme';
 
@@ -63,7 +63,11 @@ describe('Components: ListRecommendation', () => {
   });
 
   const makeSut = ({ onSeeAll = () => {}, seeAllBy = '' }) => {
-    const recommendations = placeListFactory(3);
+    const recommendations = [
+      recommendationModelFactory(),
+      recommendationModelFactory(),
+      recommendationModelFactory(),
+    ];
     const showMoreDetails = jest.fn();
     const handleSaveLocation = jest.fn();
 

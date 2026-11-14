@@ -1,9 +1,13 @@
 import { SearchPlaces } from '~/domain/useCases';
-import { FilterParam } from '~/domain/params';
+import { FilterParam, Location } from '~/domain/params';
 import { SearchPlaceModel } from '~/domain/models';
 import { AnalyticsTracker } from '~/domain/analytics';
 import { HttpPostClient, HttpStatusCode } from '../http';
 import { NoAccessError, UnexpectedError } from '../errors';
+import {
+  ApiNearbyPlace,
+  mapApiNearbyPlaceToSearchPlaceModel,
+} from '../helpers';
 
 export default class RemoteSearchPlaces implements SearchPlaces {
   constructor(
@@ -15,9 +19,10 @@ export default class RemoteSearchPlaces implements SearchPlaces {
   async search(
     place: string,
     { types, ordination }: FilterParam,
+    location: Location,
     nextPageToken?: string,
   ): Promise<SearchPlaceModel[]> {
-    const urlWithParams = this.makeUrl(place, nextPageToken);
+    const urlWithParams = this.makeUrl(place, location, nextPageToken);
     const response = await this.httpPostClient.post({
       url: urlWithParams,
       body: { types: types, ordination: ordination },
@@ -25,7 +30,7 @@ export default class RemoteSearchPlaces implements SearchPlaces {
 
     switch (response.statusCode) {
       case HttpStatusCode.ok:
-        const searchResults = (response.body as SearchPlaceModel[]) || [];
+        const searchResults = this.mapPlaces(response.body);
         this.trackSearchEvent(place, types, ordination, searchResults);
         return searchResults;
       case HttpStatusCode.noContent:
@@ -35,6 +40,23 @@ export default class RemoteSearchPlaces implements SearchPlaces {
       default:
         throw new UnexpectedError();
     }
+  }
+
+  private mapPlaces(body: unknown): SearchPlaceModel[] {
+    if (Array.isArray(body)) {
+      return body.map((apiPlace: ApiNearbyPlace) =>
+        mapApiNearbyPlaceToSearchPlaceModel(apiPlace),
+      );
+    }
+
+    const places = (body as { places?: unknown[] } | null)?.places;
+    if (!Array.isArray(places)) {
+      return [];
+    }
+
+    return places.map((apiPlace: ApiNearbyPlace) =>
+      mapApiNearbyPlaceToSearchPlaceModel(apiPlace),
+    );
   }
 
   private trackSearchEvent(
@@ -57,11 +79,19 @@ export default class RemoteSearchPlaces implements SearchPlaces {
     });
   }
 
-  private makeUrl(place: string, nextPageToken?: string): string {
-    let url = this.url;
-    if (place) url += `/${encodeURIComponent(place)}`;
-    if (nextPageToken) url += `?nextPageToken=${nextPageToken}`;
-
-    return url;
+  private makeUrl(
+    place: string,
+    location: Location,
+    nextPageToken?: string,
+  ): string {
+    const params = new URLSearchParams({
+      place,
+      latitude: location.lat,
+      longitude: location.long,
+    });
+    if (nextPageToken) {
+      params.set('nextPageToken', nextPageToken);
+    }
+    return `${this.url}?${params.toString()}`;
   }
 }

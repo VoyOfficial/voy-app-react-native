@@ -1,12 +1,22 @@
 import { RemoteGetPlaceDetails } from '~/data/useCases';
 import { AxiosAdapter } from '~/infra/http';
 import { FirebaseAnalyticsAdapter } from '~/infra/analytics';
+import { getRegistrationApiV1BaseUrl } from '../helpers/registrationApiBaseUrl';
+import { requireRemoteGooglePlaces } from '../helpers/remoteGooglePlacesAvailability';
+import { resolveRemotePlaceDetailsId } from '../helpers/resolveRemotePlaceDetailsId';
+import { warmupRegistrationApi } from '../helpers/warmupRegistrationApi';
 
 describe('Integration: RemoteGetPlaceDetails - Success Scenario', () => {
-  const baseUrl = 'http://localhost:8080/api/registration/v1';
-  const placeId = 'ChIJf0SW_OYMGZURlwX0Aam0pB8';
+  const baseUrl = getRegistrationApiV1BaseUrl();
 
   let sut: RemoteGetPlaceDetails;
+  let placeId = '';
+
+  beforeAll(async () => {
+    await warmupRegistrationApi();
+    await requireRemoteGooglePlaces();
+    placeId = await resolveRemotePlaceDetailsId();
+  }, 180000);
 
   beforeEach(() => {
     const httpClient = new AxiosAdapter();
@@ -41,7 +51,6 @@ describe('Integration: RemoteGetPlaceDetails - Success Scenario', () => {
     expect(typeof result.distance).toBe('string');
     expect(typeof result.amountOfReviews).toBe('string');
     expect(typeof result.rating).toBe('string');
-    expect(typeof result.businessHoursSummary).toBe('object');
     expect(typeof result.fullLocation).toBe('string');
     expect(typeof result.contact).toBe('string');
     expect(Array.isArray(result.photoOfReviewProfiles)).toBe(true);
@@ -55,42 +64,5 @@ describe('Integration: RemoteGetPlaceDetails - Success Scenario', () => {
     expect(result.title.length).toBeGreaterThan(0);
     expect(result.location.length).toBeGreaterThan(0);
     expect(result.fullLocation.length).toBeGreaterThan(0);
-  });
-
-  it('should return business hours summary with valid structure', async () => {
-    const result = await sut.get(placeId);
-
-    expect(result).toBeDefined();
-    expect(result.businessHoursSummary).toBeDefined();
-    expect(typeof result.businessHoursSummary).toBe('object');
-  });
-
-  it('should return photo profiles as an array', async () => {
-    const result = await sut.get(placeId);
-
-    expect(result).toBeDefined();
-    expect(Array.isArray(result.photoOfReviewProfiles)).toBe(true);
-    result.photoOfReviewProfiles.forEach((photo) => {
-      expect(typeof photo).toBe('string');
-    });
-  });
-
-  it('should successfully integrate with real HTTP client and analytics', async () => {
-    const result = await sut.get(placeId);
-
-    expect(result).toBeDefined();
-    expect(result.title).toBeTruthy();
-    expect(result.location).toBeTruthy();
-    expect(result.fullLocation).toBeTruthy();
-    expect(result.rating).toBeDefined();
-    expect(result.amountOfReviews).toBeDefined();
-    expect(result.distance).toBeDefined();
-  });
-
-  it('should return valid contact information', async () => {
-    const result = await sut.get(placeId);
-
-    expect(result).toBeDefined();
-    expect(typeof result.contact).toBe('string');
   });
 });

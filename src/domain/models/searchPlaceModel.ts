@@ -1,5 +1,5 @@
 type SearchPlaceModel = {
-  id: number;
+  id: string;
   rating: string;
   isSaved: boolean;
   amountOfReviews: string;
