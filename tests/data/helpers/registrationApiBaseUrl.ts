@@ -1,9 +1,6 @@
-const DEFAULT_BASE = 'http://localhost:8080/api/registration';
+import { getApiUrl } from '~/core';
 
-export const getRegistrationApiBaseUrl = (): string => {
-  const raw = process.env.API_URL || DEFAULT_BASE;
-  return raw.replace(/\/+$/, '');
-};
+export const getRegistrationApiBaseUrl = (): string => getApiUrl();
 
 export const getRegistrationApiV1BaseUrl = (): string =>
   `${getRegistrationApiBaseUrl()}/v1`;

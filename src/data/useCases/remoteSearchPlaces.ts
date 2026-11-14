@@ -4,7 +4,10 @@ import { SearchPlaceModel } from '~/domain/models';
 import { AnalyticsTracker } from '~/domain/analytics';
 import { HttpPostClient, HttpStatusCode } from '../http';
 import { NoAccessError, UnexpectedError } from '../errors';
-import { formatBase64Image } from '../helpers';
+import {
+  ApiNearbyPlace,
+  mapApiNearbyPlaceToSearchPlaceModel,
+} from '../helpers';
 
 export default class RemoteSearchPlaces implements SearchPlaces {
   constructor(
@@ -41,7 +44,9 @@ export default class RemoteSearchPlaces implements SearchPlaces {
 
   private mapPlaces(body: unknown): SearchPlaceModel[] {
     if (Array.isArray(body)) {
-      return body.map((apiPlace: any) => this.mapPlace(apiPlace));
+      return body.map((apiPlace: ApiNearbyPlace) =>
+        mapApiNearbyPlaceToSearchPlaceModel(apiPlace),
+      );
     }
 
     const places = (body as { places?: unknown[] } | null)?.places;
@@ -49,22 +54,9 @@ export default class RemoteSearchPlaces implements SearchPlaces {
       return [];
     }
 
-    return places.map((apiPlace: any) => this.mapPlace(apiPlace));
-  }
-
-  private mapPlace(apiPlace: any): SearchPlaceModel {
-    return {
-      id: String(apiPlace.googlePlaceId || apiPlace.id || ''),
-      rating: String(apiPlace.rating || 0),
-      isSaved: Boolean(apiPlace.isSaved),
-      amountOfReviews: String(apiPlace.userRatingsTotal || 0),
-      imageUri: formatBase64Image(
-        apiPlace.photo || apiPlace.photoReference || '',
-      ),
-      location: apiPlace.address || '',
-      title: apiPlace.name || '',
-      myDistanceOfLocal: apiPlace.distanceFromUserLocation || '0',
-    };
+    return places.map((apiPlace: ApiNearbyPlace) =>
+      mapApiNearbyPlaceToSearchPlaceModel(apiPlace),
+    );
   }
 
   private trackSearchEvent(

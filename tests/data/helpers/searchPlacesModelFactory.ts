@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { mockApiListPlaces } from '../mocks/mockApiPlaces';
 
-/** NearbyPlacesResponse body used by RemoteSearchPlaces mapping tests */
 const searchPlacesModelFactory = (count = 1) => ({
   places: mockApiListPlaces(count).map((place) => ({
     ...place,

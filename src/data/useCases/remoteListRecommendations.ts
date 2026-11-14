@@ -3,7 +3,10 @@ import { RecommendationModel } from '~/domain/models';
 import { Location } from '~/domain/params';
 import { AnalyticsTracker } from '~/domain/analytics';
 import { HttpGetClient, HttpStatusCode } from '../http';
-import { formatBase64Image } from '../helpers';
+import {
+  ApiNearbyPlace,
+  mapApiNearbyPlaceToRecommendationModel,
+} from '../helpers';
 import { NoPermissionError, UnexpectedError } from '../errors';
 
 export default class RemoteListRecommendations implements ListRecommendations {
@@ -29,16 +32,9 @@ export default class RemoteListRecommendations implements ListRecommendations {
           : responseBody.places || responseBody.data || [];
 
         const recommendations: Array<RecommendationModel> =
-          recommendationsArray.map((apiRec: any) => ({
-            id: String(apiRec.googlePlaceId || apiRec.id || ''),
-            imageUrl: formatBase64Image(
-              apiRec.photo || apiRec.photoReference || '',
-            ),
-            title: apiRec.name || '',
-            location: apiRec.address || '',
-            myDistanceOfLocal: apiRec.distanceFromUserLocation || '0',
-            rating: String(apiRec.rating || 0),
-          }));
+          recommendationsArray.map((apiRec: ApiNearbyPlace) =>
+            mapApiNearbyPlaceToRecommendationModel(apiRec),
+          );
 
         if (recommendations.length > 0) {
           await this.analytics.trackEvent('list_recommendations', {

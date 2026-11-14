@@ -3,7 +3,7 @@ import { Location } from '~/domain/params';
 import { ListPlaces } from '~/domain/useCases';
 import { AnalyticsTracker } from '~/domain/analytics';
 import { NoPermissionError, UnexpectedError } from '../errors';
-import { formatBase64Image } from '../helpers';
+import { ApiNearbyPlace, mapApiNearbyPlaceToPlaceModel } from '../helpers';
 import { HttpGetClient, HttpStatusCode } from '../http';
 
 export default class RemoteListPlaces implements ListPlaces {
@@ -32,17 +32,9 @@ export default class RemoteListPlaces implements ListPlaces {
           ? responseBody
           : responseBody.places || [];
 
-        const places: Array<PlaceModel> = placesArray.map((apiPlace: any) => ({
-          id: String(apiPlace.googlePlaceId || apiPlace.id || ''),
-          imageUri: formatBase64Image(
-            apiPlace.photo || apiPlace.photoReference || '',
-          ),
-          title: apiPlace.name || '',
-          location: apiPlace.address || '',
-          myDistanceOfLocal: apiPlace.distanceFromUserLocation || '0',
-          amountOfReviews: String(apiPlace.userRatingsTotal || 0),
-          rating: String(apiPlace.rating || 0),
-        }));
+        const places: Array<PlaceModel> = placesArray.map(
+          (apiPlace: ApiNearbyPlace) => mapApiNearbyPlaceToPlaceModel(apiPlace),
+        );
 
         if (places.length > 0) {
           await this.trackEvent('list_places', {
