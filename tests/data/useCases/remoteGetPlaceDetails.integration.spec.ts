@@ -3,13 +3,14 @@ import { AxiosAdapter } from '~/infra/http';
 import { FirebaseAnalyticsAdapter } from '~/infra/analytics';
 import { getRegistrationApiV1BaseUrl } from '../helpers/registrationApiBaseUrl';
 import { isRemoteGooglePlacesAvailable } from '../helpers/remoteGooglePlacesAvailability';
+import { resolveRemotePlaceDetailsId } from '../helpers/resolveRemotePlaceDetailsId';
 import { warmupRegistrationApi } from '../helpers/warmupRegistrationApi';
 
 describe('Integration: RemoteGetPlaceDetails - Success Scenario', () => {
   const baseUrl = getRegistrationApiV1BaseUrl();
-  const placeId = 'ChIJsdUuyRc1GZURg7Hy1kfaAeU';
 
   let sut: RemoteGetPlaceDetails;
+  let placeId = '';
   let googlePlacesAvailable = true;
 
   beforeAll(async () => {
@@ -20,7 +21,9 @@ describe('Integration: RemoteGetPlaceDetails - Success Scenario', () => {
       console.warn(
         '[integration] Skipping RemoteGetPlaceDetails happy-path: remote host returned Google Places 403. Fix the ms-registration Google API key to enable these assertions.',
       );
+      return;
     }
+    placeId = await resolveRemotePlaceDetailsId();
   }, 180000);
 
   beforeEach(() => {
