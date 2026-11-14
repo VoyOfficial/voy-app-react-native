@@ -1,5 +1,6 @@
 import React from 'react';
 import { RouteProp } from '@react-navigation/native';
+import { apiEndpoints } from '~/core';
 import { PlaceModel } from '~/domain/models';
 import { AxiosAdapter } from '~/infra/http';
 import { Routes } from '~/main/navigation';
@@ -22,19 +23,19 @@ const hasPlace = (
   return (params as { place: PlaceModel }).place !== undefined;
 };
 
-const getId = (route: RouteProp<StackParams, Routes>): number => {
+const getId = (route: RouteProp<StackParams, Routes>): string => {
   if (route.params && hasPlace(route.params)) {
-    return route.params.place.id;
+    return String(route.params.place.id);
   }
 
-  return 0;
+  return '';
 };
 
 const PlaceDetailsFactory = ({ route }: Props) => {
   const placeId = getId(route);
 
   const getPlaceDetails = new RemoteGetPlaceDetails(
-    `http://localhost:8080/api/registration/v1/places`,
+    apiEndpoints.places(),
     new AxiosAdapter(),
     new FirebaseAnalyticsAdapter(),
   );
