@@ -42,7 +42,7 @@ API_URL=https://ms-registration.onrender.com/api/registration yarn test:integrat
 
 Warmup usa `GET …/v1/places/recommendations` com timeout/retry generosos. Host free pode levar >30s no primeiro hit.
 
-`recommendations` é o smoke remoto DB-backed. `places` / `search` / `details` dependem da Google Places API key no `ms-registration`; se o host remoto responder `403 Request Denied Google Places`, esses casos são pulados com warning no log até a key ser corrigida no backend.
+`recommendations` é o smoke remoto DB-backed. `places` / `search` / `details` dependem da Google Places API key no `ms-registration`. Em `yarn test:integration:remote`, um probe falha a suite (não soft-passa) se o host responder `403 Request Denied Google Places` ou se o probe tiver erro de transporte.
 
 ## Referências
 

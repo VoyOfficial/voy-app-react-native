@@ -11,10 +11,6 @@ const WARMUP_COORDS = {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/**
- * Render free tier cold-starts can take >30s. Hit recommendations (DB-backed)
- * with generous retries before happy-path specs.
- */
 export const warmupRegistrationApi = async (): Promise<void> => {
   if (!isRemoteRegistrationApi()) {
     return;
