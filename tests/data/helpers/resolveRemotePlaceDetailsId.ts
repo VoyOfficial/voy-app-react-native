@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { getRegistrationApiV1BaseUrl } from './registrationApiBaseUrl';
 
-/** Same Gramado/Canela region used by list/search remote integration specs. */
 const FIXTURE_COORDS = {
   latitude: '-29.37855',
   longitude: '-50.8744',
@@ -11,11 +10,6 @@ type ListedPlace = {
   googlePlaceId?: string;
 };
 
-/**
- * Nearby Search can return place ids that Place Details no longer resolves (404).
- * Resolve a fixture id by listing nearby places and taking the first whose
- * details endpoint returns 200 — keeps remote happy-path honest without soft-skip.
- */
 export const resolveRemotePlaceDetailsId = async (): Promise<string> => {
   const baseUrl = getRegistrationApiV1BaseUrl();
   const listUrl =
