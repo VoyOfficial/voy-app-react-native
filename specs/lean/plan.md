@@ -1,23 +1,23 @@
 # Lean Plan — Tela de busca: voltar, dropdown e filtros (#98)
 
 **Issue:** [#98](https://github.com/VoyOfficial/voy-app-react-native/issues/98)  
-**Grill:** domínio já existente. Ordenação é uma escolha. Filtro são vários tipos. O botão da esquerda só abre o painel. Cada seção abre a própria lista de opções. O voltar fica à esquerda desse botão.
+**Grill:** domínio já existente. Ordenação é uma escolha. Filtro são vários tipos. O botão à direita do campo de busca abre o painel. Cada seção abre a própria lista de opções. O voltar fica à esquerda do campo de busca.
 
 `specs/lean/checks.md` prova os critérios deste plano.
 
 ## 1. Problem
 
-Quem pesquisa um lugar não tem como voltar pelo lado esquerdo do botão de opções. A escolha de ordenação e de filtro não entra na busca: `SearchFactory` fixa `Ordination.Closer` e `[Filter.Entertainment]`, e o modal guarda a seleção só no próprio estado.
+Quem pesquisa um lugar não tem como voltar pelo lado esquerdo do header. A escolha de ordenação e de filtro não entra na busca: `SearchFactory` fixa `Ordination.Closer` e `[Filter.Entertainment]`, e o modal guarda a seleção só no próprio estado.
 
 Hoje ordenação e filtro já usam o painel existente (`FilterModal`). `OrderOptionsWrapper` e `FilterOptionsWrapper` são `View` no fluxo do painel (`showOrderList` / `showFilterList`): o toque monta ou desmonta a lista dentro do painel. A UI do painel permanece a que já existia (sem menus flutuantes sobre a lista).
 
-O que muda: o voltar fica à esquerda do botão de opções; o botão de opções abre o painel de ordenação e filtro; dentro do painel, a ordenação e o filtro abrem as próprias listas; o próximo envio da busca manda a ordenação e os tipos selecionados. A listagem de lugares que já existe permanece.
+O que muda: o header fica voltar → campo de busca → filtro; o botão de opções abre o painel de ordenação e filtro; dentro do painel, a ordenação e o filtro abrem as próprias listas; o próximo envio da busca manda a ordenação e os tipos selecionados. A listagem de lugares que já existe permanece.
 
 ## 2. Flow
 
 ### Voltar
 
-1. Trigger: toque no botão à esquerda do botão de opções.
+1. Trigger: toque no botão à esquerda do campo de busca.
 2. `useSearch` chama o `goBack` injetado (`Actions.goBack`, o mesmo de Place List e Place Details).
 3. Outcome: a stack volta para Home, que é quem abre `Search`.
 4. O header nativo da rota continua sem botão de voltar, para não aparecer dois.
@@ -97,7 +97,7 @@ Não criar use case, hook compartilhado, componente em `src/shared/` nem depend�
 
 ## 5. Surface
 
-- Botão de voltar à esquerda do botão de opções.
+- Header: voltar à esquerda, campo de busca no centro, botão de opções à direita do campo.
 - O botão de opções abre o painel de ordenação e filtro, com o campo de busca visível. Ordenação e filtro ficam dentro dele, cada um com a própria lista no fluxo do painel.
 - "Ordenar por" é uma lista de uma escolha. "Filtrar por" é uma lista de várias.
 - A lista de lugares continua aparecendo depois que a busca retorna.
@@ -114,7 +114,7 @@ Não criar use case, hook compartilhado, componente em `src/shared/` nem depend�
 
 ## 7. Criteria
 
-1. O botão de voltar renderiza à esquerda do botão de opções e chama `goBack`. **Prova:** teste da tela Search.
+1. O header renderiza voltar → campo de busca → filtro; o voltar chama `goBack`. **Prova:** teste da tela Search.
 2. "Ordenar por" e "Filtrar por" ficam dentro do painel, com o campo de busca visível. A lista de cards continua montada. **Prova:** teste da tela Search.
 3. "Ordenar por" abre as três opções de `Ordination`, a escolha fica selecionada e a lista fecha. "Filtrar por" marca e desmarca vários tipos com a lista aberta. **Prova:** teste do modal.
 4. A primeira busca, sem mexer no painel, envia `ordination: Ordination.MostRated` e `types: []`. **Prova:** `useSearch.spec.tsx`.
@@ -123,7 +123,7 @@ Não criar use case, hook compartilhado, componente em `src/shared/` nem depend�
 7. O body do POST continua `{ types, ordination }` quando o use case é chamado. **Prova:** `remoteSearchPlaces.spec.ts` existente, sem alteração de produção.
 8. Com texto no campo e `searchTo` resolvido, a `CardList` mostra os lugares retornados. Campo vazio não mostra a lista. **Prova:** teste da tela Search com `placeList` preenchida e vazia.
 9. Digitar 1, 2 ou 3 caracteres não chama `searchPlaces.search`. Só o submit do teclado chama. **Prova:** `useSearch.spec.tsx` (`changeSearch` não dispara busca).
-10. Check manual: o voltar fica à esquerda do botão de opções; o painel de ordenação e filtro usa a UI existente (listas no fluxo do painel); uma busca após trocar ordenação e tipos mostra esses valores no body e os cards na lista.
+10. Check manual: o header fica voltar → busca → filtro; o painel de ordenação e filtro usa a UI existente (listas no fluxo do painel); uma busca após trocar ordenação e tipos mostra esses valores no body e os cards na lista.
 
 ---
 

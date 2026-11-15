@@ -144,7 +144,7 @@ describe('Presentation: Search', () => {
     expect(queryByTestId('list_card_0_id')).toBeNull();
   });
 
-  test('should render the back button to the left of the options button and call goBack', () => {
+  test('should render back, search input, then filter on the right, and call goBack', () => {
     const goBack = jest.fn();
     const {
       sut: { getByTestId },
@@ -159,11 +159,13 @@ describe('Presentation: Search', () => {
     );
 
     const ids = testIdsInOrder(getByTestId('search_header_id'));
+    const backIndex = ids.indexOf('back_button_id');
+    const searchIndex = ids.indexOf('search_input_id');
+    const filterIndex = ids.indexOf('filter_button_id');
 
-    expect(ids.indexOf('back_button_id')).toBeGreaterThanOrEqual(0);
-    expect(ids.indexOf('back_button_id')).toBeLessThan(
-      ids.indexOf('filter_button_id'),
-    );
+    expect(backIndex).toBeGreaterThanOrEqual(0);
+    expect(backIndex).toBeLessThan(searchIndex);
+    expect(searchIndex).toBeLessThan(filterIndex);
     const arrowLeft = voyIcons.icons.find(
       (icon) => icon.properties.name === 'arrow_left',
     );

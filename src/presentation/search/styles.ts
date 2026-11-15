@@ -26,7 +26,7 @@ export const BackIcon = styled(Icon).attrs({
 })``;
 
 export const FilterButtonWrapper = styled.View`
-  padding-right: 21px;
+  padding-left: 16px;
 `;
 
 export const FilterButton = styled.TouchableOpacity``;

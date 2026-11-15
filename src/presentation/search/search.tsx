@@ -62,11 +62,6 @@ const Search = ({
         <BackButton testID="back_button_id" onPress={goBack}>
           <BackIcon testID="back_icon_id" name="arrow_left" />
         </BackButton>
-        <FilterButtonWrapper>
-          <FilterButton testID="filter_button_id" onPress={filter}>
-            <FilterIcon testID="filter_id" name="filter" />
-          </FilterButton>
-        </FilterButtonWrapper>
         <SearchInputWrapper>
           <SearchInput
             testID="search_input_id"
@@ -79,6 +74,11 @@ const Search = ({
             <SearchIcon testID="search_id" name="search" />
           </SearchIconWrapper>
         </SearchInputWrapper>
+        <FilterButtonWrapper>
+          <FilterButton testID="filter_button_id" onPress={filter}>
+            <FilterIcon testID="filter_id" name="filter" />
+          </FilterButton>
+        </FilterButtonWrapper>
       </HeaderWrapper>
       {searchValue !== '' && (
         <CardListWrapper>

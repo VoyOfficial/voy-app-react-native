@@ -2,7 +2,7 @@
 
 Derived from `specs/lean/plan.md`. Each block proves one plan criterion.
 
-## C1 — O botão de voltar renderiza à esquerda do botão de opções e chama `goBack`
+## C1 — O header fica voltar → campo de busca → filtro; o voltar chama `goBack`
 - Proof: `tests/presentation/search/index.spec.tsx` (ordem no header e `onPress`) e `tests/presentation/search/useSearch.spec.tsx` (`goBack` injetado)
 - Layer: presentation
 - Files: `src/presentation/search/search.tsx`, `src/presentation/search/styles.ts`, `src/presentation/search/useSearch.tsx`, `src/main/factories/presentation/searchFactory.tsx`
@@ -48,7 +48,7 @@ Derived from `specs/lean/plan.md`. Each block proves one plan criterion.
 - Files: `src/presentation/search/useSearch.tsx`, `src/presentation/search/search.tsx`
 
 ## C10 — Check manual do voltar, do painel e do body da busca
-- Proof: check manual — o voltar fica à esquerda do botão de opções; o painel de ordenação e filtro usa a UI existente (listas no fluxo do painel), com o campo de busca visível; uma busca após trocar ordenação e tipos mostra esses valores no body e os cards na lista
+- Proof: check manual — o header fica voltar → busca → filtro; o painel de ordenação e filtro usa a UI existente (listas no fluxo do painel), com o campo de busca visível; uma busca após trocar ordenação e tipos mostra esses valores no body e os cards na lista
 - Layer: presentation
 - Files: `src/presentation/search/search.tsx`, `src/presentation/search/modal/index.tsx`, `src/main/factories/presentation/searchFactory.tsx`
 
@@ -58,7 +58,7 @@ Derived from `specs/lean/plan.md`. Each block proves one plan criterion.
 
 | Criterion | Proof |
 |-----------|--------|
-| 1 voltar à esquerda chama `goBack` | C1 |
+| 1 voltar → busca → filtro; voltar chama `goBack` | C1 |
 | 2 painel com busca visível e cards montados | C2 |
 | 3 lista de ordenação (uma) e filtro (várias) | C3 |
 | 4 primeira busca `MostRated` e `types: []` | C4 |
@@ -74,6 +74,6 @@ All plan criteria have a proof. C10 is manual. None added beyond the plan.
 ## Handoff
 
 - **Base branch:** `develop` (esta implementação empilha em `cursor/search-screen-lean-plan-aae7`)
-- **Surface:** botão de voltar à esquerda do botão de opções; painel de ordenação e filtro com UI existente; "Ordenar por" e "Filtrar por" como listas no fluxo do painel; submit envia a seleção atual
+- **Surface:** header voltar → busca → filtro; painel de ordenação e filtro com UI existente; "Ordenar por" e "Filtrar por" como listas no fluxo do painel; submit envia a seleção atual
 - **Files:** `src/presentation/search/search.tsx`, `styles.ts`, `useSearch.tsx`, `modal/index.tsx`, `modal/styles.ts`, `model/Filter.ts`, `src/main/factories/presentation/searchFactory.tsx`, testes em `tests/presentation/search/`
 - **Next:** `/speckit.verify` in a context that did not write this code
