@@ -26,23 +26,18 @@ Factories leem a base só via `src/core` (`getApiUrl` / `apiEndpoints`).
 
 ## Testes de integração
 
+A suíte aponta sempre para o pacote `env:prod` (`.env.prod`). Não usa localhost e não altera o `.env` ativo do app.
+
 ```bash
-# Default: localhost (sem warmup especial)
 yarn test:integration
-
-# Remoto (Render): seta API_URL de prod + warmup/retry (cold-start free tier)
-yarn test:integration:remote
+yarn test:integration:remote   # o mesmo comando
 ```
 
-Equivalente manual:
-
-```bash
-API_URL=https://ms-registration.onrender.com/api/registration yarn test:integration
-```
+O script lê `API_URL` de `.env.prod` e exporta essa variável só no processo do Jest. Os specs chamam `getRegistrationApiV1BaseUrl()`, que relê `.env.prod` e ignora um `API_URL` local. Timeout 180s por teste (cold start do Render).
 
 Warmup usa `GET …/v1/places/recommendations` com timeout/retry generosos. Host free pode levar >30s no primeiro hit.
 
-`recommendations` é o smoke remoto DB-backed. `places` / `search` / `details` dependem da Google Places API key no `ms-registration`. Em `yarn test:integration:remote`, um probe falha a suite (não soft-passa) se o host responder `403 Request Denied Google Places` ou se o probe tiver erro de transporte.
+`recommendations` é o smoke remoto DB-backed. `places` / `search` / `details` dependem da Google Places API key no `ms-registration`. O probe falha a suite (não soft-passa) se o host responder `403 Request Denied Google Places` ou se o probe tiver erro de transporte.
 
 ## Referências
 

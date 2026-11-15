@@ -75,7 +75,7 @@ Ordem de validacao:
 
 Regra de pronto:
 
-- Feature/bugfix pode ser marcada como done quando unit + integration estiverem verdes (E2E entra como gate adicional apenas quando configurado) e, no fluxo lean, `/speckit.verify` tiver passado.
+- Feature/bugfix pode ser marcada como done quando unit + integration estiverem verdes nesta validacao (E2E entra como gate adicional apenas quando configurado) e, no fluxo lean, `/speckit.verify` tiver passado. `yarn test:integration` e obrigatorio: `yarn test` nao cobre `*.integration.spec.ts`.
 - Nao criar PR com testes obrigatorios pendentes.
 - O autor da implementacao nao assina o proprio done.
 
@@ -85,8 +85,9 @@ Antes de considerar a task concluida, executar validacao completa via DoD Harnes
 
 - **Script**: `./scripts/validate-dod.sh --task <id>`
 - **Referencia obrigatoria**: `.cursor/rules/definition-of-done.mdc`
-- **Gates ativos**: Codigo/Testes → Code Review → Documentacao → PR
-- **Enforcement**: BLOCK se qualquer gate ativo falhar
+- **Gates ativos**: Codigo/Testes (unit + `yarn test:integration` sempre) → Code Review → Documentacao → PR
+- **Integration**: `yarn test:integration` faz parte do Gate 1 e nao pode ser pulado. `--skip-tests` nao o dispensa.
+- **Enforcement**: BLOCK se qualquer gate ativo falhar, inclusive se a suite de integracao nao rodou
 
 ## 5) Commit e Rastreabilidade
 

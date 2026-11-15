@@ -4,6 +4,7 @@
 # Exit 1 when a blocking gate fails.
 # Exit 2 when the arguments are invalid.
 #
+# Gate 1 always runs yarn test:integration. --skip-tests does not skip it.
 # Gate 2 (E2E) is suspended until a React Native runner exists.
 # Gate 3 and Gate 5 are oriented: they print the next action and do not fail the script.
 
@@ -21,7 +22,7 @@ Usage: ./scripts/validate-dod.sh [options]
 
 Options:
   --task <id>       Issue id or slug to find in Obsidian frontmatter (Gate 4)
-  --skip-tests      Skip Gate 1 (lint, typecheck, yarn test)
+  --skip-tests      Skip lint, typecheck, and yarn test. Does not skip yarn test:integration
   --skip-e2e        Mark Gate 2 skipped (it is already suspended by default)
   --e2e-file <path> E2E spec to require. Fails: no RN runner is configured
   --e2e-release     Fail Gate 2 until an E2E runner exists
@@ -81,7 +82,7 @@ failed=0
 echo ""
 echo "Gate 1 — Testes, lint e tipos"
 if [ "$SKIP_TESTS" -eq 1 ]; then
-  echo "  pulado (--skip-tests)"
+  echo "  lint, typecheck e yarn test pulados (--skip-tests)"
 else
   if ! yarn lint:check; then
     echo "  FALHOU: yarn lint:check" >&2
@@ -97,9 +98,17 @@ else
     echo "  yarn test ja inclui coverage. Threshold global pode falhar por debito existente." >&2
     failed=1
   fi
-  if [ "$failed" -eq 0 ]; then
-    echo "  ok"
-  fi
+fi
+
+# Integration is mandatory for done. --skip-tests does not cover this step.
+# jest.config.js ignores *.integration.spec.ts, so yarn test never runs them.
+echo "  yarn test:integration (obrigatorio; nao pode ser pulado)"
+if ! yarn test:integration; then
+  echo "  FALHOU: yarn test:integration" >&2
+  echo "  DoD exige a suite de integracao executada e verde. --skip-tests nao dispensa este passo." >&2
+  failed=1
+elif [ "$failed" -eq 0 ]; then
+  echo "  ok"
 fi
 
 echo ""
