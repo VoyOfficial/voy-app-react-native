@@ -11,7 +11,7 @@ Quem pesquisa um lugar não tem como voltar pelo lado esquerdo do botão de opç
 
 Hoje ordenação e filtro não ficam dentro de um dropdown nem de um modal flutuando sobre a lista de lugares. `OrderOptionsWrapper` e `FilterOptionsWrapper` são `View`: o toque só monta ou desmonta essa view dentro do painel (`showOrderList` / `showFilterList`). `FilterModalWrapper` está com `position: absolute`, mas isso não é um `Modal` nem um menu suspenso. As opções crescem no próprio painel.
 
-O que muda: o voltar fica à esquerda do botão de opções; ordenação e filtro passam a viver num componente que flutua sobre a lista (dropdown ou modal de fato); o próximo envio da busca manda a ordenação e os tipos selecionados. A listagem de lugares que já existe permanece.
+O que muda: o voltar fica à esquerda do botão de opções; o botão de opções abre um painel flutuante sobre a lista de lugares, com o campo de busca ainda visível; dentro do painel, a ordenação e o filtro são dropdowns; o próximo envio da busca manda a ordenação e os tipos selecionados. A listagem de lugares que já existe permanece.
 
 ## 2. Flow
 
@@ -24,8 +24,8 @@ O que muda: o voltar fica à esquerda do botão de opções; ordenação e filtr
 
 ### Abrir o painel flutuante
 
-1. Trigger: toque no botão de opções (filtro), que já existe.
-2. Abre um componente flutuante sobre a lista de lugares (dropdown ou modal). Os controles de ordenação e de filtro ficam dentro dele.
+1. Trigger: toque no botão de opções, que já existe.
+2. Abre um painel flutuante sobre a lista de lugares. O campo de busca continua visível. A ordenação e o filtro ficam dentro do painel.
 3. Os dois menus nascem fechados. Fechar o flutuante fecha os dois.
 4. A lista de cards continua no lugar, por baixo. O flutuante não entra no fluxo da `CardList`.
 
@@ -98,7 +98,7 @@ Não criar use case, hook compartilhado, componente em `src/shared/` nem depend�
 ## 5. Surface
 
 - Botão de voltar à esquerda do botão de opções.
-- O botão de opções abre um flutuante sobre a lista. Ordenação e filtro ficam dentro dele.
+- O botão de opções abre um painel flutuante sobre a lista, com o campo de busca visível. Ordenação e filtro ficam dentro dele, cada um no próprio dropdown.
 - "Ordenar por" é um dropdown de uma escolha. "Filtrar por" é um dropdown de várias. Os menus flutuam sobre os cards.
 - A lista de lugares continua aparecendo depois que a busca retorna.
 - O submit do teclado envia a seleção atual. Digitar sozinho não busca.
@@ -115,7 +115,7 @@ Não criar use case, hook compartilhado, componente em `src/shared/` nem depend�
 ## 7. Criteria
 
 1. O botão de voltar renderiza à esquerda do botão de opções e chama `goBack`. **Prova:** teste da tela Search.
-2. "Ordenar por" e "Filtrar por" ficam dentro de um componente flutuante sobre a `CardList`. O menu deixa de ser só uma `View` montada no fluxo do painel. **Prova:** teste da tela Search (o flutuante cobre a área da lista; a lista segue montada por baixo).
+2. "Ordenar por" e "Filtrar por" ficam dentro de um painel flutuante sobre a `CardList`, com o campo de busca visível. O menu deixa de ser só uma `View` montada no fluxo do painel. **Prova:** teste da tela Search (o painel cobre a área da lista; a lista segue montada por baixo).
 3. "Ordenar por" abre as três opções de `Ordination`, a escolha fica selecionada e o menu fecha. "Filtrar por" marca e desmarca vários tipos com o menu aberto. **Prova:** teste do modal.
 4. A primeira busca, sem mexer no painel, envia `ordination: Ordination.MostRated` e `types: []`. **Prova:** `useSearch.spec.tsx`.
 5. Depois de mudar ordenação e tipos, o submit envia esse `FilterParam`, e não `Closer` + `[Entertainment]`. **Prova:** `useSearch.spec.tsx` com `SearchPlaces` fake.
@@ -123,7 +123,7 @@ Não criar use case, hook compartilhado, componente em `src/shared/` nem depend�
 7. O body do POST continua `{ types, ordination }` quando o use case é chamado. **Prova:** `remoteSearchPlaces.spec.ts` existente, sem alteração de produção.
 8. Com texto no campo e `searchTo` resolvido, a `CardList` mostra os lugares retornados. Campo vazio não mostra a lista. **Prova:** teste da tela Search com `placeList` preenchida e vazia.
 9. Digitar 1, 2 ou 3 caracteres não chama `searchPlaces.search`. Só o submit do teclado chama. **Prova:** `useSearch.spec.tsx` (`changeSearch` não dispara busca).
-10. Check manual: o voltar fica à esquerda do filtro; o flutuante de ordenação e filtro cobre a lista de lugares; uma busca após trocar ordenação e tipos mostra esses valores no body e os cards na lista.
+10. Check manual: o voltar fica à esquerda do botão de opções; o painel de ordenação e filtro flutua sobre a lista de lugares, com o campo de busca visível; uma busca após trocar ordenação e tipos mostra esses valores no body e os cards na lista.
 
 ---
 
