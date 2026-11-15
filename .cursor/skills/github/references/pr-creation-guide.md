@@ -111,7 +111,8 @@ O agente GitHub executa TODOS os passos automaticamente:
 ### 2. Validação de Código
 
 - [ ] Verificar se compila sem erros (`tsc --noEmit`)
-- [ ] Garantir que testes estão presentes e passando (`yarn test`)
+- [ ] Garantir que testes unitários estão passando (`yarn test`)
+- [ ] Garantir que `yarn test:integration` foi executado nesta validação e está verde (obrigatório para done; `yarn test` não cobre `*.integration.spec.ts`)
 - [ ] Validar convenção de commits (`type(module/file): description`)
 
 ### 3. Criação do PR

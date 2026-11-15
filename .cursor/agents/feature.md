@@ -182,7 +182,7 @@ npx jest --testPathPattern="domain" --coverage
 **Level 2: Integration Tests (data/presentation)**
 
 ```bash
-npx jest --testPathPattern="(data|presentation|integration)"
+yarn test:integration
 ```
 
 **Gate Criteria:**
@@ -337,7 +337,7 @@ Feature Agent completes successfully ONLY when:
 ## 📋 Pre-Flight Checklist (Before task_complete)
 
 **DoD Harness Validation:**
-- [ ] Gate 1: Unit + Integration + TypeScript + ESLint passing
+- [ ] Gate 1: `yarn test` and `yarn test:integration` executed and passing (integration cannot be skipped)
 - [ ] Gate 2: E2E - N/A (not configured yet)
 - [ ] Gate 3: Code Reviewer approved (no BLOCKING issues)
 - [ ] Gate 4: Obsidian Work Item + Session created with YAML

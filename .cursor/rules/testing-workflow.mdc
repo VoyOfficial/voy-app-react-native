@@ -40,8 +40,10 @@ A change is not done while those tests are red.
 ## Feature is DONE when
 
 ```
-Unit tests (domain) pass + Integration tests (data/presentation) pass = DONE
+yarn test --coverage verde + yarn test:integration executado e verde = DONE
 ```
+
+`yarn test` ignores `*.integration.spec.ts`. Done requires `yarn test:integration` in the same validation (`./scripts/validate-dod.sh`). `--skip-tests` does not skip that suite.
 
 E2E is not a gate today (no E2E framework configured — see `validation-pyramid.mdc`). When E2E is introduced, it becomes the final gate.
 

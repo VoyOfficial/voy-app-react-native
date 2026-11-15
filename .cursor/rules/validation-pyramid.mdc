@@ -190,8 +190,8 @@ describe('PlaceListScreen Integration', () => {
 # Rodar integration tests de uma feature
 npx jest src/features/place --testPathPattern='integration.test' -c jest.config.js
 
-# Rodar todos os integration tests
-npx jest --testPathPattern='integration.test' -c jest.config.js
+# Rodar todos os integration tests (comando do DoD; yarn test nao inclui estes arquivos)
+yarn test:integration
 ```
 
 ---

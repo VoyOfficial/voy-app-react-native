@@ -64,7 +64,7 @@ Valida o formato definido em `harness-engineering.mdc` (seção "Commit e Rastre
 3. `yarn lint:check` — ESLint completo, sem `--fix` (checagem, não correção).
 4. Suite de testes **unitários** (`npx jest --passWithNoTests --no-cache --runInBand`) — sem coverage gate (ver "Débitos Conhecidos").
 
-**Integration tests (`yarn test:integration`) NÃO rodam no pre-push**: dependem do `json-server` local (`yarn server`) rodando, o que é frágil para um git hook automático. Rodar manualmente antes do PR ou integrar numa pipeline de CI futura.
+**Integration tests (`yarn test:integration`) NÃO rodam no pre-push**: dependem do `json-server` local (`yarn server`) rodando, o que é frágil para um git hook automático. O Definition of Done exige essa suite sempre: `./scripts/validate-dod.sh` executa `yarn test:integration` e falha se ela não passar. `--skip-tests` não dispensa o passo. Sem essa execução verde, a task não está done.
 
 ---
 
@@ -74,7 +74,7 @@ Estes itens existiam **antes** da implementação dos hooks e não foram corrigi
 
 1. **TypeScript**: ~38 erros de tipo pré-existentes em ~18 arquivos (rode `yarn typecheck` para ver a lista atual). Até serem corrigidos, o pre-commit só bloqueia erros em arquivos que você está staged, não o débito antigo.
 2. **Coverage**: `yarn test --coverage` falha hoje (branches ~88% vs 90% exigido em `jest.config.js`), mesmo com 100% dos testes passando. O pre-push roda os testes **sem** `--coverage` por esse motivo. Ajustar o threshold ou fechar a lacuna de cobertura é um trabalho separado.
-3. **`yarn test:integration`**: dependem do `json-server` local (`yarn server`) já estar rodando em outro terminal.
+3. **`yarn test:integration`**: dependem do `json-server` local (`yarn server`) já estar rodando em outro terminal quando a suite aponta para localhost. O pre-push não os executa. O DoD executa e bloqueia se falharem (`scripts/validate-dod.sh`).
 
 **Ação recomendada**: abrir issues de débito técnico para os itens 1 e 2, e reavaliar o threshold do jest quando resolvidos.
 
