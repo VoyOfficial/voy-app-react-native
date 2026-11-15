@@ -5,7 +5,7 @@ description: Definition of Done (DoD) mandatory quality gate checklist to run be
 
 # Definition of Done (DoD) Harness
 
-> **Versao**: 1.1.0
+> **Versao**: 1.2.0
 > **Contexto**: Gate de qualidade obrigatorio para qualquer trabalho neste repositorio
 
 ---
@@ -38,7 +38,7 @@ yarn test:integration
 - [ ] Coverage > 80% para codigo novo
 - [ ] TypeScript e ESLint sem erros
 
-`yarn test:integration` e obrigatorio para considerar a task done. Nao existe flag, atalho ou "ja rodei antes" que dispense esta execucao. `--skip-tests` pula lint, typecheck e `yarn test`; a suite de integracao continua rodando e bloqueia se falhar. O `json-server` local (`yarn server`) precisa estar no ar quando a suite aponta para localhost (ver `docs/api-env.md`).
+`yarn test:integration` e obrigatorio para considerar a task done. Nao existe flag, atalho ou "ja rodei antes" que dispense esta execucao. `--skip-tests` pula lint, typecheck e `yarn test`; a suite de integracao continua rodando e bloqueia se falhar. A suite aponta sempre para `.env.prod` (`yarn env:prod`), nunca para localhost (ver `docs/api-env.md`).
 
 ---
 
