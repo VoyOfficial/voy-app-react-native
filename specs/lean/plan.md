@@ -3,7 +3,7 @@
 **Issue:** [#98](https://github.com/VoyOfficial/voy-app-react-native/issues/98)  
 **Grill:** domínio já existente. Ordenação é uma escolha. Filtro são vários tipos. O botão da esquerda só abre o painel. Cada seção vira o próprio dropdown. O voltar fica à esquerda desse botão.
 
-`specs/lean/checks.md` ainda é o da #95. Não usar até `/speckit.lean-checks`.
+`specs/lean/checks.md` prova os critérios deste plano.
 
 ## 1. Problem
 
