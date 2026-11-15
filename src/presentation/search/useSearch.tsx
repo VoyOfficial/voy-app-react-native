@@ -1,24 +1,26 @@
 import { useState } from 'react';
-import { FilterParam } from '~/domain/params';
 import { LocationService } from '~/domain/protocols';
 import { SearchPlaces } from '~/domain/useCases';
 import { Routes } from '~/main/navigation';
 import { GenericObject } from '../../main/types/genericObject';
 import { Place } from '../components/cardList';
+import FilterModel from './model/Filter';
 import { SearchViewModel } from './search';
 
 type Props = {
   searchPlaces: SearchPlaces;
   locationService: LocationService;
   nextPageToken: string;
-  filterParam: FilterParam;
+  filterModel: FilterModel;
+  goBack: () => void;
   navigate: (routeName: string, params?: GenericObject | undefined) => void;
 };
 
 const useSearch = ({
   searchPlaces,
   locationService,
-  filterParam,
+  filterModel,
+  goBack,
   nextPageToken,
   navigate,
 }: Props): SearchViewModel => {
@@ -35,7 +37,7 @@ const useSearch = ({
   };
 
   const searchTo = async (value: string) => {
-    const { ordination, types } = filterParam;
+    const { ordination, types } = filterModel.toFilterParam();
     try {
       const coordinates = await locationService.getCurrentPosition();
       const result = await searchPlaces.search(
@@ -71,9 +73,14 @@ const useSearch = ({
     navigate(Routes.PLACE_DETAILS, { place });
   };
 
+  const back = () => {
+    goBack();
+  };
+
   return {
     changeSearch,
     filter,
+    goBack: back,
     placeList,
     searchTo,
     searchValue,

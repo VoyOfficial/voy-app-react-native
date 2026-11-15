@@ -683,6 +683,178 @@ describe('Search: FilterModalFactory', () => {
       expect(result.current.options.filterBy.list[4].selected).toEqual(false);
       expect(result.current.options).toEqual(getOptions());
     });
+
+    test('should close the filter menu when the order menu opens', async () => {
+      const { result } = renderHook(() =>
+        useFilterModalFactory({ filter: new Filter() }),
+      );
+
+      result.current.changeShowOfFilterList();
+
+      await waitFor(() => {
+        expect(result.current.showFilterList).toEqual(true);
+      });
+
+      result.current.changeShowOfOrderList();
+
+      await waitFor(() => {
+        expect(result.current.showOrderList).toEqual(true);
+        expect(result.current.showFilterList).toEqual(false);
+      });
+    });
+
+    test('should close the order menu when the filter menu opens', async () => {
+      const { result } = renderHook(() =>
+        useFilterModalFactory({ filter: new Filter() }),
+      );
+
+      result.current.changeShowOfOrderList();
+
+      await waitFor(() => {
+        expect(result.current.showOrderList).toEqual(true);
+      });
+
+      result.current.changeShowOfFilterList();
+
+      await waitFor(() => {
+        expect(result.current.showFilterList).toEqual(true);
+        expect(result.current.showOrderList).toEqual(false);
+      });
+    });
+
+    test('should close the order menu after a selection', async () => {
+      const { result } = renderHook(() =>
+        useFilterModalFactory({ filter: new Filter() }),
+      );
+
+      result.current.changeShowOfOrderList();
+
+      await waitFor(() => {
+        expect(result.current.showOrderList).toEqual(true);
+      });
+
+      result.current.selectOrder(getOptions().orderBy.list[2]);
+
+      await waitFor(() => {
+        expect(result.current.showOrderList).toEqual(false);
+        expect(result.current.options.orderBy.selected.label).toEqual(
+          'Mais próximo',
+        );
+      });
+    });
+
+    test('should keep the filter menu open while selecting and deselecting types', async () => {
+      const filter = new Filter(getOptions());
+      const { result } = renderHook(() => useFilterModalFactory({ filter }));
+
+      result.current.changeShowOfFilterList();
+
+      await waitFor(() => {
+        expect(result.current.showFilterList).toEqual(true);
+      });
+
+      result.current.selectFilter(getOptions().filterBy.list[0]);
+      result.current.selectFilter(getOptions().filterBy.list[3]);
+
+      expect(result.current.showFilterList).toEqual(true);
+
+      result.current.deselectFilter({
+        ...getOptions().filterBy.list[0],
+        selected: true,
+      });
+
+      expect(result.current.showFilterList).toEqual(true);
+      expect(result.current.options.filterBy.list[0].selected).toEqual(false);
+      expect(result.current.options.filterBy.list[3].selected).toEqual(true);
+    });
+  });
+});
+
+const FilterModalHarness = ({ filter }: { filter: Filter }) => {
+  const modal = useFilterModalFactory({ filter });
+
+  return (
+    <FilterModal
+      filterOptions={modal.options}
+      selectFilter={modal.selectFilter}
+      deselectFilter={modal.deselectFilter}
+      selectOrder={modal.selectOrder}
+      showFilterList={modal.showFilterList}
+      showOrderList={modal.showOrderList}
+      changeShowOfFilterList={modal.changeShowOfFilterList}
+      changeShowOfOrderList={modal.changeShowOfOrderList}
+    />
+  );
+};
+
+describe('Search: FilterModal dropdowns', () => {
+  test('should show the three Ordination options, select one and close the menu', () => {
+    const { getByTestId, queryByTestId } = renderWithTheme(
+      <FilterModalHarness filter={new Filter()} />,
+    );
+
+    fireEvent.press(getByTestId('order_by_button_id'));
+
+    expect(
+      flatStyle(getByTestId('order_options_id').props.style).position,
+    ).toEqual('absolute');
+    expect(getByTestId('order_0_id').props.children).toEqual('Mais avaliados');
+    expect(getByTestId('order_1_id').props.children).toEqual('Mais comentados');
+    expect(getByTestId('order_2_id').props.children).toEqual('Mais próximo');
+
+    fireEvent.press(getByTestId('order_button_2_id'));
+
+    expect(queryByTestId('order_options_id')).toBeNull();
+    expect(getByTestId('order_by_selected_id').props.children).toEqual(
+      'Mais próximo',
+    );
+  });
+
+  test('should mark and unmark several filter types while the menu stays open', () => {
+    const { getByTestId, queryByTestId } = renderWithTheme(
+      <FilterModalHarness filter={new Filter()} />,
+    );
+
+    fireEvent.press(getByTestId('order_by_button_id'));
+    fireEvent.press(getByTestId('filter_by_button_id'));
+
+    expect(queryByTestId('order_options_id')).toBeNull();
+    expect(
+      flatStyle(getByTestId('filter_options_id').props.style).position,
+    ).toEqual('absolute');
+
+    fireEvent.press(getByTestId('filter_button_0_id'));
+    fireEvent.press(getByTestId('filter_button_3_id'));
+
+    expect(getByTestId('filter_options_id')).toBeTruthy();
+    validOptionSelection(
+      'filter',
+      0,
+      { border: '#5742E0', background: '#5742E0' },
+      getByTestId,
+    );
+    validOptionSelection(
+      'filter',
+      3,
+      { border: '#5742E0', background: '#5742E0' },
+      getByTestId,
+    );
+
+    fireEvent.press(getByTestId('filter_button_0_id'));
+
+    expect(getByTestId('filter_options_id')).toBeTruthy();
+    validOptionSelection(
+      'filter',
+      0,
+      { border: '#C5CACC', background: '#FFFFFF' },
+      getByTestId,
+    );
+    validOptionSelection(
+      'filter',
+      3,
+      { border: '#5742E0', background: '#5742E0' },
+      getByTestId,
+    );
   });
 });
 
@@ -749,6 +921,18 @@ const makeSut = ({
   );
 
   return { sut };
+};
+
+const flatStyle = (style: unknown): Record<string, unknown> => {
+  if (Array.isArray(style)) {
+    return Object.assign({}, ...style.map((item) => flatStyle(item)));
+  }
+
+  if (style && typeof style === 'object') {
+    return style as Record<string, unknown>;
+  }
+
+  return {};
 };
 
 const validOptionSelection = (

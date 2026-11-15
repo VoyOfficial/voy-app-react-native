@@ -3,12 +3,12 @@ import React from 'react';
 import { RouteProp } from '@react-navigation/native';
 import { apiEndpoints } from '~/core';
 import { Actions, Routes, navigator } from '~/main/navigation';
-import { Filter, Ordination } from '~/domain/enums';
 import { AxiosAdapter } from '~/infra/http';
 import { GeolocationAdapter } from '~/infra/location';
 import { RemoteSearchPlaces } from '~/data/useCases';
 import { FirebaseAnalyticsAdapter } from '~/infra/analytics';
 import { StackParams } from '../../../../src/main/navigation/navigation';
+import stores from '../../stores';
 import { Search, useSearch } from '../../../../src/presentation/search';
 
 type Props = {
@@ -17,11 +17,9 @@ type Props = {
 };
 
 const SearchFactory = ({}: Props) => {
+  const actions = new Actions(navigator);
   const viewModel = useSearch({
-    filterParam: {
-      ordination: Ordination.Closer,
-      types: [Filter.Entertainment],
-    },
+    filterModel: stores.filter,
     nextPageToken: '',
     searchPlaces: new RemoteSearchPlaces(
       apiEndpoints.search(),
@@ -29,7 +27,8 @@ const SearchFactory = ({}: Props) => {
       new FirebaseAnalyticsAdapter(),
     ),
     locationService: new GeolocationAdapter(),
-    navigate: new Actions(navigator).navigate,
+    navigate: actions.navigate,
+    goBack: actions.goBack,
   });
   return <Search {...viewModel} />;
 };

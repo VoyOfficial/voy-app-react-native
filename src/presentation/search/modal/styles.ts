@@ -1,5 +1,8 @@
 import styled from 'styled-components/native';
+import { AppThemeShape } from '../../theme/theme';
 import Icon from '../../assets/fonts/Voy';
+
+type ThemeProps = { theme: AppThemeShape };
 
 export const OptionButton = styled.TouchableOpacity`
   padding: 14px 0px;
@@ -27,8 +30,10 @@ export const OptionSelectionIcon = styled.View<OptionSelectionIconProps>`
   height: 12px;
   border-width: 1px;
   border-radius: 6px;
-  border-color: ${(props) => (props.selected ? '#5742E0' : '#C5CACC')};
-  background-color: ${(props) => (props.selected ? '#5742E0' : '#FFFFFF')};
+  border-color: ${(props: OptionSelectionIconProps) =>
+    props.selected ? '#5742E0' : '#C5CACC'};
+  background-color: ${(props: OptionSelectionIconProps) =>
+    props.selected ? '#5742E0' : '#FFFFFF'};
 `;
 
 export const Container = styled.View`
@@ -40,7 +45,8 @@ export const OrderByButton = styled.TouchableOpacity`
   flex-direction: row;
   padding: 19px 0px;
   border-bottom-width: 1px;
-  border-color: ${({ theme }) => theme.colors.themeColors.neutral['70']};
+  border-color: ${({ theme }: ThemeProps) =>
+    theme.colors.themeColors.neutral['70']};
   padding-left: 22px;
   padding-right: 16px;
   justify-content: space-between;
@@ -52,13 +58,13 @@ export const OrderByLabelWrapper = styled.View`
 `;
 
 export const OrderByLabel = styled.Text`
-  color: ${({ theme }) => theme.colors.themeColors.primary.text};
+  color: ${({ theme }: ThemeProps) => theme.colors.themeColors.primary.text};
   font-size: 15px;
   font-family: 'LexendDeca-Regular';
 `;
 
 export const OrderBySelected = styled.Text`
-  color: ${({ theme }) => theme.colors.themeColors.primary.dark};
+  color: ${({ theme }: ThemeProps) => theme.colors.themeColors.primary.dark};
   font-size: 15px;
   font-family: 'LexendDeca-Regular';
 `;
@@ -68,12 +74,22 @@ export const ArrowIcon = styled(Icon).attrs({
   color: '#212121',
 })``;
 
-export const OrderOptionsWrapper = styled.View``;
+export const OrderOptionsWrapper = styled.View`
+  position: absolute;
+  top: 58px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background-color: #ffffff;
+  border-radius: 10px;
+  elevation: 4;
+`;
 
 export const FilterByButton = styled.TouchableOpacity`
   padding: 19px 0px;
   border-bottom-width: 1px;
-  border-color: ${({ theme }) => theme.colors.themeColors.neutral['70']};
+  border-color: ${({ theme }: ThemeProps) =>
+    theme.colors.themeColors.neutral['70']};
   padding-left: 22px;
   padding-right: 16px;
   flex-direction: row;
@@ -87,4 +103,13 @@ export const FilterByLabel = styled.Text`
   font-size: 15px;
 `;
 
-export const FilterOptionsWrapper = styled.View``;
+export const FilterOptionsWrapper = styled.View`
+  position: absolute;
+  top: 116px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background-color: #ffffff;
+  border-radius: 10px;
+  elevation: 4;
+`;

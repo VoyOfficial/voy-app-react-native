@@ -1,5 +1,8 @@
 import styled from 'styled-components/native';
+import { AppThemeShape } from '../theme/theme';
 import Icon from '../assets/fonts/Voy';
+
+type ThemeProps = { theme: AppThemeShape };
 
 export const Container = styled.View`
   padding-top: 80px;
@@ -12,6 +15,15 @@ export const HeaderWrapper = styled.View`
   align-items: center;
   padding: 0 20px;
 `;
+
+export const BackButton = styled.TouchableOpacity`
+  padding-right: 16px;
+`;
+
+export const BackIcon = styled(Icon).attrs({
+  size: 24,
+  color: '#212121',
+})``;
 
 export const FilterButtonWrapper = styled.View`
   padding-right: 21px;
@@ -29,7 +41,8 @@ export const SearchInputWrapper = styled.View`
 `;
 
 export const SearchInput = styled.TextInput`
-  background-color: ${({ theme }) => theme.colors.themeColors.neutral['100']};
+  background-color: ${({ theme }: ThemeProps) =>
+    theme.colors.themeColors.neutral['100']};
   padding: 11px 0px;
   padding-left: 16px;
   border-radius: 13px;
@@ -55,10 +68,10 @@ export const CardListWrapper = styled.View`
 `;
 
 export const FilterModalWrapper = styled.View`
-  margin: 0px 20px;
-  margin-top: 20px;
   position: absolute;
-  top: 120px;
-  left: 0;
-  right: 0;
+  top: 140px;
+  left: 20px;
+  right: 20px;
+  bottom: 0px;
+  z-index: 1;
 `;

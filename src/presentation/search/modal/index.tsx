@@ -85,28 +85,31 @@ const Options = ({
     selected?: boolean;
   }) => void;
   type: string;
-}) =>
-  list.map((option) => (
-    <OptionButton
-      key={option.id}
-      testID={`${type}_button_${option.id}_id`}
-      onPress={() => {
-        if (option.selected && deselect) {
-          deselect(option);
-        } else {
-          select(option);
-        }
-      }}
-    >
-      <OptionLabel testID={`${type}_${option.id}_id`}>
-        {option.label}
-      </OptionLabel>
-      <OptionSelectionIcon
-        testID={`${type}_selection_icon_${option.id}_id`}
-        selected={option.selected}
-      />
-    </OptionButton>
-  ));
+}) => (
+  <>
+    {list.map((option) => (
+      <OptionButton
+        key={option.id}
+        testID={`${type}_button_${option.id}_id`}
+        onPress={() => {
+          if (option.selected && deselect) {
+            deselect(option);
+          } else {
+            select(option);
+          }
+        }}
+      >
+        <OptionLabel testID={`${type}_${option.id}_id`}>
+          {option.label}
+        </OptionLabel>
+        <OptionSelectionIcon
+          testID={`${type}_selection_icon_${option.id}_id`}
+          selected={option.selected}
+        />
+      </OptionButton>
+    ))}
+  </>
+);
 
 export const FilterModal = ({
   filterOptions,
@@ -182,11 +185,13 @@ export const useFilterModalFactory = ({ filter }: { filter: Filter }) => {
   const [options, setOptions] = useState<FilterOptions>(filter.options);
 
   const changeShowOfOrderList = () => {
-    setShowOrderList(!showOrderList);
+    setShowFilterList(false);
+    setShowOrderList((current) => !current);
   };
 
   const changeShowOfFilterList = () => {
-    setShowFilterList(!showFilterList);
+    setShowOrderList(false);
+    setShowFilterList((current) => !current);
   };
 
   const selectFilter = (option: {
@@ -252,6 +257,7 @@ export const useFilterModalFactory = ({ filter }: { filter: Filter }) => {
   const selectOrder = (order: { id: number; label: string }) => {
     const optionsUpdated = filter.selectOrder(order, options);
     setOptions(optionsUpdated);
+    setShowOrderList(false);
   };
 
   return {
