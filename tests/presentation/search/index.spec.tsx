@@ -179,7 +179,7 @@ describe('Presentation: Search', () => {
     expect(goBack).toHaveBeenCalledTimes(1);
   });
 
-  test('should float the filter panel over the card list and keep the search field visible', () => {
+  test('should show the filter panel with the search field and card list still mounted', () => {
     const placeList = placeListFactory(2);
     const {
       sut: { getByTestId },
@@ -195,16 +195,16 @@ describe('Presentation: Search', () => {
     const panelStyle = flatStyle(getByTestId('filter_panel_id').props.style);
 
     expect(panelStyle.position).toEqual('absolute');
-    expect(panelStyle.left).toEqual(20);
-    expect(panelStyle.right).toEqual(20);
-    expect(panelStyle.bottom).toEqual(0);
+    expect(panelStyle.top).toEqual(120);
+    expect(panelStyle.left).toEqual(0);
+    expect(panelStyle.right).toEqual(0);
     expect(getByTestId('search_input_id')).toBeTruthy();
     expect(getByTestId('filter_modal_id')).toBeTruthy();
     expect(getByTestId('list_card_0_id')).toBeTruthy();
     expect(getByTestId('list_card_1_id')).toBeTruthy();
   });
 
-  test('should close both dropdowns when the floating panel closes and opens again', () => {
+  test('should close both option lists when the filter panel closes and opens again', () => {
     const filter = new Filter();
     const placeList = placeListFactory(1);
     const tree = (showFilterOptions: boolean) => (

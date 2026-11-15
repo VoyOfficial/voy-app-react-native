@@ -7,12 +7,12 @@ Derived from `specs/lean/plan.md`. Each block proves one plan criterion.
 - Layer: presentation
 - Files: `src/presentation/search/search.tsx`, `src/presentation/search/styles.ts`, `src/presentation/search/useSearch.tsx`, `src/main/factories/presentation/searchFactory.tsx`
 
-## C2 — "Ordenar por" e "Filtrar por" ficam num painel flutuante sobre a `CardList`, com o campo de busca visível e a lista montada por baixo
-- Proof: `tests/presentation/search/index.spec.tsx` (painel com `position: absolute` cobrindo a área da lista; `search_input_id` e os cards continuam montados)
+## C2 — "Ordenar por" e "Filtrar por" ficam no painel, com o campo de busca visível e a lista de cards montada
+- Proof: `tests/presentation/search/index.spec.tsx` (`filter_panel_id`, `search_input_id` e os cards continuam montados)
 - Layer: presentation
 - Files: `src/presentation/search/search.tsx`, `src/presentation/search/styles.ts`
 
-## C3 — "Ordenar por" abre as três opções de `Ordination`, a escolha fica selecionada e o menu fecha. "Filtrar por" marca e desmarca vários tipos com o menu aberto. Abrir um menu fecha o outro
+## C3 — "Ordenar por" abre as três opções de `Ordination`, a escolha fica selecionada e a lista fecha. "Filtrar por" marca e desmarca vários tipos com a lista aberta. Abrir uma lista fecha a outra
 - Proof: `tests/presentation/search/modal/index.spec.tsx`
 - Layer: presentation
 - Files: `src/presentation/search/modal/index.tsx`, `src/presentation/search/modal/styles.ts`
@@ -47,8 +47,8 @@ Derived from `specs/lean/plan.md`. Each block proves one plan criterion.
 - Layer: presentation
 - Files: `src/presentation/search/useSearch.tsx`, `src/presentation/search/search.tsx`
 
-## C10 — Check manual do voltar, do painel flutuante e do body da busca
-- Proof: check manual — o voltar fica à esquerda do botão de opções; o painel de ordenação e filtro flutua sobre a lista, com o campo de busca visível; uma busca após trocar ordenação e tipos mostra esses valores no body e os cards na lista
+## C10 — Check manual do voltar, do painel e do body da busca
+- Proof: check manual — o voltar fica à esquerda do botão de opções; o painel de ordenação e filtro usa a UI existente (listas no fluxo do painel), com o campo de busca visível; uma busca após trocar ordenação e tipos mostra esses valores no body e os cards na lista
 - Layer: presentation
 - Files: `src/presentation/search/search.tsx`, `src/presentation/search/modal/index.tsx`, `src/main/factories/presentation/searchFactory.tsx`
 
@@ -59,8 +59,8 @@ Derived from `specs/lean/plan.md`. Each block proves one plan criterion.
 | Criterion | Proof |
 |-----------|--------|
 | 1 voltar à esquerda chama `goBack` | C1 |
-| 2 painel flutuante sobre a lista, busca visível | C2 |
-| 3 dropdown de ordenação (uma) e filtro (várias) | C3 |
+| 2 painel com busca visível e cards montados | C2 |
+| 3 lista de ordenação (uma) e filtro (várias) | C3 |
 | 4 primeira busca `MostRated` e `types: []` | C4 |
 | 5 submit envia a seleção atual | C5 |
 | 6 rótulos são os valores dos enums | C6 |
@@ -74,6 +74,6 @@ All plan criteria have a proof. C10 is manual. None added beyond the plan.
 ## Handoff
 
 - **Base branch:** `develop` (esta implementação empilha em `cursor/search-screen-lean-plan-aae7`)
-- **Surface:** botão de voltar à esquerda do botão de opções; painel flutuante sobre a lista com o campo de busca visível; "Ordenar por" e "Filtrar por" como dropdowns; submit envia a seleção atual
+- **Surface:** botão de voltar à esquerda do botão de opções; painel de ordenação e filtro com UI existente; "Ordenar por" e "Filtrar por" como listas no fluxo do painel; submit envia a seleção atual
 - **Files:** `src/presentation/search/search.tsx`, `styles.ts`, `useSearch.tsx`, `modal/index.tsx`, `modal/styles.ts`, `model/Filter.ts`, `src/main/factories/presentation/searchFactory.tsx`, testes em `tests/presentation/search/`
 - **Next:** `/speckit.verify` in a context that did not write this code

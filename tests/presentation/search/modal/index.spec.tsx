@@ -787,17 +787,15 @@ const FilterModalHarness = ({ filter }: { filter: Filter }) => {
   );
 };
 
-describe('Search: FilterModal dropdowns', () => {
-  test('should show the three Ordination options, select one and close the menu', () => {
+describe('Search: FilterModal option lists', () => {
+  test('should show the three Ordination options, select one and close the list', () => {
     const { getByTestId, queryByTestId } = renderWithTheme(
       <FilterModalHarness filter={new Filter()} />,
     );
 
     fireEvent.press(getByTestId('order_by_button_id'));
 
-    expect(
-      flatStyle(getByTestId('order_options_id').props.style).position,
-    ).toEqual('absolute');
+    expect(getByTestId('order_options_id')).toBeTruthy();
     expect(getByTestId('order_0_id').props.children).toEqual('Mais avaliados');
     expect(getByTestId('order_1_id').props.children).toEqual('Mais comentados');
     expect(getByTestId('order_2_id').props.children).toEqual('Mais próximo');
@@ -810,7 +808,7 @@ describe('Search: FilterModal dropdowns', () => {
     );
   });
 
-  test('should mark and unmark several filter types while the menu stays open', () => {
+  test('should mark and unmark several filter types while the list stays open', () => {
     const { getByTestId, queryByTestId } = renderWithTheme(
       <FilterModalHarness filter={new Filter()} />,
     );
@@ -819,9 +817,7 @@ describe('Search: FilterModal dropdowns', () => {
     fireEvent.press(getByTestId('filter_by_button_id'));
 
     expect(queryByTestId('order_options_id')).toBeNull();
-    expect(
-      flatStyle(getByTestId('filter_options_id').props.style).position,
-    ).toEqual('absolute');
+    expect(getByTestId('filter_options_id')).toBeTruthy();
 
     fireEvent.press(getByTestId('filter_button_0_id'));
     fireEvent.press(getByTestId('filter_button_3_id'));
@@ -921,18 +917,6 @@ const makeSut = ({
   );
 
   return { sut };
-};
-
-const flatStyle = (style: unknown): Record<string, unknown> => {
-  if (Array.isArray(style)) {
-    return Object.assign({}, ...style.map((item) => flatStyle(item)));
-  }
-
-  if (style && typeof style === 'object') {
-    return style as Record<string, unknown>;
-  }
-
-  return {};
 };
 
 const validOptionSelection = (

@@ -68,10 +68,10 @@ export const CardListWrapper = styled.View`
 `;
 
 export const FilterModalWrapper = styled.View`
+  margin: 0px 20px;
+  margin-top: 20px;
   position: absolute;
-  top: 140px;
-  left: 20px;
-  right: 20px;
-  bottom: 0px;
-  z-index: 1;
+  top: 120px;
+  left: 0;
+  right: 0;
 `;

@@ -1,7 +1,7 @@
 # Lean Plan — Tela de busca: voltar, dropdown e filtros (#98)
 
 **Issue:** [#98](https://github.com/VoyOfficial/voy-app-react-native/issues/98)  
-**Grill:** domínio já existente. Ordenação é uma escolha. Filtro são vários tipos. O botão da esquerda só abre o painel. Cada seção vira o próprio dropdown. O voltar fica à esquerda desse botão.
+**Grill:** domínio já existente. Ordenação é uma escolha. Filtro são vários tipos. O botão da esquerda só abre o painel. Cada seção abre a própria lista de opções. O voltar fica à esquerda desse botão.
 
 `specs/lean/checks.md` prova os critérios deste plano.
 
@@ -9,9 +9,9 @@
 
 Quem pesquisa um lugar não tem como voltar pelo lado esquerdo do botão de opções. A escolha de ordenação e de filtro não entra na busca: `SearchFactory` fixa `Ordination.Closer` e `[Filter.Entertainment]`, e o modal guarda a seleção só no próprio estado.
 
-Hoje ordenação e filtro não ficam dentro de um dropdown nem de um modal flutuando sobre a lista de lugares. `OrderOptionsWrapper` e `FilterOptionsWrapper` são `View`: o toque só monta ou desmonta essa view dentro do painel (`showOrderList` / `showFilterList`). `FilterModalWrapper` está com `position: absolute`, mas isso não é um `Modal` nem um menu suspenso. As opções crescem no próprio painel.
+Hoje ordenação e filtro já usam o painel existente (`FilterModal`). `OrderOptionsWrapper` e `FilterOptionsWrapper` são `View` no fluxo do painel (`showOrderList` / `showFilterList`): o toque monta ou desmonta a lista dentro do painel. A UI do painel permanece a que já existia (sem menus flutuantes sobre a lista).
 
-O que muda: o voltar fica à esquerda do botão de opções; o botão de opções abre um painel flutuante sobre a lista de lugares, com o campo de busca ainda visível; dentro do painel, a ordenação e o filtro são dropdowns; o próximo envio da busca manda a ordenação e os tipos selecionados. A listagem de lugares que já existe permanece.
+O que muda: o voltar fica à esquerda do botão de opções; o botão de opções abre o painel de ordenação e filtro; dentro do painel, a ordenação e o filtro abrem as próprias listas; o próximo envio da busca manda a ordenação e os tipos selecionados. A listagem de lugares que já existe permanece.
 
 ## 2. Flow
 
@@ -22,27 +22,27 @@ O que muda: o voltar fica à esquerda do botão de opções; o botão de opçõe
 3. Outcome: a stack volta para Home, que é quem abre `Search`.
 4. O header nativo da rota continua sem botão de voltar, para não aparecer dois.
 
-### Abrir o painel flutuante
+### Abrir o painel
 
 1. Trigger: toque no botão de opções, que já existe.
-2. Abre um painel flutuante sobre a lista de lugares. O campo de busca continua visível. A ordenação e o filtro ficam dentro do painel.
-3. Os dois menus nascem fechados. Fechar o flutuante fecha os dois.
-4. A lista de cards continua no lugar, por baixo. O flutuante não entra no fluxo da `CardList`.
+2. Abre o painel de ordenação e filtro. O campo de busca continua visível.
+3. As duas listas nascem fechadas. Fechar o painel fecha as duas.
+4. A lista de cards continua no lugar. O painel não entra no fluxo da `CardList`.
 
-### Dropdown de ordenação (uma escolha)
+### Lista de ordenação (uma escolha)
 
-1. Trigger: toque em "Ordenar por", dentro do flutuante.
-2. O menu de opções também flutua sobre a lista. Ele deixa de ser a `View` que só aparece e some no fluxo do painel.
+1. Trigger: toque em "Ordenar por", dentro do painel.
+2. A lista de opções aparece no fluxo do painel (View montada/desmontada).
 3. As opções são os valores de `Ordination`: "Mais avaliados", "Mais comentados", "Mais próximo".
-4. Escolher uma atualiza o selecionado e fecha o menu.
-5. Abrir este menu fecha o de filtro.
+4. Escolher uma atualiza o selecionado e fecha a lista.
+5. Abrir esta lista fecha a de filtro.
 
-### Dropdown de filtro (várias escolhas)
+### Lista de filtro (várias escolhas)
 
-1. Trigger: toque em "Filtrar por", dentro do flutuante.
-2. O menu flutua sobre a lista, com os valores de `Filter`.
-3. Cada toque marca ou desmarca o tipo. O menu continua aberto.
-4. Abrir este menu fecha o de ordenação.
+1. Trigger: toque em "Filtrar por", dentro do painel.
+2. A lista aparece no fluxo do painel, com os valores de `Filter`.
+3. Cada toque marca ou desmarca o tipo. A lista continua aberta.
+4. Abrir esta lista fecha a de ordenação.
 
 ### Buscar e listar
 
@@ -71,7 +71,7 @@ Sem interação no painel, a primeira busca envia `Ordination.MostRated` ("Mais 
 |-------|---------|
 | `domain` | Nenhuma. `FilterParam`, `Filter` e `Ordination` continuam o contrato. |
 | `data` | Nenhuma. `RemoteSearchPlaces` já envia o body. |
-| `presentation` | Botão voltar, ordenação e filtro dentro de um flutuante sobre a lista, `useSearch` como fonte do `FilterParam` enviado. A `CardList` da busca permanece. |
+| `presentation` | Botão voltar; painel de ordenação e filtro com listas no fluxo do painel; `useSearch` como fonte do `FilterParam` enviado. A `CardList` da busca permanece. |
 | `main/factories` | `searchFactory` deixa de fixar o parâmetro da requisição e injeta `goBack`. |
 
 **Arquivos**
@@ -79,7 +79,7 @@ Sem interação no painel, a primeira busca envia `Ordination.MostRated` ("Mais 
 - Change: `src/presentation/search/search.tsx`, `styles.ts`, `useSearch.tsx`, `modal/index.tsx`, `modal/styles.ts`, `model/Filter.ts`, `src/main/factories/presentation/searchFactory.tsx`
 - Testes: `tests/presentation/search/index.spec.tsx`, `useSearch.spec.tsx`, `modal/index.spec.tsx`, `model/Filter.spec.ts`
 
-**Fora:** `getScreensStack.tsx` (o voltar é da tela, não do header nativo), `remoteSearchPlaces.ts`, biblioteca nova de dropdown, `src/shared/`, migração para `src/features/`, busca enquanto digita (debounce, mínimo de 3 caracteres, disparo sem submit).
+**Fora:** `getScreensStack.tsx` (o voltar é da tela, não do header nativo), `remoteSearchPlaces.ts`, biblioteca nova de dropdown, menus flutuantes sobre a lista, `src/shared/`, migração para `src/features/`, busca enquanto digita (debounce, mínimo de 3 caracteres, disparo sem submit).
 
 ## 4. Relations
 
@@ -98,8 +98,8 @@ Não criar use case, hook compartilhado, componente em `src/shared/` nem depend�
 ## 5. Surface
 
 - Botão de voltar à esquerda do botão de opções.
-- O botão de opções abre um painel flutuante sobre a lista, com o campo de busca visível. Ordenação e filtro ficam dentro dele, cada um no próprio dropdown.
-- "Ordenar por" é um dropdown de uma escolha. "Filtrar por" é um dropdown de várias. Os menus flutuam sobre os cards.
+- O botão de opções abre o painel de ordenação e filtro, com o campo de busca visível. Ordenação e filtro ficam dentro dele, cada um com a própria lista no fluxo do painel.
+- "Ordenar por" é uma lista de uma escolha. "Filtrar por" é uma lista de várias.
 - A lista de lugares continua aparecendo depois que a busca retorna.
 - O submit do teclado envia a seleção atual. Digitar sozinho não busca.
 
@@ -107,7 +107,7 @@ Não criar use case, hook compartilhado, componente em `src/shared/` nem depend�
 
 | Quê | Onde |
 |-----|------|
-| View, dropdown e ViewModel | `src/presentation/search/` |
+| View, listas e ViewModel | `src/presentation/search/` |
 | Composição (`goBack`, use case, location) | `src/main/factories/presentation/searchFactory.tsx` |
 | Contrato já existente | `src/domain/params/filterParam.ts`, `src/domain/enums/` |
 | POST já existente | `src/data/useCases/remoteSearchPlaces.ts` (sem edição) |
@@ -115,15 +115,15 @@ Não criar use case, hook compartilhado, componente em `src/shared/` nem depend�
 ## 7. Criteria
 
 1. O botão de voltar renderiza à esquerda do botão de opções e chama `goBack`. **Prova:** teste da tela Search.
-2. "Ordenar por" e "Filtrar por" ficam dentro de um painel flutuante sobre a `CardList`, com o campo de busca visível. O menu deixa de ser só uma `View` montada no fluxo do painel. **Prova:** teste da tela Search (o painel cobre a área da lista; a lista segue montada por baixo).
-3. "Ordenar por" abre as três opções de `Ordination`, a escolha fica selecionada e o menu fecha. "Filtrar por" marca e desmarca vários tipos com o menu aberto. **Prova:** teste do modal.
+2. "Ordenar por" e "Filtrar por" ficam dentro do painel, com o campo de busca visível. A lista de cards continua montada. **Prova:** teste da tela Search.
+3. "Ordenar por" abre as três opções de `Ordination`, a escolha fica selecionada e a lista fecha. "Filtrar por" marca e desmarca vários tipos com a lista aberta. **Prova:** teste do modal.
 4. A primeira busca, sem mexer no painel, envia `ordination: Ordination.MostRated` e `types: []`. **Prova:** `useSearch.spec.tsx`.
 5. Depois de mudar ordenação e tipos, o submit envia esse `FilterParam`, e não `Closer` + `[Entertainment]`. **Prova:** `useSearch.spec.tsx` com `SearchPlaces` fake.
 6. Os rótulos das opções são os valores dos enums. **Prova:** `Filter.spec.ts`.
 7. O body do POST continua `{ types, ordination }` quando o use case é chamado. **Prova:** `remoteSearchPlaces.spec.ts` existente, sem alteração de produção.
 8. Com texto no campo e `searchTo` resolvido, a `CardList` mostra os lugares retornados. Campo vazio não mostra a lista. **Prova:** teste da tela Search com `placeList` preenchida e vazia.
 9. Digitar 1, 2 ou 3 caracteres não chama `searchPlaces.search`. Só o submit do teclado chama. **Prova:** `useSearch.spec.tsx` (`changeSearch` não dispara busca).
-10. Check manual: o voltar fica à esquerda do botão de opções; o painel de ordenação e filtro flutua sobre a lista de lugares, com o campo de busca visível; uma busca após trocar ordenação e tipos mostra esses valores no body e os cards na lista.
+10. Check manual: o voltar fica à esquerda do botão de opções; o painel de ordenação e filtro usa a UI existente (listas no fluxo do painel); uma busca após trocar ordenação e tipos mostra esses valores no body e os cards na lista.
 
 ---
 

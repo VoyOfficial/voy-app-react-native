@@ -74,16 +74,7 @@ export const ArrowIcon = styled(Icon).attrs({
   color: '#212121',
 })``;
 
-export const OrderOptionsWrapper = styled.View`
-  position: absolute;
-  top: 58px;
-  left: 0;
-  right: 0;
-  z-index: 2;
-  background-color: #ffffff;
-  border-radius: 10px;
-  elevation: 4;
-`;
+export const OrderOptionsWrapper = styled.View``;
 
 export const FilterByButton = styled.TouchableOpacity`
   padding: 19px 0px;
@@ -103,13 +94,4 @@ export const FilterByLabel = styled.Text`
   font-size: 15px;
 `;
 
-export const FilterOptionsWrapper = styled.View`
-  position: absolute;
-  top: 116px;
-  left: 0;
-  right: 0;
-  z-index: 2;
-  background-color: #ffffff;
-  border-radius: 10px;
-  elevation: 4;
-`;
+export const FilterOptionsWrapper = styled.View``;
