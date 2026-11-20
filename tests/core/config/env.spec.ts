@@ -1,7 +1,15 @@
-import { DEFAULT_API_URL, apiEndpoints, getApiUrl } from '~/core';
+import Config from 'react-native-config';
+import {
+  DEFAULT_API_URL,
+  apiAuthorizationHeaders,
+  apiEndpoints,
+  getApiAccessToken,
+  getApiUrl,
+} from '~/core';
 
 describe('Core: env / apiEndpoints', () => {
   const ORIGINAL_API_URL = process.env.API_URL;
+  const ORIGINAL_API_ACCESS_TOKEN = process.env.API_ACCESS_TOKEN;
 
   afterEach(() => {
     if (ORIGINAL_API_URL === undefined) {
@@ -9,6 +17,12 @@ describe('Core: env / apiEndpoints', () => {
     } else {
       process.env.API_URL = ORIGINAL_API_URL;
     }
+    if (ORIGINAL_API_ACCESS_TOKEN === undefined) {
+      delete process.env.API_ACCESS_TOKEN;
+    } else {
+      process.env.API_ACCESS_TOKEN = ORIGINAL_API_ACCESS_TOKEN;
+    }
+    delete (Config as { API_ACCESS_TOKEN?: string }).API_ACCESS_TOKEN;
   });
 
   test('should resolve local registration base by default', () => {
@@ -43,5 +57,31 @@ describe('Core: env / apiEndpoints', () => {
     process.env.API_URL = 'http://localhost:8080/api/registration/';
 
     expect(getApiUrl()).toBe('http://localhost:8080/api/registration');
+  });
+
+  test('should build Authorization Bearer from API_ACCESS_TOKEN', () => {
+    process.env.API_ACCESS_TOKEN = '  service-token  ';
+
+    expect(getApiAccessToken()).toBe('service-token');
+    expect(apiAuthorizationHeaders()).toEqual({
+      Authorization: 'Bearer service-token',
+    });
+  });
+
+  test('should omit Authorization when API_ACCESS_TOKEN is empty', () => {
+    delete process.env.API_ACCESS_TOKEN;
+
+    expect(getApiAccessToken()).toBe('');
+    expect(apiAuthorizationHeaders()).toEqual({});
+  });
+
+  test('should read API_ACCESS_TOKEN from react-native-config', () => {
+    delete process.env.API_ACCESS_TOKEN;
+    (Config as { API_ACCESS_TOKEN?: string }).API_ACCESS_TOKEN = 'from-config';
+
+    expect(getApiAccessToken()).toBe('from-config');
+    expect(apiAuthorizationHeaders()).toEqual({
+      Authorization: 'Bearer from-config',
+    });
   });
 });
