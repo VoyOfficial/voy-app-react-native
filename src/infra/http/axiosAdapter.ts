@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
+import { apiAuthorizationHeaders } from '~/core';
 import {
   HttpGetClient,
   HttpPostClient,
@@ -24,6 +25,25 @@ export const unexpectedErrorResponse = {
 
 type HttpRequestMethod<T> = Partial<T> & { method: HttpMethods };
 
+const isHeaderRecord = (headers: unknown): headers is Record<string, unknown> =>
+  typeof headers === 'object' && headers !== null && !Array.isArray(headers);
+
+const withApiAuthorization = (
+  headers?: HttpRequest['headers'],
+): HttpRequest['headers'] => {
+  const authorization = apiAuthorizationHeaders();
+  if (!authorization.Authorization) {
+    return headers;
+  }
+  if (!isHeaderRecord(headers)) {
+    return authorization;
+  }
+  return {
+    ...headers,
+    ...authorization,
+  };
+};
+
 export class AxiosAdapter implements HttpPostClient, HttpGetClient {
   private async request(
     data: HttpRequestMethod<HttpRequest>,
@@ -32,7 +52,7 @@ export class AxiosAdapter implements HttpPostClient, HttpGetClient {
     try {
       axiosResponse = await axios.request({
         url: data.url,
-        headers: data.headers,
+        headers: withApiAuthorization(data.headers),
         data: data.body,
         method: data.method,
       });
