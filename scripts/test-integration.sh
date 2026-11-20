@@ -21,6 +21,26 @@ case "$API_URL" in
     ;;
 esac
 
+read_env_value() {
+  file="$1"
+  key="$2"
+  if [ ! -f "$file" ]; then
+    return 0
+  fi
+  sed -n "s/^${key}=//p" "$file" | head -n 1 | tr -d '\r' \
+    | sed 's/^[[:space:]]*//; s/[[:space:]]*$//; s/^["'\'']//; s/["'\'']$//'
+}
+
+if [ -z "${API_ACCESS_TOKEN:-}" ]; then
+  API_ACCESS_TOKEN=$(read_env_value "$ROOT/.env.secrets" API_ACCESS_TOKEN)
+fi
+if [ -z "${API_ACCESS_TOKEN:-}" ]; then
+  API_ACCESS_TOKEN=$(read_env_value "$ENV_FILE" API_ACCESS_TOKEN)
+fi
+if [ -n "${API_ACCESS_TOKEN:-}" ]; then
+  export API_ACCESS_TOKEN
+fi
+
 export API_URL
 cd "$ROOT"
 

@@ -4,10 +4,10 @@
 
 Pacotes versionados:
 
-| Arquivo | `API_URL` |
-|---------|-----------|
-| `.env.local` | `http://localhost:8080/api/registration` |
-| `.env.prod` | `https://ms-registration.onrender.com/api/registration` |
+| Arquivo      | `API_URL`                                               |
+| ------------ | ------------------------------------------------------- |
+| `.env.local` | `http://localhost:8080/api/registration`                |
+| `.env.prod`  | `https://ms-registration.onrender.com/api/registration` |
 
 Ativar antes do build/start:
 
@@ -17,7 +17,17 @@ yarn env:prod    # copia .env.prod → .env
 yarn android     # ou yarn ios / yarn start
 ```
 
-`react-native-config` lê o `.env` ativo. Overrides privados: use `.env.secrets` (gitignored); não coloque secrets em `.env.local` / `.env.prod`.
+`react-native-config` lê o `.env` ativo. Overrides privados: use `.env.secrets` (gitignored); não coloque secrets em `.env.local` / `.env.prod`. `yarn env:local` e `yarn env:prod` copiam o pacote e, se `.env.secrets` existir, aplicam essas chaves por cima.
+
+## Authorization
+
+Toda chamada HTTP da app (e os probes de integração) envia:
+
+```http
+Authorization: Bearer <API_ACCESS_TOKEN>
+```
+
+O valor é o mesmo de `API_ACCESS_TOKEN` (`process.env` no Jest, `react-native-config` no app). Sem token, o header não é enviado — o serviço local com `REQUIRE_API_TOKEN=false` continua aberto. No Render o gate está ligado: coloque o segredo em `.env.secrets` (ou no ambiente do processo de teste). Sem o header, `/v1/**` responde 401.
 
 - **Android:** `android/app/build.gradle` aplica `dotenv.gradle`.
 - **iOS:** o pod `react-native-config` (autolink + `pod install`) gera `GeneratedDotEnv.m` no build; o `Podfile` aponta `ENVFILE` para o `.env` da raiz. Após clonar ou mudar pods: `cd ios && pod install`.

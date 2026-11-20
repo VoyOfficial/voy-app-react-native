@@ -16,8 +16,35 @@ case "$TARGET" in
       echo "Missing env package: $SRC" >&2
       exit 1
     fi
-    cp "$SRC" "$ROOT_DIR/.env"
-    echo "Active env: $TARGET (API_URL from .env.$TARGET → .env)"
+    SECRETS="$ROOT_DIR/.env.secrets"
+    if [ -f "$SECRETS" ]; then
+      awk '
+        FNR == NR {
+          if ($0 ~ /^[A-Za-z_][A-Za-z0-9_]*=/) {
+            key = substr($0, 1, index($0, "=") - 1)
+            secret[key] = $0
+            order[++n] = key
+          }
+          next
+        }
+        /^[A-Za-z_][A-Za-z0-9_]*=/ {
+          key = substr($0, 1, index($0, "=") - 1)
+          if (key in secret) {
+            next
+          }
+        }
+        { print }
+        END {
+          for (i = 1; i <= n; i++) {
+            print secret[order[i]]
+          }
+        }
+      ' "$SECRETS" "$SRC" > "$ROOT_DIR/.env"
+      echo "Active env: $TARGET (API_URL from .env.$TARGET, secrets overlaid from .env.secrets → .env)"
+    else
+      cp "$SRC" "$ROOT_DIR/.env"
+      echo "Active env: $TARGET (API_URL from .env.$TARGET → .env)"
+    fi
     ;;
   *)
     usage >&2
