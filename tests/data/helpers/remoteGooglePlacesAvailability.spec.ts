@@ -7,9 +7,15 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('requireRemoteGooglePlaces', () => {
   const previousApiUrl = process.env.API_URL;
+  const previousAccessToken = process.env.API_ACCESS_TOKEN;
 
   afterEach(() => {
     process.env.API_URL = previousApiUrl;
+    if (previousAccessToken === undefined) {
+      delete process.env.API_ACCESS_TOKEN;
+    } else {
+      process.env.API_ACCESS_TOKEN = previousAccessToken;
+    }
     jest.clearAllMocks();
   });
 
@@ -44,11 +50,18 @@ describe('requireRemoteGooglePlaces', () => {
   it('should pass when remote places probe returns 200', async () => {
     process.env.API_URL =
       'https://ms-registration.onrender.com/api/registration';
+    process.env.API_ACCESS_TOKEN = 'service-token';
     mockedAxios.get.mockResolvedValue({
       status: 200,
       data: { places: [] },
     });
 
     await expect(requireRemoteGooglePlaces()).resolves.toBeUndefined();
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      expect.stringContaining('/places'),
+      expect.objectContaining({
+        headers: { Authorization: 'Bearer service-token' },
+      }),
+    );
   });
 });

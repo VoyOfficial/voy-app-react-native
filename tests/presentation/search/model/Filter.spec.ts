@@ -1,3 +1,4 @@
+import { Ordination, Filter as PlaceFilter } from '~/domain/enums';
 import Filter, {
   getOptions,
 } from '../../../../src/presentation/search/model/Filter';
@@ -37,6 +38,23 @@ describe('Model: Filter', () => {
 
     expect(options.filterBy.list[4].selected).toEqual(false);
     expect(sut.options.filterBy.list[4].selected).toEqual(false);
+  });
+
+  test('should build option labels from the Filter and Ordination enum values', () => {
+    const options = getOptions();
+
+    expect(options.orderBy.label).toEqual('Ordenar por');
+    expect(options.orderBy.list.map((item) => item.label)).toEqual(
+      Object.values(Ordination),
+    );
+    expect(options.orderBy.selected.label).toEqual(Ordination.MostRated);
+    expect(options.filterBy.label).toEqual('Filtrar por');
+    expect(options.filterBy.list.map((item) => item.label)).toEqual(
+      Object.values(PlaceFilter),
+    );
+    expect(
+      options.filterBy.list.every((item) => item.selected === false),
+    ).toEqual(true);
   });
 
   test('should update options correctly when to call selectOrder function', () => {

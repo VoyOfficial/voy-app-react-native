@@ -1,6 +1,8 @@
 import React from 'react';
 import CardList, { Place } from '../components/cardList';
 import {
+  BackButton,
+  BackIcon,
   CardListWrapper,
   Container,
   FilterButton,
@@ -23,6 +25,7 @@ export type SearchViewModel = {
   filter: () => void;
   showFilterOptions: boolean;
   showMoreDetails: (place: Place) => void;
+  goBack: () => void;
 };
 
 const CardListFactory = ({
@@ -51,15 +54,14 @@ const Search = ({
   searchTo,
   filter,
   showMoreDetails,
+  goBack,
 }: SearchViewModel) => {
   return (
     <Container>
-      <HeaderWrapper>
-        <FilterButtonWrapper>
-          <FilterButton testID="filter_button_id" onPress={filter}>
-            <FilterIcon testID="filter_id" name="filter" />
-          </FilterButton>
-        </FilterButtonWrapper>
+      <HeaderWrapper testID="search_header_id">
+        <BackButton testID="back_button_id" onPress={goBack}>
+          <BackIcon testID="back_icon_id" name="arrow_left" />
+        </BackButton>
         <SearchInputWrapper>
           <SearchInput
             testID="search_input_id"
@@ -72,6 +74,11 @@ const Search = ({
             <SearchIcon testID="search_id" name="search" />
           </SearchIconWrapper>
         </SearchInputWrapper>
+        <FilterButtonWrapper>
+          <FilterButton testID="filter_button_id" onPress={filter}>
+            <FilterIcon testID="filter_id" name="filter" />
+          </FilterButton>
+        </FilterButtonWrapper>
       </HeaderWrapper>
       {searchValue !== '' && (
         <CardListWrapper>
@@ -82,7 +89,7 @@ const Search = ({
         </CardListWrapper>
       )}
       {showFilterOptions && (
-        <FilterModalWrapper>
+        <FilterModalWrapper testID="filter_panel_id">
           <FilterModalFactory />
         </FilterModalWrapper>
       )}

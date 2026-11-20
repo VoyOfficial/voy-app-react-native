@@ -1,5 +1,8 @@
 import styled from 'styled-components/native';
+import { AppThemeShape } from '../theme/theme';
 import Icon from '../assets/fonts/Voy';
+
+type ThemeProps = { theme: AppThemeShape };
 
 export const Container = styled.View`
   padding-top: 80px;
@@ -13,8 +16,17 @@ export const HeaderWrapper = styled.View`
   padding: 0 20px;
 `;
 
+export const BackButton = styled.TouchableOpacity`
+  padding-right: 16px;
+`;
+
+export const BackIcon = styled(Icon).attrs({
+  size: 24,
+  color: '#212121',
+})``;
+
 export const FilterButtonWrapper = styled.View`
-  padding-right: 21px;
+  padding-left: 16px;
 `;
 
 export const FilterButton = styled.TouchableOpacity``;
@@ -29,7 +41,8 @@ export const SearchInputWrapper = styled.View`
 `;
 
 export const SearchInput = styled.TextInput`
-  background-color: ${({ theme }) => theme.colors.themeColors.neutral['100']};
+  background-color: ${({ theme }: ThemeProps) =>
+    theme.colors.themeColors.neutral['100']};
   padding: 11px 0px;
   padding-left: 16px;
   border-radius: 13px;

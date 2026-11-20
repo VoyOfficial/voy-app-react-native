@@ -4,7 +4,7 @@ import {
   HttpMethods,
   unexpectedErrorResponse,
 } from '~/infra/http';
-import { HttpResponse } from '~/data/http';
+import { HttpRequest, HttpResponse } from '~/data/http';
 import axiosMock from '../mocks/axiosMock';
 import { httpRequestFake, httpResponseFake } from '../fakes/testFakes';
 import { toHttpResponse } from '../helpers/extensionFactories';
@@ -12,6 +12,16 @@ import { toHttpResponse } from '../helpers/extensionFactories';
 jest.mock('axios');
 
 describe('Infra: AxiosAdapter', () => {
+  const originalAccessToken = process.env.API_ACCESS_TOKEN;
+
+  afterEach(() => {
+    if (originalAccessToken === undefined) {
+      delete process.env.API_ACCESS_TOKEN;
+    } else {
+      process.env.API_ACCESS_TOKEN = originalAccessToken;
+    }
+  });
+
   test('should post through the axiosAdapter the correct information', async () => {
     const data = httpRequestFake();
     const { sut, axiosMocked } = makeSut();
@@ -110,6 +120,48 @@ describe('Infra: AxiosAdapter', () => {
       const httpErrorResponse = toHttpResponse(errorResponse);
       expect(httpResponse).toEqual(httpErrorResponse);
     }
+  });
+
+  test('should post Authorization Bearer from API_ACCESS_TOKEN', async () => {
+    process.env.API_ACCESS_TOKEN = 'service-token';
+    const data: HttpRequest = {
+      ...httpRequestFake(),
+      headers: { Accept: 'application/json', Authorization: 'Bearer other' },
+    };
+    const { sut, axiosMocked } = makeSut();
+
+    await sut.post(data);
+
+    expect(axiosMocked.request).toHaveBeenCalledWith({
+      url: data.url,
+      data: data.body,
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer service-token',
+      },
+      method: HttpMethods.post,
+    });
+  });
+
+  test('should get Authorization Bearer from API_ACCESS_TOKEN', async () => {
+    process.env.API_ACCESS_TOKEN = 'service-token';
+    const data: HttpRequest = {
+      ...httpRequestFake(),
+      headers: { Accept: 'application/json' },
+    };
+    const { sut, axiosMocked } = makeSut();
+
+    await sut.get(data);
+
+    expect(axiosMocked.request).toHaveBeenCalledWith({
+      url: data.url,
+      data: data.body,
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer service-token',
+      },
+      method: HttpMethods.get,
+    });
   });
 
   test('should get through the axiosAdapter returning an unexpected error response', async () => {

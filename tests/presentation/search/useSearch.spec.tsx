@@ -7,6 +7,7 @@ import { Filter, Ordination } from '~/domain/enums';
 import { Coordinates, LocationService } from '~/domain/protocols';
 import { Place } from '../../../src/presentation/components/cardList';
 import placeListFactory from '../helpers/placeListFactory';
+import FilterModel from '../../../src/presentation/search/model/Filter';
 import { useSearch } from '../../../src/presentation/search';
 
 class SearchPlacesFake implements SearchPlaces {
@@ -49,20 +50,51 @@ const defaultCoords: Coordinates = {
   longitude: -50.877608,
 };
 
+const makeProps = (
+  overrides: Partial<{
+    searchPlaces: SearchPlaces;
+    locationService: LocationService;
+    nextPageToken: string;
+    filterModel: FilterModel;
+    goBack: () => void;
+    navigate: (routeName: string, params?: unknown) => void;
+  }> = {},
+) => ({
+  searchPlaces: new SearchPlacesFake(),
+  locationService: new LocationServiceFake(defaultCoords),
+  nextPageToken: '',
+  filterModel: new FilterModel(),
+  goBack: () => {},
+  navigate: () => {},
+  ...overrides,
+});
+
+const filterFrom = (filterParam: FilterParam) => {
+  const filterModel = new FilterModel();
+  const selectedOrder = filterModel.options.orderBy.list.find(
+    (item) => item.label === filterParam.ordination,
+  );
+
+  if (selectedOrder) {
+    filterModel.selectOrder(selectedOrder, filterModel.options);
+  }
+
+  filterParam.types.forEach((type) => {
+    const option = filterModel.options.filterBy.list.find(
+      (item) => item.label === type,
+    );
+
+    if (option) {
+      filterModel.selectFilter(option, filterModel.options);
+    }
+  });
+
+  return filterModel;
+};
+
 describe('Presentation: useSearch', () => {
   test('should update showFilterOptions to true when call filter function', async () => {
-    const { result } = renderHook(() =>
-      useSearch({
-        searchPlaces: new SearchPlacesFake(),
-        locationService: new LocationServiceFake(defaultCoords),
-        filterParam: {
-          ordination: Ordination.Closer,
-          types: [Filter.CoffeeMakers],
-        },
-        nextPageToken: '',
-        navigate: () => {},
-      }),
-    );
+    const { result } = renderHook(() => useSearch(makeProps()));
 
     expect(result.current.showFilterOptions).toEqual(false);
 
@@ -74,18 +106,7 @@ describe('Presentation: useSearch', () => {
   });
 
   test('should update the searchValue correctly when call changeSearch function', async () => {
-    const { result } = renderHook(() =>
-      useSearch({
-        searchPlaces: new SearchPlacesFake(),
-        locationService: new LocationServiceFake(defaultCoords),
-        filterParam: {
-          ordination: Ordination.Closer,
-          types: [Filter.CoffeeMakers],
-        },
-        nextPageToken: '',
-        navigate: () => {},
-      }),
-    );
+    const { result } = renderHook(() => useSearch(makeProps()));
 
     expect(result.current.searchValue).toEqual('');
 
@@ -105,13 +126,14 @@ describe('Presentation: useSearch', () => {
       types: [Filter.Restaurants],
     };
     const { result } = renderHook(() =>
-      useSearch({
-        searchPlaces,
-        locationService,
-        nextPageToken,
-        filterParam,
-        navigate: () => {},
-      }),
+      useSearch(
+        makeProps({
+          searchPlaces,
+          locationService,
+          nextPageToken,
+          filterModel: filterFrom(filterParam),
+        }),
+      ),
     );
 
     await result.current.searchTo('Malbec');
@@ -134,13 +156,13 @@ describe('Presentation: useSearch', () => {
       types: [Filter.Restaurants],
     };
     const { result } = renderHook(() =>
-      useSearch({
-        searchPlaces,
-        locationService: new LocationServiceFake(defaultCoords),
-        nextPageToken,
-        filterParam,
-        navigate: () => {},
-      }),
+      useSearch(
+        makeProps({
+          searchPlaces,
+          nextPageToken,
+          filterModel: filterFrom(filterParam),
+        }),
+      ),
     );
 
     await result.current.searchTo('Malbec');
@@ -173,16 +195,12 @@ describe('Presentation: useSearch', () => {
 
     const searchPlaces = new SearchPlacesFake();
     const { result } = renderHook(() =>
-      useSearch({
-        searchPlaces,
-        locationService: new FailingLocation(),
-        nextPageToken: '',
-        filterParam: {
-          ordination: Ordination.Closer,
-          types: [Filter.Entertainment],
-        },
-        navigate: () => {},
-      }),
+      useSearch(
+        makeProps({
+          searchPlaces,
+          locationService: new FailingLocation(),
+        }),
+      ),
     );
 
     await result.current.searchTo('Malbec');
@@ -200,13 +218,14 @@ describe('Presentation: useSearch', () => {
       types: [Filter.Restaurants],
     };
     const { result } = renderHook(() =>
-      useSearch({
-        searchPlaces,
-        locationService: new LocationServiceFake(defaultCoords),
-        nextPageToken,
-        filterParam,
-        navigate: navigateSpy,
-      }),
+      useSearch(
+        makeProps({
+          searchPlaces,
+          nextPageToken,
+          filterModel: filterFrom(filterParam),
+          navigate: navigateSpy,
+        }),
+      ),
     );
 
     await result.current.searchTo('Malbec');
@@ -221,5 +240,87 @@ describe('Presentation: useSearch', () => {
     expect(navigateSpy).toHaveBeenCalledWith('PlaceDetails', {
       place: result.current.placeList[0],
     });
+  });
+
+  test('should call the injected goBack function', () => {
+    const goBack = jest.fn();
+    const { result } = renderHook(() => useSearch(makeProps({ goBack })));
+
+    result.current.goBack();
+
+    expect(goBack).toHaveBeenCalledTimes(1);
+  });
+
+  test('should send MostRated and an empty types list on the first search', async () => {
+    const searchPlaces = new SearchPlacesFake();
+    const { result } = renderHook(() =>
+      useSearch(makeProps({ searchPlaces, filterModel: new FilterModel() })),
+    );
+
+    await result.current.searchTo('Malbec');
+
+    expect(searchPlaces.filterParam).toEqual({
+      ordination: Ordination.MostRated,
+      types: [],
+    });
+  });
+
+  test('should send the selected ordination and types on the next submit', async () => {
+    const searchPlaces = new SearchPlacesFake();
+    const filterModel = new FilterModel();
+    const { result } = renderHook(() =>
+      useSearch(makeProps({ searchPlaces, filterModel })),
+    );
+
+    const optionByLabel = <T extends { label: string }>(
+      list: T[],
+      label: string,
+    ) => {
+      const option = list.find((item) => item.label === label);
+
+      if (!option) {
+        throw new Error(`missing option ${label}`);
+      }
+
+      return option;
+    };
+
+    filterModel.selectOrder(
+      optionByLabel(filterModel.options.orderBy.list, Ordination.MostCommented),
+      filterModel.options,
+    );
+    filterModel.selectFilter(
+      optionByLabel(filterModel.options.filterBy.list, Filter.Hotels),
+      filterModel.options,
+    );
+    filterModel.selectFilter(
+      optionByLabel(filterModel.options.filterBy.list, Filter.NightLife),
+      filterModel.options,
+    );
+
+    expect(searchPlaces.filterParam).toBeUndefined();
+
+    await result.current.searchTo('Malbec');
+
+    expect(searchPlaces.filterParam).toEqual({
+      ordination: Ordination.MostCommented,
+      types: [Filter.Hotels, Filter.NightLife],
+    });
+  });
+
+  test('should not call searchPlaces.search when changeSearch receives 1, 2 or 3 characters', async () => {
+    const searchPlaces = new SearchPlacesFake();
+    const { result } = renderHook(() => useSearch(makeProps({ searchPlaces })));
+
+    result.current.changeSearch('a');
+    result.current.changeSearch('ab');
+    result.current.changeSearch('abc');
+
+    await waitFor(() => {
+      expect(result.current.searchValue).toEqual('abc');
+    });
+
+    expect(searchPlaces.place).toEqual('');
+    expect(searchPlaces.filterParam).toBeUndefined();
   });
 });

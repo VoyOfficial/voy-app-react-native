@@ -1,10 +1,14 @@
 import React from 'react';
 import { Provider } from 'mobx-react';
+import { ThemeProvider } from 'styled-components/native';
+import { ReactTestInstance } from 'react-test-renderer';
 import { fireEvent } from '@testing-library/react-native';
 import Filter from '../../../src/presentation/search/model/Filter';
 import placeListFactory from '../helpers/placeListFactory';
 import { Place } from '../../../src/presentation/components/cardList';
 import { Search } from '../../../src/presentation/search';
+import { lightTheme } from '../../../src/presentation/theme/theme';
+import voyIcons from '../../../src/presentation/assets/fonts/Voy/selection.json';
 import { renderWithTheme } from '../helpers/renderWithTheme';
 
 describe('Presentation: Search', () => {
@@ -127,19 +131,118 @@ describe('Presentation: Search', () => {
     const placeList = placeListFactory(5);
     const showFilterOptions = true;
     const {
-      sut: { getByTestId },
+      sut: { queryByTestId },
     } = makeSut(
       showFilterOptions,
       () => {},
-      'any_value',
+      '',
       () => {},
       async () => {},
       placeList,
     );
 
-    placeList.forEach((place, index) => {
-      expect(getByTestId(`list_card_${index}_id`)).toBeTruthy();
-    });
+    expect(queryByTestId('list_card_0_id')).toBeNull();
+  });
+
+  test('should render back, search input, then filter on the right, and call goBack', () => {
+    const goBack = jest.fn();
+    const {
+      sut: { getByTestId },
+    } = makeSut(
+      false,
+      () => {},
+      '',
+      () => {},
+      async () => {},
+      [],
+      goBack,
+    );
+
+    const ids = testIdsInOrder(getByTestId('search_header_id'));
+    const backIndex = ids.indexOf('back_button_id');
+    const searchIndex = ids.indexOf('search_input_id');
+    const filterIndex = ids.indexOf('filter_button_id');
+
+    expect(backIndex).toBeGreaterThanOrEqual(0);
+    expect(backIndex).toBeLessThan(searchIndex);
+    expect(searchIndex).toBeLessThan(filterIndex);
+    const arrowLeft = voyIcons.icons.find(
+      (icon) => icon.properties.name === 'arrow_left',
+    );
+
+    const iconChildren = getByTestId('back_icon_id').props.children;
+
+    expect(iconChildren[0]).toEqual(
+      String.fromCharCode(arrowLeft?.properties.code ?? 0),
+    );
+
+    fireEvent.press(getByTestId('back_button_id'));
+
+    expect(goBack).toHaveBeenCalledTimes(1);
+  });
+
+  test('should show the filter panel with the search field and card list still mounted', () => {
+    const placeList = placeListFactory(2);
+    const {
+      sut: { getByTestId },
+    } = makeSut(
+      true,
+      () => {},
+      'cafe',
+      () => {},
+      async () => {},
+      placeList,
+    );
+
+    const panelStyle = flatStyle(getByTestId('filter_panel_id').props.style);
+
+    expect(panelStyle.position).toEqual('absolute');
+    expect(panelStyle.top).toEqual(120);
+    expect(panelStyle.left).toEqual(0);
+    expect(panelStyle.right).toEqual(0);
+    expect(getByTestId('search_input_id')).toBeTruthy();
+    expect(getByTestId('filter_modal_id')).toBeTruthy();
+    expect(getByTestId('list_card_0_id')).toBeTruthy();
+    expect(getByTestId('list_card_1_id')).toBeTruthy();
+  });
+
+  test('should close both option lists when the filter panel closes and opens again', () => {
+    const filter = new Filter();
+    const placeList = placeListFactory(1);
+    const tree = (showFilterOptions: boolean) => (
+      <ThemeProvider theme={lightTheme}>
+        <Provider {...{ filter }}>
+          <Search
+            searchValue="cafe"
+            changeSearch={() => {}}
+            searchTo={async () => {}}
+            filter={() => {}}
+            showFilterOptions={showFilterOptions}
+            placeList={placeList}
+            showMoreDetails={() => {}}
+            goBack={() => {}}
+          />
+        </Provider>
+      </ThemeProvider>
+    );
+    const { getByTestId, queryByTestId, rerender } = renderWithTheme(
+      tree(true),
+    );
+
+    fireEvent.press(getByTestId('order_by_button_id'));
+
+    expect(getByTestId('order_options_id')).toBeTruthy();
+
+    rerender(tree(false));
+
+    expect(queryByTestId('filter_modal_id')).toBeNull();
+    expect(queryByTestId('order_options_id')).toBeNull();
+
+    rerender(tree(true));
+
+    expect(getByTestId('filter_modal_id')).toBeTruthy();
+    expect(queryByTestId('order_options_id')).toBeNull();
+    expect(queryByTestId('filter_options_id')).toBeNull();
   });
 
   test('should call showMoreDetails function correctly when press the show more details button', () => {
@@ -170,6 +273,7 @@ const makeSut = (
   changeSearch = () => {},
   searchTo = async () => {},
   placeList: Array<Place> = [],
+  goBack = jest.fn(),
 ) => {
   const showMoreDetailsSpy = jest.fn();
 
@@ -183,10 +287,38 @@ const makeSut = (
         showFilterOptions={showFilterOptions}
         placeList={placeList}
         showMoreDetails={showMoreDetailsSpy}
+        goBack={goBack}
       />
-      ,
     </Provider>,
   );
 
-  return { sut, showMoreDetailsSpy };
+  return { sut, showMoreDetailsSpy, goBack };
+};
+
+const flatStyle = (style: unknown): Record<string, unknown> => {
+  if (Array.isArray(style)) {
+    return Object.assign({}, ...style.map((item) => flatStyle(item)));
+  }
+
+  if (style && typeof style === 'object') {
+    return style as Record<string, unknown>;
+  }
+
+  return {};
+};
+
+const testIdsInOrder = (node: ReactTestInstance): string[] => {
+  const ids: string[] = [];
+
+  if (typeof node.props?.testID === 'string') {
+    ids.push(node.props.testID);
+  }
+
+  node.children.forEach((child) => {
+    if (typeof child !== 'string') {
+      ids.push(...testIdsInOrder(child));
+    }
+  });
+
+  return ids;
 };
