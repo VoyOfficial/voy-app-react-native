@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { apiAuthorizationHeaders } from '~/core';
 import {
   getRegistrationApiV1BaseUrl,
   isRemoteRegistrationApi,
@@ -25,12 +26,20 @@ export const warmupRegistrationApi = async (): Promise<void> => {
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      const response = await axios.get(url, { timeout: 90000 });
+      const response = await axios.get(url, {
+        timeout: 90000,
+        headers: apiAuthorizationHeaders(),
+      });
       if (response.status >= 200 && response.status < 300) {
         return;
       }
       lastError = new Error(`warmup status ${response.status}`);
     } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        throw new Error(
+          'Registration API returned 401. Set API_ACCESS_TOKEN so requests send Authorization: Bearer <API_ACCESS_TOKEN>.',
+        );
+      }
       lastError = error;
     }
     await sleep(Math.min(5000 * attempt, 20000));

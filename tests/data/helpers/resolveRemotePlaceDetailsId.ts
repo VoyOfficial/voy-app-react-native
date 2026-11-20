@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { apiAuthorizationHeaders } from '~/core';
 import { getRegistrationApiV1BaseUrl } from './registrationApiBaseUrl';
 
 const FIXTURE_COORDS = {
@@ -18,6 +19,7 @@ export const resolveRemotePlaceDetailsId = async (): Promise<string> => {
 
   const listResponse = await axios.get(listUrl, {
     timeout: 90000,
+    headers: apiAuthorizationHeaders(),
     validateStatus: () => true,
   });
 
@@ -45,6 +47,7 @@ export const resolveRemotePlaceDetailsId = async (): Promise<string> => {
       `${baseUrl}/places/${encodeURIComponent(id)}`,
       {
         timeout: 90000,
+        headers: apiAuthorizationHeaders(),
         validateStatus: () => true,
       },
     );

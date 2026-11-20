@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { apiAuthorizationHeaders } from '~/core';
 import {
   getRegistrationApiV1BaseUrl,
   isRemoteRegistrationApi,
@@ -28,6 +29,7 @@ export const requireRemoteGooglePlaces = async (): Promise<void> => {
   try {
     response = await axios.get(url, {
       timeout: 90000,
+      headers: apiAuthorizationHeaders(),
       validateStatus: () => true,
     });
   } catch (error) {
